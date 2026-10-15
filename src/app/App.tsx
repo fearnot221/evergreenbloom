@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Outlet, ScrollRestoration, useLocation, useNavigation } from 'react-router-dom';
 import {
-  ArrowUpRightIcon,
   CalendarDotsIcon,
   CaretDownIcon,
-  DotsNineIcon,
   HouseIcon,
+  ListIcon,
   MapTrifoldIcon,
   MegaphoneIcon,
   WifiSlashIcon,
   XIcon,
 } from '../components/icons';
 import { Link, NavLink } from '../components/links';
-import { BrandMark, Sparkle } from '../components/motifs';
-import { story } from '../data/festival';
+import { display } from '../data/display-copy';
+import { poster } from '../data/poster-copy';
 import { PwaPanel, useOnline } from '../pwa/PwaPanel';
-import { primaryNav, sheetNav } from './nav';
+import { primaryNav, quickNav } from './nav';
 import { useRouteFocus } from './use-route-focus';
 
 const tabs = [
@@ -29,83 +28,88 @@ export default function App() {
   const location = useLocation();
   const navigation = useNavigation();
   const online = useOnline();
-  const [sheet, setSheet] = useState(false);
+  const [menu, setMenu] = useState(false);
   const [english, setEnglish] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
-  const moreButton = useRef<HTMLButtonElement>(null);
+  const opener = useRef<HTMLButtonElement | null>(null);
   const languageButton = useRef<HTMLButtonElement>(null);
-  const header = useRef<HTMLElement>(null);
   useRouteFocus();
 
   useEffect(() => {
-    const el = header.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() =>
-      document.documentElement.style.setProperty('--app-header', `${el.offsetHeight}px`),
-    );
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (sheet) dialog.current?.showModal();
+    if (menu) dialog.current?.showModal();
     else if (dialog.current?.open) dialog.current.close();
-  }, [sheet]);
+  }, [menu]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: close transient UI on every navigation.
   useEffect(() => {
-    setSheet(false);
+    setMenu(false);
     setEnglish(false);
   }, [location.pathname]);
 
+  const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    opener.current = event.currentTarget;
+    // The menu grows out of the button that opened it.
+    const box = event.currentTarget.getBoundingClientRect();
+    dialog.current?.style.setProperty('--ox', `${box.left + box.width / 2}px`);
+    dialog.current?.style.setProperty('--oy', `${box.top + box.height / 2}px`);
+    setMenu(true);
+  };
+
   return (
-    <div className="app">
-      <div className="sky" aria-hidden="true" />
+    <div className="app" data-route={location.pathname === '/' ? 'home' : 'page'}>
       <a className="skip-link" href="#route-content">
         跳至主要內容
       </a>
-      <header className="app-header" ref={header}>
-        <div className="app-header-inner">
-          <Link className="brand" to="/" aria-label="松櫻祭 首頁">
-            <BrandMark />
-            <span className="brand-name" aria-hidden="true">
-              松櫻祭
+
+      <header className="app-header">
+        <Link className="brand" to="/" aria-label="松櫻祭 首頁">
+          <span className="poster brand-word" aria-hidden="true">
+            {poster.wordmark}
+          </span>
+          <span className="poster brand-edition" aria-hidden="true">
+            {poster.edition}
+          </span>
+        </Link>
+        <nav className="quick-nav" aria-label="主要任務">
+          {quickNav.map((item) => (
+            <NavLink key={item.to} to={item.to}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="header-tools">
+          {!online && (
+            <span className="offline-pill" role="status">
+              <WifiSlashIcon size={16} weight="bold" aria-hidden="true" />
+              離線閱讀
             </span>
-            <span className="brand-edition" aria-hidden="true">
-              {story.edition.ordinal}
-            </span>
-          </Link>
-          <nav className="primary-nav" aria-label="主要導覽">
-            {primaryNav.map((item) => (
-              <NavLink key={item.to} to={item.to} end={item.to === '/'}>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-          <div className="header-tools">
-            {!online && (
-              <span className="offline-pill" role="status">
-                <WifiSlashIcon size={16} weight="bold" aria-hidden="true" />
-                離線閱讀
-              </span>
-            )}
-            <button
-              type="button"
-              ref={languageButton}
-              className="language-trigger"
-              aria-expanded={english}
-              aria-controls="language-notice"
-              onClick={() => setEnglish(!english)}
-              lang="en"
-            >
-              EN
-            </button>
-          </div>
+          )}
+          <button
+            type="button"
+            ref={languageButton}
+            className="round-button latin"
+            aria-expanded={english}
+            aria-controls="language-notice"
+            onClick={() => setEnglish(!english)}
+            lang="en"
+          >
+            EN
+          </button>
+          <button
+            type="button"
+            className="menu-button"
+            aria-haspopup="dialog"
+            aria-expanded={menu}
+            onClick={openMenu}
+          >
+            <ListIcon size={18} weight="bold" aria-hidden="true" />
+            選單
+          </button>
         </div>
         {english && (
           // biome-ignore lint/a11y/noStaticElementInteractions: Escape closes the notice and returns focus.
           <div
-            className="language-notice surface"
+            className="language-notice"
             id="language-notice"
             lang="en"
             onKeyDown={(event) => {
@@ -121,7 +125,7 @@ export default function App() {
             </p>
             <button
               type="button"
-              className="button button-quiet"
+              className="button button-ghost"
               onClick={() => {
                 setEnglish(false);
                 languageButton.current?.focus();
@@ -142,37 +146,45 @@ export default function App() {
       <div id="route-stage">
         <Outlet />
       </div>
-      <ScrollRestoration />
+      {/* Keyed by path: fresh loads all share the key "default", which would restore
+          one page's scroll position on another. */}
+      <ScrollRestoration getKey={(loc) => loc.pathname + loc.search} />
 
       <footer className="app-footer">
-        <div className="container footer-grid">
-          <div className="footer-closing">
-            <Sparkle className="footer-sparkle" />
-            <p className="display footer-title">
-              <span className="display-line">在中央，</span>
-              <span className="display-line">等一個春天。</span>
-            </p>
-            <p className="byline">國立中央大學 {story.edition.ordinal} 松櫻祭</p>
-          </div>
-          <div className="footer-side">
-            <nav className="footer-nav" aria-label="頁尾導覽">
-              {primaryNav.map((item) => (
-                <Link key={item.to} to={item.to}>
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <details className="footer-app disclosure" id="app-offline-details">
-              <summary>
-                應用程式與離線閱讀
-                <CaretDownIcon size={18} weight="bold" aria-hidden="true" />
-              </summary>
-              <PwaPanel />
-            </details>
-          </div>
-          <p className="footer-legal small-note">
-            本站為學生製作的活動資訊原型，並非國立中央大學正式網站。地圖資料 © OpenStreetMap
-            contributors。插畫為暫用設計，官方視覺素材待提供。
+        <div className="wrap footer-grid">
+          <p className="serif footer-statement">
+            {display.closing.map((line) => (
+              <span className="line" key={line}>
+                {line}
+              </span>
+            ))}
+          </p>
+          <nav className="footer-nav" aria-label="頁尾導覽">
+            {primaryNav.map((item) => (
+              <Link key={item.to} to={item.to}>
+                <span>{item.label}</span>
+                <span className="latin">{item.en}</span>
+              </Link>
+            ))}
+          </nav>
+          <details className="footer-app" id="app-offline-details">
+            <summary>
+              應用程式與離線閱讀
+              <CaretDownIcon size={16} weight="bold" aria-hidden="true" />
+            </summary>
+            <PwaPanel />
+          </details>
+        </div>
+        <p className="poster footer-wordmark" aria-hidden="true">
+          {poster.wordmark}
+        </p>
+        <div className="wrap footer-legal">
+          <p className="note">
+            {poster.school} {poster.edition} 松櫻祭 ·
+            學生製作的活動資訊原型，並非國立中央大學正式網站。
+          </p>
+          <p className="note">
+            地圖資料 © OpenStreetMap contributors。插畫為暫用設計，官方視覺素材待提供。
           </p>
         </div>
       </footer>
@@ -184,58 +196,55 @@ export default function App() {
             {label}
           </NavLink>
         ))}
-        <button
-          type="button"
-          ref={moreButton}
-          onClick={() => setSheet(true)}
-          aria-haspopup="dialog"
-          aria-expanded={sheet}
-        >
-          <DotsNineIcon size={22} aria-hidden="true" />
-          更多
+        <button type="button" onClick={openMenu} aria-haspopup="dialog" aria-expanded={menu}>
+          <ListIcon size={22} aria-hidden="true" />
+          選單
         </button>
       </nav>
 
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop click mirrors the native Escape close. */}
       <dialog
-        className="sheet"
+        className="menu"
         ref={dialog}
-        aria-labelledby="sheet-title"
-        onCancel={() => setSheet(false)}
+        aria-label="網站選單"
+        onCancel={() => setMenu(false)}
         onClose={() => {
-          setSheet(false);
-          moreButton.current?.focus();
-        }}
-        onClick={(event) => {
-          if (event.target === event.currentTarget) setSheet(false);
+          setMenu(false);
+          opener.current?.focus();
         }}
       >
-        <div className="sheet-body">
-          <div className="sheet-head">
-            <h2 id="sheet-title">更多頁面</h2>
+        <div className="menu-inner wrap">
+          <div className="menu-head">
+            <span className="poster menu-word" aria-hidden="true">
+              {poster.wordmark}
+            </span>
             <button
               type="button"
-              className="icon-button"
-              aria-label="關閉"
-              onClick={() => setSheet(false)}
+              className="round-button"
+              aria-label="關閉選單"
+              onClick={() => setMenu(false)}
             >
               <XIcon size={20} weight="bold" aria-hidden="true" />
             </button>
           </div>
-          <nav className="sheet-nav" aria-label="更多頁面">
-            {sheetNav.map((item) => (
-              <Link key={item.to} to={item.to}>
-                <span className="display">{item.label}</span>
-                <ArrowUpRightIcon size={20} aria-hidden="true" />
-              </Link>
+          <nav className="menu-nav" aria-label="全部頁面">
+            {primaryNav.map((item, index) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                style={{ '--i': index } as React.CSSProperties}
+              >
+                <span className="serif">{item.label}</span>
+                <span className="latin">{item.en}</span>
+              </NavLink>
             ))}
           </nav>
-          {/* biome-ignore lint/a11y/useValidAnchor: a real in-page link that also closes the sheet. */}
+          {/* biome-ignore lint/a11y/useValidAnchor: a real in-page link that also closes the menu. */}
           <a
-            className="text-link"
+            className="text-link menu-offline"
             href="#app-offline-details"
             onClick={() => {
-              setSheet(false);
+              setMenu(false);
               const panel = document.getElementById('app-offline-details');
               if (panel instanceof HTMLDetailsElement) panel.open = true;
             }}

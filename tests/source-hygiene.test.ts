@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { collectCharacters } from '../scripts/fonts/characters.mjs';
+import { collectCharacters, subsets } from '../scripts/fonts/characters.mjs';
 
 function files(dir: string): string[] {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -10,11 +10,13 @@ function files(dir: string): string[] {
 }
 
 describe('source hygiene', () => {
-  it('display font subset covers every character used in src', () => {
-    const subset = new Set(fs.readFileSync('public/fonts/songying-display.chars.txt', 'utf8'));
-    const missing = [...collectCharacters()].filter((ch) => !subset.has(ch));
-    // Run `npm run fonts -- <NotoSansTC-Black.ttf>` after adding new copy.
-    expect(missing.join('')).toBe('');
+  it('each display font subset covers every character in its source copy', () => {
+    for (const [name, sources] of Object.entries(subsets)) {
+      const subset = new Set(fs.readFileSync(`public/fonts/${name}.chars.txt`, 'utf8'));
+      const missing = [...collectCharacters(sources)].filter((ch) => !subset.has(ch));
+      // Run `npm run fonts -- <NotoSerifTC-Black.ttf> <NotoSansTC-Black.ttf>` after editing copy.
+      expect(missing.join(''), name).toBe('');
+    }
   });
 
   it('has no em or en dashes in user-facing source', () => {

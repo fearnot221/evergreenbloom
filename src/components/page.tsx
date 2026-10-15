@@ -1,69 +1,73 @@
 import { type ReactNode, useEffect } from 'react';
 import {
   categories,
+  days,
   getLocation,
   mapHref,
-  officialTopics,
   prototypeNotice,
   snapshot,
-  story,
 } from '../data/festival';
 import type { Event } from '../data/model';
+import { poster } from '../data/poster-copy';
 import { ArrowUpRightIcon, InfoIcon, MapTrifoldIcon } from './icons';
 import { Link } from './links';
 import { PineCone, Sakura, Sparkle } from './motifs';
 
 export function useDocumentTitle(title: string) {
   useEffect(() => {
-    document.title = title ? `${title} · 松櫻祭` : '松櫻祭 · 國立中央大學春日祭典';
+    document.title = title ? `${title} · 松櫻祭` : '松櫻祭 · 國立中央大學第二屆春日祭典';
   }, [title]);
 }
 
-type Accent = 'sakura' | 'pine' | 'both';
-
 /**
- * Poster-style page header: stacked rose display lines, the grey-violet identity
- * line, then one short paragraph. Motifs sit at the edge and may be cropped.
+ * Inner-page layout. On wide screens the title stands as a vertical spine (like the
+ * spine of a bound book) beside the content; on narrow screens it sits on top.
+ * `serifTitle` must come from display-copy so the serif subset covers it; dynamic
+ * titles (events, announcements) use the body face via `plainTitle`.
  */
-export function PageHeader({
-  lines,
+export function Page({
+  title,
+  plainTitle,
   lede,
-  accent = 'sakura',
-  compact = false,
+  className = '',
   morph,
+  children,
 }: {
-  lines: string[];
+  title?: string;
+  plainTitle?: string;
   lede?: ReactNode;
-  accent?: Accent;
-  compact?: boolean;
-  /** View-transition name shared with the tile or card that links here. */
+  className?: string;
+  /** View-transition name shared with the poster or ticket that links here. */
   morph?: string;
+  children: ReactNode;
 }) {
   return (
-    <header className={`page-header${compact ? ' is-compact' : ''}`}>
-      <div className="page-header-art" aria-hidden="true">
-        {(accent === 'sakura' || accent === 'both') && <Sakura className="header-sakura" />}
-        {(accent === 'pine' || accent === 'both') && <PineCone className="header-pine" />}
-        <Sparkle className="header-sparkle a" />
-        <Sparkle className="header-sparkle b" />
+    <main id="route-content" tabIndex={-1} className={`page ${className}`}>
+      <div className="wrap page-grid">
+        <header className="page-spine">
+          <h1
+            className={title ? 'serif page-title' : 'page-title is-plain'}
+            style={morph ? { viewTransitionName: morph } : undefined}
+          >
+            {title ?? plainTitle}
+          </h1>
+          <p className="poster page-mark" aria-hidden="true">
+            {poster.edition} {poster.wordmark}
+          </p>
+        </header>
+        <div className="page-body">
+          {lede && <p className="page-lede">{lede}</p>}
+          {children}
+        </div>
       </div>
-      <h1 className="display page-title" style={morph ? { viewTransitionName: morph } : undefined}>
-        {lines.map((line) => (
-          <span className="display-line" key={line}>
-            {line}
-          </span>
-        ))}
-      </h1>
-      <p className="byline">國立中央大學 {story.edition.ordinal} 松櫻祭</p>
-      {lede && <p className="page-lede">{lede}</p>}
-    </header>
+    </main>
   );
 }
 
 export function PrototypeNotice({ children = prototypeNotice }: { children?: ReactNode }) {
   return (
-    <p className="prototype-notice">
-      <InfoIcon size={18} weight="bold" aria-hidden="true" />
+    <p className="notice">
+      <InfoIcon size={16} weight="bold" aria-hidden="true" />
       <span>{children}</span>
     </p>
   );
@@ -78,77 +82,98 @@ export function MapLink({ locationId, label }: { locationId: string; label: stri
   );
 }
 
-/** One event as a ticket-like card. The whole card is not a link; title and map are. */
-export function EventCard({ event, index }: { event: Event; index: number }) {
+/** First fictional time slot for an event, for ticket stubs. */
+function firstSlot(eventId: string) {
+  const slot = snapshot.program.find((entry) => entry.eventId === eventId);
+  if (!slot) return null;
+  return { day: days.find((d) => d.id === slot.dayId)?.label ?? '', start: slot.start };
+}
+
+/** An event as an admission ticket: a stub with the time, the body with the title. */
+export function Ticket({ event }: { event: Event }) {
+  const slot = firstSlot(event.id);
   const location = getLocation(event.locationId);
   return (
-    <article className={`event-card tone-${index % 3}`}>
-      <p className="event-kind">
-        <span>{categories[event.category]}</span>
-        <span className="event-flag">虛構示範</span>
-      </p>
-      <h2 className="event-title" style={{ viewTransitionName: `event-${event.id}` }}>
-        <Link to={`/events/${event.id}`}>{event.title}</Link>
-      </h2>
-      <p className="event-summary">{event.summary}</p>
-      <p className="event-place">{location?.name}</p>
-      <MapLink locationId={event.locationId} label={event.title} />
+    <article className="ticket">
+      <div className="ticket-stub">
+        <span className="latin">{categories[event.category]}</span>
+        {slot && (
+          <>
+            <span className="num ticket-time">{slot.start}</span>
+            <span className="ticket-day">{slot.day}</span>
+          </>
+        )}
+      </div>
+      <div className="ticket-body">
+        <h3 className="ticket-title" style={{ viewTransitionName: `event-${event.id}` }}>
+          <Link to={`/events/${event.id}`}>{event.title}</Link>
+        </h3>
+        <p>{event.summary}</p>
+        <p className="note">{location?.name} · 虛構示範</p>
+        <MapLink locationId={event.locationId} label={event.title} />
+      </div>
     </article>
   );
 }
 
-/** Feeds the pointer position to the tile's soft light (decorative, mouse only). */
+/** Feeds the pointer position to a poster's soft light (decorative, mouse only). */
 function spotlight(event: React.PointerEvent<HTMLElement>) {
   if (event.pointerType !== 'mouse') return;
-  const tile = event.currentTarget;
-  const box = tile.getBoundingClientRect();
-  tile.style.setProperty('--mx', `${event.clientX - box.left}px`);
-  tile.style.setProperty('--my', `${event.clientY - box.top}px`);
+  const el = event.currentTarget;
+  const box = el.getBoundingClientRect();
+  el.style.setProperty('--mx', `${event.clientX - box.left}px`);
+  el.style.setProperty('--my', `${event.clientY - box.top}px`);
 }
 
+const scrollArt = [
+  <>
+    <Sakura className="scroll-sakura a" />
+    <Sparkle className="scroll-sparkle a" />
+  </>,
+  <>
+    <Sakura className="scroll-sakura b" />
+    <Sparkle className="scroll-sparkle b" />
+  </>,
+  <>
+    <PineCone className="scroll-pine" />
+    <Sparkle className="scroll-sparkle c" />
+  </>,
+];
+
 /**
- * Announcement triptych: three square tiles share one continuous sky, the way the
- * official posts read as a single strip on the social grid. Motifs cross the seams.
+ * The three official announcements as hanging scrolls (掛軸): a rod, a poster that
+ * unrolls as it enters the viewport, and the post's own lettering.
  */
-export function AnnouncementTriptych() {
+export function HangingScrolls({ size = 'large' }: { size?: 'large' | 'small' }) {
+  const topics = Object.entries(poster.topics);
   return (
-    <div className="triptych">
-      <div className="triptych-art" aria-hidden="true">
-        <PineCone className="tri-pine" />
-        <Sakura className="tri-sakura" />
-        <Sakura className="tri-sakura small" />
-        <Sparkle className="tri-sparkle s1" />
-        <Sparkle className="tri-sparkle s2" />
-        <Sparkle className="tri-sparkle s3" />
-        <Sparkle className="tri-sparkle s4" />
-      </div>
-      <ul className="triptych-tiles">
-        {officialTopics.map((topic) => (
-          <li key={topic.id}>
-            <Link className="tile" to={`/news/${topic.id}`} onPointerMove={spotlight}>
-              <span
-                className="display tile-title"
-                style={{ viewTransitionName: `topic-${topic.id}` }}
-              >
-                {topic.lines.map((line) => (
-                  <span className="display-line" key={line}>
-                    {line}
-                  </span>
-                ))}
-              </span>
-              <span className="tile-byline byline" aria-hidden="true">
-                <span className="tile-byline-school">國立中央大學 </span>
-                {story.edition.ordinal} 松櫻祭
-              </span>
-              <span className="tile-more">
-                閱讀公告
-                <ArrowUpRightIcon size={16} weight="bold" aria-hidden="true" />
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className={`scrolls is-${size}`}>
+      {topics.map(([id, lines], index) => (
+        <li key={id} className="scroll" style={{ '--i': index } as React.CSSProperties}>
+          <span className="scroll-rod" aria-hidden="true" />
+          <Link className="scroll-sheet" to={`/news/${id}`} onPointerMove={spotlight}>
+            <span className="scroll-art" aria-hidden="true">
+              {scrollArt[index]}
+            </span>
+            <span className="poster scroll-title" style={{ viewTransitionName: `topic-${id}` }}>
+              {lines.map((line) => (
+                <span className="line" key={line}>
+                  {line}
+                </span>
+              ))}
+            </span>
+            <span className="poster scroll-byline" aria-hidden="true">
+              {poster.school} {poster.edition} {poster.wordmark}
+            </span>
+            <span className="scroll-cta">
+              閱讀公告
+              <ArrowUpRightIcon size={14} weight="bold" aria-hidden="true" />
+            </span>
+          </Link>
+          <span className="scroll-rod is-bottom" aria-hidden="true" />
+        </li>
+      ))}
+    </ul>
   );
 }
 

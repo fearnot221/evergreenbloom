@@ -7,9 +7,9 @@ build of the 春空 redesign, gzip -9 sizes in KiB; a build estimate, not field 
 
 | Home route, cold cache | Size | Budget |
 | --- | --- | --- |
-| Initial JavaScript (entry 112.4 + Home 2.2 + shared page components 1.9) | ~117 KiB | ≤ 150 KiB |
-| Initial CSS (global 6.6 + Home 2.2) | ~9 KiB | ≤ 50 KiB |
-| Display font subset (woff2, preloaded; 632 glyphs) | 86.8 KiB | ≤ 100 KiB |
+| Initial JavaScript, v3 (entry 113.9 + Home with WebGL sky 5.0) | ~119 KiB | ≤ 150 KiB |
+| Initial CSS, v3 (global 7.5 + Home 2.3) | ~10 KiB | ≤ 50 KiB |
+| Fonts, v3 (serif subset 68.8 + poster subset 10.6, both preloaded) | 79.4 KiB | ≤ 100 KiB |
 | HTML | 0.7 KiB | |
 | Total before images/icons | ~195 KiB | ≤ 1,024 KiB |
 
@@ -21,9 +21,10 @@ GSAP + ScrollTrigger 43.8, Bloom chunks about 8). Removing GSAP and the Bloom sc
 choreography accounts for the reduction. The Three.js renderer (146 KiB gzip) still
 loads only on `/map`, after the campus JSON, and is never precached.
 
-The font is the largest single cost and sits close to its budget because the subset
-includes every character in `src/`. If copy grows, restrict the subset to display
-strings or split it. Core Web Vitals, real-device INP and Safari/Firefox rendering
+v3 subsets fonts from the display copy modules only, so body copy no longer grows the
+font. The WebGL sky renders at half resolution and stops when no sky section is
+visible; its GPU cost on low-end phones is unmeasured. The home campus sketch fetches
+the 134 KB campus JSON lazily when that section approaches. Core Web Vitals, real-device INP and Safari/Firefox rendering
 remain unmeasured.
 
 The budgets below are provisional project policy for future implementation, not

@@ -1,45 +1,43 @@
 # Design
 
-## Current visual language · 春空 Spring Sky (adopted 2026-10-16)
+## Current visual language · v3 「松窗見春」 (adopted 2026-10-16)
 
-**Observed implementation.** The site now follows the second-edition social posts the
-user supplied on 2026-10-16 (三則 Instagram 貼文：活動說明會、工人招募、特約商店).
-Their visual DNA was extracted, not their pixels: no artwork from the posts is used.
-Tokens live only in [`src/styles/tokens.css`](../src/styles/tokens.css); the 3D map
-mirrors them as hex in [`src/map/map-data.ts`](../src/map/map-data.ts) because
-Three.js cannot parse OKLCH.
+**Why v3.** The user judged both the original Bloom version and the first 春空 redesign
+short of an Awwwards-level result and asked for a new, fully re-composed version. v3
+keeps the second-edition identity (sky, sakura, pine, the posts' lettering) but stages
+it as an editorial, typographic experience instead of a pastel template.
+
+**Concept.** 松 is the pine-ink frame (endurance, night); 櫻 is the spring sky you look
+through to. The home page opens on pine ink with 松櫻祭 cut out of it; a living WebGL
+sky with falling petals shows through the letters, and scrolling zooms through them
+into spring. Solid chapters then slide over that sky.
 
 | Area | Decision | Source |
 | --- | --- | --- |
-| Direction | Poster-like spring sky: lavender-blue to blush gradient, soft clouds, watercolour grain; heavy rose display type stacked in 2-3 character lines; grey-violet identity line under each title | `tokens.css`, `base.css` (`.sky`, `.display`, `.byline`) |
-| Typography | Display: self-hosted Noto Sans TC Black subset (`--font-display`, weight 900, always roman). Body: system CJK sans (`--font-body`). Latin UI: system sans (`--font-latin`) | `tokens.css`, `scripts/fonts/` |
-| Colour | One accent: rose (`--color-rose-strong`). Neutrals tinted plum/violet. Display rose on the lightest sky tone measures about 3.3:1 (large-text AA); ink on sky above 7:1 | `tokens.css` |
-| Themes | Light 春空 by default, 夜櫻 night sky under `prefers-color-scheme: dark`; same hierarchy, lifted rose | `tokens.css` |
-| Spacing | 4 pt scale `--space-3xs` to `--space-4xl`; fluid `--gutter`; `--content` 72rem; reading `--measure` 34em | `tokens.css` |
-| Shape | Rule: interactive controls are full pills, surfaces 28 px, small notices 14 px, announcement tiles square | `tokens.css`, `components.css` |
-| Depth | Surfaces use the layered `--shadow-surface` (hairline ring, contact shadow, ambient lift, top highlight) instead of hard borders; controls keep 1.5 px outlines | `tokens.css` |
-| CJK detail | Display type uses `palt` so 「，」「。」 do not open gaps in large headlines | `base.css` (`.display`) |
-| Motifs | Hand-built SVG sakura, pine cone, four-point sparkle, loose petal and brand blossom; all `aria-hidden`, coloured by `--motif-*` tokens | `src/components/motifs.tsx` |
-| Icons | One family: Phosphor (`@phosphor-icons/react`), re-exported from `src/components/icons.ts` | `icons.ts` |
+| Colour | Two fixed poles (`--pine-ink`, sky `--sky-*`) plus scheme roles (`--bg`, `--fg`, `--line`, `--accent`). One accent: rose. Night (夜櫻) inverts paper to ink | `src/styles/tokens.css` |
+| Type | Editorial serif (Noto Serif TC Black subset, `--font-serif`) for titles and statements, set vertically (`writing-mode: vertical-rl`) where it carries meaning; poster sans (Noto Sans TC Black subset, `--font-poster`) only for the wordmark and official-post lettering; system body and Latin | `tokens.css`, `base.css`, `src/data/display-copy.ts`, `src/data/poster-copy.ts` |
+| Shape | Panels and posters are sharp; buttons and chips are full pills; hairlines separate rows | `base.css`, `components.css` |
+| Motion | Scroll-driven CSS (window zoom, glyph drift, scroll unroll, ticket pan, campus line draw), button fill wipe, underline growth, menu circle reveal, view transitions; all off for reduced motion | `home.css`, `components.css`, `shell.css`, `transitions.css` |
+| WebGL | One fragment shader: gradient sky, fbm clouds, three petal layers; half resolution, paused off-screen, still frame for reduced motion, CSS gradient fallback | `src/components/SkyCanvas.tsx`, `sky-shader.ts` |
+| Icons | Phosphor only | `src/components/icons.ts` |
 
-**Signature components.**
+**Home chapters** (each a different layout family): pine window (masked wordmark) ·
+vertical statement on open sky · 松 / 櫻 split panels · three hanging scrolls (掛軸)
+that unroll · 貳 filled with sky beside the edition ledger · horizontally panned
+ticket strip · campus line sketch drawn from OpenStreetMap · pine-ink footer with a
+full-width wordmark.
 
-- *Poster page header* (`PageHeader`): stacked display lines, the 國立中央大學 第二屆 松櫻祭
-  identity line, one lede paragraph, motifs cropped at the edge.
-- *Announcement triptych* (`AnnouncementTriptych`): three square-ish tiles share one
-  continuous sky with motifs crossing the seams, the way the official posts read as one
-  strip on the social grid. Used on Home and News.
-- *Ticket card* (`EventCard`): admission-stub notches and a dashed tear line.
+**Inner pages.** A vertical serif title spine (sticky, like a book spine) beside the
+content on wide screens; horizontal on phones. Editorial rows with hairlines, tickets
+for events, posters for official news. Dynamic titles (events, announcements) use the
+body face so the serif subset stays small.
 
-**Layout families per page** (no family repeats on Home): poster hero; triptych grid;
-asymmetric glyph pair (松 / 櫻); ledger panel; horizontal scroll-snap event rail; campus
-band. Inner pages: alternating name rows and an asymmetric place bento (About), time
-thread schedule (Program), 2+1 / 1+2 bento (Events), role trio (Team), card pair plus
-definition rows and accordion (Visit).
+**Fonts.** `npm run fonts -- <NotoSerifTC-Black.ttf> <NotoSansTC-Black.ttf>` rebuilds
+both subsets from the copy modules; a test fails when copy introduces a missing
+character. Measured: serif 68.8 KiB, poster 10.6 KiB.
 
-**Unknowns.** Official logo, final palette approval, photography and illustration
-rights remain open. The posts' hand-drawn hands were not reproduced; supply original
-artwork if they should appear on the site.
+**Unknowns.** Official logo, palette approval, photography and illustration rights.
+The hands from the posts are still not reproduced.
 
 ## Design direction
 

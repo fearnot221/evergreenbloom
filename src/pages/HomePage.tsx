@@ -1,201 +1,239 @@
 import { ArrowUpRightIcon } from '../components/icons';
 import { Link } from '../components/links';
-import { Petal, PineCone, Sakura, Sparkle } from '../components/motifs';
+import { PineCone, Sakura } from '../components/motifs';
 import {
-  AnnouncementTriptych,
-  EventCard,
   featuredEvents,
+  HangingScrolls,
   PrototypeNotice,
+  Ticket,
   useDocumentTitle,
 } from '../components/page';
+import { SkyCanvas } from '../components/SkyCanvas';
+import { display } from '../data/display-copy';
 import { story } from '../data/festival';
+import { poster } from '../data/poster-copy';
+import { CampusSketch } from './CampusSketch';
 import '../styles/home.css';
-import { useRef } from 'react';
-import { usePointerDepth } from './use-pointer-depth';
 
 const meaningArt = { 松: PineCone, 櫻: Sakura } as const;
 
-/* Start column (%), fall duration (s), delay (s) and size (px) for each loose petal. */
-const petals = [
-  [8, 19, 0, 18],
-  [22, 24, -9, 13],
-  [41, 21, -4, 16],
-  [58, 26, -15, 12],
-  [71, 20, -11, 19],
-  [86, 23, -2, 14],
-] as const;
-
-const depth = (value: number) => ({ '--depth': value }) as React.CSSProperties;
+/** Pine-ink panel with the wordmark cut out of it: the window onto the spring sky. */
+function WindowMask() {
+  return (
+    <div className="window-art" aria-hidden="true">
+      <svg
+        aria-hidden="true"
+        className="window-mask is-wide"
+        viewBox="0 0 1600 1000"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <mask id="window-wide" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1000">
+            <rect width="1600" height="1000" fill="white" />
+            <text x="800" y="680" textAnchor="middle" className="window-letters" fontSize="470">
+              {poster.wordmark}
+            </text>
+          </mask>
+        </defs>
+        <rect width="1600" height="1000" mask="url(#window-wide)" className="window-ink" />
+      </svg>
+      <svg
+        aria-hidden="true"
+        className="window-mask is-tall"
+        viewBox="0 0 1000 1800"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <mask id="window-tall" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="1800">
+            <rect width="1000" height="1800" fill="white" />
+            {[...poster.wordmark].map((char, i) => (
+              <text
+                key={char}
+                x="500"
+                y={640 + i * 470}
+                textAnchor="middle"
+                className="window-letters"
+                fontSize="460"
+              >
+                {char}
+              </text>
+            ))}
+          </mask>
+        </defs>
+        <rect width="1000" height="1800" mask="url(#window-tall)" className="window-ink" />
+      </svg>
+    </div>
+  );
+}
 
 export default function HomePage() {
   useDocumentTitle('');
-  const hero = useRef<HTMLElement>(null);
-  usePointerDepth(hero);
   return (
-    <main id="route-content" tabIndex={-1} className="home">
-      <section className="hero container" aria-labelledby="hero-title" ref={hero}>
-        <div className="hero-art" aria-hidden="true">
-          <PineCone className="hero-pine depth" style={depth(1.2)} />
-          <Sakura className="hero-sakura big depth" style={depth(0.7)} />
-          <Sakura className="hero-sakura mid depth" style={depth(1.05)} />
-          <Sakura className="hero-sakura low depth" style={depth(1.5)} />
-          <Sparkle className="hero-sparkle s1 depth" style={depth(0.45)} />
-          <Sparkle className="hero-sparkle s2 depth" style={depth(0.6)} />
-          <Sparkle className="hero-sparkle s3 depth" style={depth(0.8)} />
-          <div className="petal-fall">
-            {petals.map(([x, duration, delay, size]) => (
-              <Petal
-                key={x}
-                style={
-                  {
-                    '--x': `${x}%`,
-                    '--dur': `${duration}s`,
-                    '--delay': `${delay}s`,
-                    '--size': `${size}px`,
-                  } as React.CSSProperties
-                }
-              />
-            ))}
+    <>
+      <SkyCanvas />
+      <main id="route-content" tabIndex={-1} className="home">
+        <section className="window sky-window" aria-labelledby="home-title">
+          <div className="window-stage">
+            <WindowMask />
+            <h1 className="sr-only" id="home-title">
+              松櫻祭，國立中央大學第二屆春日校園祭典
+            </h1>
+            <div className="window-meta" aria-hidden="true">
+              <p className="poster">{poster.school}</p>
+              <p className="poster">{poster.edition} 春日校園祭典</p>
+            </div>
           </div>
-        </div>
-        <div className="hero-clouds" aria-hidden="true" />
-        <div className="hero-copy">
-          <h1 className="display hero-title" id="hero-title">
-            松櫻祭
-          </h1>
-          <p className="byline hero-byline">國立中央大學 {story.edition.ordinal} 春日校園祭典</p>
-          <p className="hero-lede">
-            {story.headline[0]}
-            <br />
-            {story.headline[1]}
-          </p>
-          <div className="hero-actions">
-            <Link className="button" to="/news">
-              最新消息
-            </Link>
-            <Link className="button button-quiet" to="/map">
-              校園地圖
-            </Link>
+        </section>
+
+        <section className="statement sky-window" aria-labelledby="statement-title">
+          <div className="wrap statement-grid">
+            <h2 className="serif vertical statement-title" id="statement-title">
+              {display.home.statement.map((line) => (
+                <span className="line" key={line}>
+                  {line}
+                </span>
+              ))}
+            </h2>
+            <div className="statement-copy">
+              <p className="poster statement-mark">
+                {poster.school} {poster.edition} {poster.wordmark}
+              </p>
+              <p>{story.intro}</p>
+              <div className="actions">
+                <Link className="button" to="/news">
+                  最新消息
+                  <ArrowUpRightIcon size={16} weight="bold" aria-hidden="true" />
+                </Link>
+                <Link className="button button-ghost" to="/about">
+                  祭典故事
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="home-news container reveal" aria-labelledby="home-news-title">
-        <div className="section-head">
-          <h2 className="display section-title" id="home-news-title">
-            第二屆，開始了。
-          </h2>
-          <p>{story.edition.text}</p>
-        </div>
-        <AnnouncementTriptych />
-        <Link className="text-link" to="/news">
-          最新消息
-          <ArrowUpRightIcon size={18} aria-hidden="true" />
-        </Link>
-      </section>
-
-      <section className="home-story container" aria-labelledby="home-story-title">
-        <h2 className="sr-only" id="home-story-title">
-          名字的由來
-        </h2>
-        <div className="meaning-pair">
+        <section className="names" aria-label="名字的由來">
           {story.meanings.map((meaning) => {
             const Art = meaningArt[meaning.name as keyof typeof meaningArt];
             return (
-              <article className="meaning reveal" key={meaning.name}>
-                <div className="meaning-figure" aria-hidden="true">
-                  <span className="display meaning-glyph">{meaning.name}</span>
-                  <Art className="meaning-art" />
+              <article
+                className={`name name-${meaning.name === '松' ? 'pine' : 'sakura'}`}
+                key={meaning.name}
+              >
+                <div className="name-figure" aria-hidden="true">
+                  <span className="serif name-glyph">{meaning.name}</span>
+                  <Art className="name-art" />
                 </div>
-                <h3>{meaning.title}</h3>
-                <p>{meaning.text}</p>
+                <div className="name-copy">
+                  <h2 className="serif">{meaning.title}</h2>
+                  <p>{meaning.text}</p>
+                </div>
               </article>
             );
           })}
-        </div>
-        <p className="meaning-note reveal">
-          {story.intro}
-          <Link className="text-link" to="/about">
-            祭典故事
-            <ArrowUpRightIcon size={18} aria-hidden="true" />
-          </Link>
-        </p>
-      </section>
+        </section>
 
-      <section className="home-edition container reveal" aria-labelledby="edition-title">
-        <div className="edition-panel surface">
-          <div>
-            <h2 className="display edition-title" id="edition-title">
-              <span className="display-line">{story.edition.ordinal}</span>
-              <span className="display-line">{story.edition.status}</span>
-            </h2>
+        <section className="announce sky-window" aria-labelledby="announce-title">
+          <div className="wrap">
+            <div className="announce-head">
+              <h2 className="serif announce-title" id="announce-title">
+                {display.home.news}
+              </h2>
+              <p>{story.edition.text}</p>
+            </div>
+            <HangingScrolls />
+            <Link className="text-link announce-more" to="/news">
+              最新消息
+              <ArrowUpRightIcon size={18} aria-hidden="true" />
+            </Link>
           </div>
-          <dl className="edition-ledger">
-            {story.edition.fields.map((field) => (
-              <div key={field.name}>
-                <dt>{field.name}</dt>
-                <dd>{field.value}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="edition-history small-note">
-            首屆松櫻祭於 {story.history.period} 舉行。
-            <a className="text-link" href={story.history.url}>
-              {story.history.source}
-              <ArrowUpRightIcon size={16} aria-hidden="true" />
-            </a>
-          </p>
-        </div>
-      </section>
+        </section>
 
-      <section className="home-events" aria-labelledby="home-events-title">
-        <div className="container section-head reveal">
-          <h2 className="display section-title" id="home-events-title">
-            春天裡，可以做什麼？
-          </h2>
-          <PrototypeNotice>
-            活動、時段與地點為虛構示範，用來測試節目表與地圖的連結，請勿用於安排參與。
-          </PrototypeNotice>
-        </div>
-        <ul className="event-rail container" aria-label="示範活動">
-          {featuredEvents.map((event, index) => (
-            <li key={event.id}>
-              <EventCard event={event} index={index} />
-            </li>
-          ))}
-        </ul>
-        <div className="container">
-          <Link className="text-link" to="/program">
-            示範節目表
-            <ArrowUpRightIcon size={18} aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-
-      <section className="home-campus reveal" aria-labelledby="home-campus-title">
-        <div className="container campus-band">
-          <h2 className="display campus-title" id="home-campus-title">
-            <span className="display-line">走進</span>
-            <span className="display-line">中央</span>
-          </h2>
-          <div className="campus-copy">
-            <p>{story.places[1].text}</p>
-            <p className="small-note">
-              3D 地圖使用 OpenStreetMap 校園資料，尚未現地驗證，目前不提供步行導航。
+        <section className="edition" aria-labelledby="edition-title">
+          <div className="wrap edition-grid">
+            <p className="serif edition-numeral" aria-hidden="true">
+              {display.home.edition.numeral}
             </p>
-            <div className="hero-actions">
-              <Link className="button" to="/map">
-                校園地圖
-              </Link>
-              <Link className="button button-quiet" to="/visit">
-                來訪須知
-              </Link>
+            <div className="edition-copy">
+              <h2 className="serif edition-title" id="edition-title">
+                {poster.edition}
+                <span className="line">{display.home.edition.status}</span>
+              </h2>
+              <dl className="ledger">
+                {story.edition.fields.map((field) => (
+                  <div key={field.name}>
+                    <dt>{field.name}</dt>
+                    <dd>{field.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="edition-history">
+                首屆於 <span className="num">{story.history.period}</span> 舉行。
+                <a className="text-link" href={story.history.url}>
+                  {story.history.source}
+                  <ArrowUpRightIcon size={16} aria-hidden="true" />
+                </a>
+              </p>
             </div>
           </div>
-          <Sparkle className="campus-sparkle a" />
-          <Sparkle className="campus-sparkle b" />
-        </div>
-      </section>
-    </main>
+        </section>
+
+        <section className="pan" aria-labelledby="pan-title">
+          <div className="pan-stage">
+            <div className="wrap pan-head">
+              <h2 className="serif pan-title" id="pan-title">
+                {display.home.events}
+              </h2>
+              <PrototypeNotice>
+                活動與時段為虛構示範，用來測試節目表與地圖的連結，請勿用於安排參與。
+              </PrototypeNotice>
+            </div>
+            <ul className="pan-track" aria-label="示範活動">
+              {featuredEvents.map((event) => (
+                <li key={event.id}>
+                  <Ticket event={event} />
+                </li>
+              ))}
+              <li className="pan-end">
+                <Link className="pan-end-link" to="/program">
+                  <span className="serif">節目</span>
+                  <span>完整的示範節目表</span>
+                  <ArrowUpRightIcon size={28} aria-hidden="true" />
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="campus sky-window" aria-labelledby="campus-title">
+          <div className="wrap campus-grid">
+            <div className="campus-copy">
+              <h2 className="serif vertical campus-title" id="campus-title">
+                {display.home.campus.map((line) => (
+                  <span className="line" key={line}>
+                    {line}
+                  </span>
+                ))}
+              </h2>
+              <div>
+                <p>{story.places[1].text}</p>
+                <p className="note">
+                  線稿與 3D 地圖來自 OpenStreetMap 社群資料，尚未現地驗證，目前不提供步行導航。
+                </p>
+                <div className="actions">
+                  <Link className="button" to="/map">
+                    校園地圖
+                  </Link>
+                  <Link className="button button-ghost" to="/visit">
+                    來訪須知
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <CampusSketch />
+          </div>
+        </section>
+      </main>
+    </>
   );
 }

@@ -1,6 +1,40 @@
 # Prototype notes and historical records
 
-## Current pass · award-level polish (2026-10-16, second pass)
+## Current pass · v3 「松窗見春」 full re-composition (2026-10-16)
+
+The user judged the 春空 versions worse than the original Bloom site and asked for a
+new, fully re-composed version at Awwwards top-prize level, reviewed and iterated until
+it had no obvious weak point. The original (a37e655) was run side by side first. It
+won on typography-led storytelling, contrast and a strict grid. The 春空 versions lost
+on pastel cards, pills and edge decoration. v3 is built from that diagnosis; see
+[DESIGN.md](DESIGN.md).
+
+**Built:** a raw WebGL2 spring sky (clouds and petals). A pine-ink window with the
+wordmark cut out, zooming into the sky. A vertical serif statement. 松/櫻 split
+panels. Hanging-scroll posters that unroll. A 貳 numeral filled with sky. A pinned
+horizontal ticket strip. A campus line sketch drawn from OpenStreetMap. A full-screen
+menu with circle reveal. A pine-ink footer with a full-width wordmark. An inner-page
+vertical title spine. Two display-font subsets (serif and poster) fed by copy modules.
+
+| Review finding | Fix |
+| --- | --- |
+| Sky invisible in development | StrictMode remount reused a context the cleanup had lost; cleanup no longer calls `loseContext` |
+| Poster lettering wrapped (說明/會) | Each scroll is its own size container; lettering sized in `cqi` of the poster |
+| Scroll sheet and bottom rod drifted apart | Both run on one named per-scroll view timeline |
+| Fresh page loads restored another page's scroll | `ScrollRestoration` keyed by path, because fresh loads all share the key `default` |
+| Window opened slightly zoomed; meta hidden by the tab bar | Zoom holds for the first 8% of the track; meta lifted above the tab bar on phones |
+| Pine cone covered the 松 glyph; tablet panels mostly empty | Motif moved off the glyph; panels only forced to near-full height from 860 px |
+| Plain (dynamic) titles got a vertical mark | Vertical setting applies to serif spines only |
+| Scroll posters too small on phones | Swipeable row at 64vw per scroll |
+
+**Verified:** Biome, TypeScript, Vitest 19/19, geo 6/6, build. Browser: home chapters at
+1440 × 900 (light and night), 820 × 1180 and 375 × 812; program, about, news detail, map
+and the menu at 1440; menu focus moves to close and Escape works; no horizontal
+overflow at 375 or 820. **Not verified:** real phones (GPU cost of the sky), Safari and
+Firefox (Firefox lacks scroll timelines and gets the static layout), screen readers,
+reduced motion in a browser, the production offline flow after this change.
+
+## Previous pass · award-level polish (2026-10-16, second pass)
 
 Skills applied: Taste, Hallmark, Emil and `make-interfaces-feel-better` (layered
 shadows, punctuation, hit areas, transition specificity), with Transitions.dev as

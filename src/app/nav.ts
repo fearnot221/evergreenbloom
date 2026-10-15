@@ -1,18 +1,20 @@
-export type NavItem = { to: string; label: string };
+import { display } from '../data/display-copy';
 
-/** Primary destinations, in reading order. Labels stay short enough for one line. */
+export type NavItem = { to: keyof typeof display.nav; label: string; en: string };
+
+/** All destinations, in reading order. Labels come from the serif display copy. */
 export const primaryNav: NavItem[] = [
-  { to: '/', label: '首頁' },
-  { to: '/about', label: '故事' },
-  { to: '/news', label: '消息' },
-  { to: '/program', label: '節目' },
-  { to: '/events', label: '活動' },
-  { to: '/map', label: '地圖' },
-  { to: '/visit', label: '來訪' },
-  { to: '/team', label: '團隊' },
+  { to: '/', label: display.nav['/'], en: 'Home' },
+  { to: '/about', label: display.nav['/about'], en: 'Story' },
+  { to: '/news', label: display.nav['/news'], en: 'News' },
+  { to: '/program', label: display.nav['/program'], en: 'Program' },
+  { to: '/events', label: display.nav['/events'], en: 'Events' },
+  { to: '/map', label: display.nav['/map'], en: 'Campus' },
+  { to: '/visit', label: display.nav['/visit'], en: 'Visit' },
+  { to: '/team', label: display.nav['/team'], en: 'Team' },
 ];
 
-/** Destinations shown in the mobile "更多" sheet (the rest live in the tab bar). */
-export const sheetNav = primaryNav.filter((item) =>
-  ['/about', '/events', '/visit', '/team'].includes(item.to),
+/** The three task destinations shown inline in the desktop header. */
+export const quickNav = primaryNav.filter((item) =>
+  ['/news', '/program', '/map'].includes(item.to),
 );

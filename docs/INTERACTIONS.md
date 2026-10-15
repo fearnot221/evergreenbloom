@@ -8,24 +8,24 @@ For current behavior and verification, read [ARCHITECTURE.md](ARCHITECTURE.md),
 This document defines permanent interaction policy. On 2026-10-16 the user replaced
 the Bloom visuals with 春空 Spring Sky; the inventory below is the current behaviour.
 
-### Current interaction inventory (2026-10-16)
+### Current interaction inventory (v3, 2026-10-16)
 
 | Interaction | Source | Behaviour | Reduced motion |
 | --- | --- | --- | --- |
-| Hero entrance | `src/styles/home.css` | Title rises once (720 ms ease-out), supporting copy fades up after 380 ms; content is visible if animation never runs | No movement |
-| Ambient sparkles and petals | `components.css`, `home.css` | Sparkles breathe three times; six petals fall for two passes, then stop. Transform/opacity only | Removed |
-| Scroll reveal | `.reveal` in `base.css` | CSS `animation-timeline: view()`, 28 px rise; no JS listener | Content static |
-| Header frost | `shell.css` | Scroll-driven fade-in of the frosted header bar over 120 px | Same (no motion) |
-| 更多 sheet | `App.tsx`, `shell.css` | Native `<dialog>`; slides up 320 ms (drawer curve), exits 200 ms; Escape, backdrop and close button; focus returns to 更多. Transitions.dev "Panel reveal" pattern | 150 ms opacity |
-| Disclosures (program, FAQ, map help) | `components.css` | Native `<details>`; chevron rotates; height animates via `::details-content` where supported. Transitions.dev "Accordion" pattern | Instant |
-| Filter chips | `ProgramPage.tsx` | Native radio inputs; URL holds state; press scale 0.96 | Colour change only |
-| Buttons, tabs, tiles, cards | `base.css`, `components.css` | Press scale 0.94-0.97; hover lift only under `(hover: hover)` | Unchanged colour states |
-| Route change | `use-route-focus.ts` | Focus moves to the new `main`; Back/Forward restores scroll. Loading shows a pulsing skeleton (Transitions.dev "Skeleton loader") | No pulse |
-| Language notice | `App.tsx` | Expands under the header; Escape or button closes and returns focus | No movement |
-| Route transition | `links.tsx`, `transitions.css` | View Transitions API: page cross-fades and rises 12 px (out 160 ms, in 320 ms); header and tab bar stay fixed. Announcement tile and event card titles morph into the detail page title (`topic-*`, `event-*` names). Unsupported browsers navigate normally | None |
-| Pending navigation | `App.tsx`, `transitions.css` | Thin rose bar appears only if a route takes over 150 ms to load | Static bar |
-| Hero depth | `home.css`, `use-pointer-depth.ts` | Motifs drift by their own depth against scroll (CSS scroll timeline on a registered `--hero-scroll`) and, for mouse/trackpad, toward the pointer (smoothed rAF writing two CSS variables, stops when settled or off-screen); cloud bank rises over the motifs | None |
-| Tile light | `page.tsx`, `components.css` | Soft radial light follows a mouse pointer inside announcement tiles | Hover only, no motion |
+| Pine window | `home.css` | 230svh track; masked wordmark scales 1 to 7 and fades as the window zooms into the sky (CSS view timeline) | Single still screen |
+| Living sky | `SkyCanvas.tsx` | WebGL clouds and petals; eases toward the pointer on mouse devices; runs only while a sky section is visible and the tab is shown | One still frame |
+| Statement, glyph drift, campus line draw | `home.css` | Scroll-driven transforms and stroke-dashoffset tied to each section's view timeline | Static |
+| Hanging scrolls | `components.css` | Sheet unrolls from the rod (clip-path) on a shared per-scroll timeline, staggered; sways 1.2deg from the rod on hover/focus; pointer light | No unroll, no sway transition change |
+| Ticket strip | `home.css` | Desktop: pinned stage, track pans sideways with scroll; phones: native swipe with snap | Native swipe |
+| Full-screen menu | `App.tsx`, `shell.css` | Native `<dialog>`; circle reveal from the button that opened it (620ms in, 260ms out); links rise in a 40ms stagger; Escape and close return focus | 150ms fade |
+| Route transition | `links.tsx`, `transitions.css` | View Transitions cross-fade; poster/ticket titles morph into detail titles | None |
+| Buttons and links | `base.css` | Rose fill wipes up on hover; press 0.97; text-link underline and arrow nudge | Colour only |
+| Disclosures, chips | `components.css` | Native details/radios; chevron rotate; height via `::details-content` | Instant |
+| Scroll reveal | `base.css` | `.reveal` rises 40px on entry (view timeline) | Static |
+
+The living sky is the documented exception to "no unbounded decorative loops": it is
+the brand scene, it stops off-screen and in hidden tabs, and it is a still frame for
+reduced motion.
 
 Transitions.dev was checked on 2026-10-16; patterns were re-implemented in CSS, not copied.
 Its "Page side-by-side" idea informed the route transition, reduced to a cross-fade.

@@ -1,39 +1,36 @@
 import { ArrowUpRightIcon } from '../components/icons';
 import { Link } from '../components/links';
-import { AnnouncementTriptych, PageHeader, useDocumentTitle } from '../components/page';
+import { HangingScrolls, Page, useDocumentTitle } from '../components/page';
+import { display } from '../data/display-copy';
 import { officialTopics, snapshot } from '../data/festival';
 import '../styles/pages.css';
 
 const officialIds = new Set<string>(officialTopics.map((topic) => topic.id));
 
 export default function NewsPage() {
-  useDocumentTitle('消息');
+  useDocumentTitle(display.pages.news);
   const others = snapshot.announcements.filter((item) => !officialIds.has(item.id));
   return (
-    <main id="route-content" tabIndex={-1} className="page container news">
-      <PageHeader
-        lines={['最新', '消息']}
-        lede="第二屆的公告會陸續發布。每則消息都標示來源；正式資訊以官方社群與主辦單位為準。"
-        accent="sakura"
-      />
+    <Page
+      title={display.pages.news}
+      lede="第二屆的公告會陸續發布。每則消息都標示來源；正式資訊以官方社群與主辦單位為準。"
+      className="news"
+    >
       <section aria-labelledby="official-title" className="news-official">
-        <h2 className="section-title display" id="official-title">
-          官方社群公告
+        <h2 className="serif section-title" id="official-title">
+          {display.sections.official}
         </h2>
-        <AnnouncementTriptych />
+        <HangingScrolls size="small" />
       </section>
-      <section aria-labelledby="site-title" className="news-site">
-        <h2 className="section-title display" id="site-title">
-          本站說明
+      <section aria-labelledby="site-title">
+        <h2 className="serif section-title" id="site-title">
+          {display.sections.site}
         </h2>
-        <ul className="news-list">
+        <ul className="rows news-list">
           {others.map((item) => (
             <li key={item.id} className="news-item">
-              <p className="news-meta">
-                <time dateTime={item.publishedAt ?? undefined}>
-                  {item.publishedAt?.replaceAll('-', '.') ?? '日期待確認'}
-                </time>
-                <span>{item.context}</span>
+              <p className="note num">
+                {item.publishedAt?.replaceAll('-', '.') ?? '日期待確認'} · {item.context}
               </p>
               <h3>
                 <Link to={`/news/${item.id}`}>{item.title}</Link>
@@ -48,6 +45,6 @@ export default function NewsPage() {
           ))}
         </ul>
       </section>
-    </main>
+    </Page>
   );
 }

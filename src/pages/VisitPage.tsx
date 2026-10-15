@@ -1,6 +1,7 @@
 import { ArrowUpRightIcon, CaretDownIcon } from '../components/icons';
 import { Link } from '../components/links';
-import { PageHeader, useDocumentTitle } from '../components/page';
+import { Page, useDocumentTitle } from '../components/page';
+import { display } from '../data/display-copy';
 import { story } from '../data/festival';
 import '../styles/pages.css';
 
@@ -19,16 +20,15 @@ const faq = [
 ] as const;
 
 export default function VisitPage() {
-  useDocumentTitle('來訪須知');
+  useDocumentTitle(display.pages.visit);
   return (
-    <main id="route-content" tabIndex={-1} className="page container visit">
-      <PageHeader
-        lines={['來訪', '須知']}
-        lede="日期、交通與參與條件確認後，這裡會整理成可以直接使用的到訪指引。現在不提供推測的路線或步行時間。"
-        accent="pine"
-      />
-      <div className="visit-grid">
-        <section className="visit-card surface reveal" aria-labelledby="arrival-title">
+    <Page
+      title={display.pages.visit}
+      lede="日期、交通與參與條件確認後，這裡會整理成可以直接使用的到訪指引。現在不提供推測的路線或步行時間。"
+      className="visit"
+    >
+      <div className="visit-pair">
+        <section className="reveal" aria-labelledby="arrival-title">
           <h2 id="arrival-title">先確認，再出發</h2>
           <p>
             第二屆的日期與場地尚未公布，交通、接駁、停車與開放入口資訊均待確認。請勿依 2026
@@ -39,7 +39,7 @@ export default function VisitPage() {
             <ArrowUpRightIcon size={18} aria-hidden="true" />
           </Link>
         </section>
-        <section className="visit-card surface reveal" aria-labelledby="campus-title">
+        <section className="reveal" aria-labelledby="campus-title">
           <h2 id="campus-title">在校園裡相遇</h2>
           <p>
             3D 地圖採用 OpenStreetMap
@@ -51,11 +51,11 @@ export default function VisitPage() {
           </Link>
         </section>
       </div>
-      <section className="visit-info" aria-labelledby="info-title">
-        <h2 className="display section-title" id="info-title">
-          參與之前
+      <section aria-labelledby="info-title">
+        <h2 className="serif section-title" id="info-title">
+          {display.sections.before}
         </h2>
-        <dl className="info-rows">
+        <dl className="rows info-rows">
           {story.attendee.rows.map((row) => (
             <div key={row.title}>
               <dt>{row.title}</dt>
@@ -64,22 +64,24 @@ export default function VisitPage() {
           ))}
         </dl>
       </section>
-      <section className="visit-faq" aria-labelledby="faq-title">
-        <h2 className="display section-title" id="faq-title">
-          常見問題
+      <section aria-labelledby="faq-title">
+        <h2 className="serif section-title" id="faq-title">
+          {display.sections.faq}
         </h2>
-        {faq.map(([question, answer]) => (
-          <details key={question} className="disclosure faq-item">
-            <summary>
-              {question}
-              <CaretDownIcon size={18} weight="bold" aria-hidden="true" />
-            </summary>
-            <div className="disclosure-body">
-              <p>{answer}</p>
-            </div>
-          </details>
-        ))}
+        <div className="faq">
+          {faq.map(([question, answer]) => (
+            <details key={question} className="disclosure">
+              <summary>
+                {question}
+                <CaretDownIcon size={18} weight="bold" aria-hidden="true" />
+              </summary>
+              <div className="disclosure-body">
+                <p>{answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
       </section>
-    </main>
+    </Page>
   );
 }
