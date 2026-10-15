@@ -1,0 +1,15 @@
+{
+  "source": "https://api.openstreetmap.org/api/0.6/map?bbox=121.1835,24.964,121.198,24.973",
+  "retrievedAt": "2026-09-30T09:30:06.538856+00:00",
+  "license": "ODbL-1.0",
+  "attribution": "\u00a9 OpenStreetMap contributors",
+  "licenseUrl": "https://www.openstreetmap.org/copyright",
+  "classification": "community-maintained",
+  "sha256": "d824b50b928b60c44920cc3446c339523d5a436d47044b7c270c1409113c8d4b",
+  "bbox": [
+    121.1835,
+    24.964,
+    121.198,
+    24.973
+  ]
+}

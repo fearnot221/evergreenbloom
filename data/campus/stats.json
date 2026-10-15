@@ -1,0 +1,17 @@
+{
+  "revision": "d824b50b928b",
+  "counts": {
+    "Entrance": 2,
+    "CampusBoundary": 1,
+    "OpenSpace": 31,
+    "Building": 111,
+    "Road": 55,
+    "Walkway": 71
+  },
+  "nodes": 394,
+  "edges": 460,
+  "bytes": 133778,
+  "gzipBytes": 23844,
+  "graphBytes": 198793,
+  "graphGzipBytes": 13973
+}

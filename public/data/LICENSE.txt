@@ -1,0 +1,10 @@
+NCU campus geographic database
+© OpenStreetMap contributors. https://www.openstreetmap.org/copyright
+Open Database License (ODbL) 1.0: https://opendatacommons.org/licenses/odbl/1-0/
+The processed campus database and derived pedestrian graph are distributed under ODbL 1.0.
+Downloads: /data/ncu-campus.json and /data/ncu-graph.json
+Source IDs, versions, timestamps, source retrieval URL/date and hash are embedded in the campus dataset.
+Pipeline and unmodified source extract are retained in the project under scripts/geo and data/campus/raw.
+Community-maintained data; not a survey or verified walking/accessibility guide.
+No official NCU artwork has been incorporated into this database.
+Application code and website artwork are separate from this database license.

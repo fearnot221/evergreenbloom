@@ -1,0 +1,30 @@
+/* Prototype-only tokens. These are test treatments, not official brand decisions. */
+:root {
+  --font-sans: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', system-ui, sans-serif;
+  --font-serif: 'Songti TC', 'Noto Serif TC', 'PMingLiU', Georgia, serif;
+  --font-latin: 'Helvetica Neue', Arial, sans-serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --color-paper: #f4f1e9;
+  --color-ink: #272820;
+  --color-muted: #5a5b52;
+  --color-line: #b8b9af;
+  --color-soft: #e8e6dd;
+  --color-accent: #9f3829;
+  --color-focus: #075ec0;
+  --color-tool-bg: #242725;
+  --color-tool-ink: #f7f7ed;
+  --color-tool-muted: #c8cdc5;
+  --color-tool-border: #777d76;
+  --color-tool-selected: #dbe4cc;
+  --color-tool-focus: #c6e2ff;
+  --page-gutter: clamp(24px, 4.2vw, 72px);
+  --content-width: 1320px;
+}
