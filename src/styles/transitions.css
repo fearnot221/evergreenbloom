@@ -12,6 +12,10 @@
   view-transition-name: tab-bar;
 }
 
+.sky-canvas {
+  view-transition-name: sky;
+}
+
 ::view-transition-old(root) {
   animation: vt-out 160ms var(--ease-out) both;
 }
@@ -51,9 +55,9 @@
 .nav-progress {
   position: fixed;
   inset: 0 0 auto;
-  z-index: var(--z-skip);
+  z-index: var(--z-top);
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--color-rose-strong), var(--motif-sparkle));
+  background: linear-gradient(90deg, transparent, var(--accent), var(--motif-sparkle));
   transform-origin: left;
   pointer-events: none;
 }

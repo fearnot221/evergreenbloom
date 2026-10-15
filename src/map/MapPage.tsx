@@ -9,7 +9,8 @@ import {
   PlusIcon,
 } from '../components/icons';
 import { Link } from '../components/links';
-import { PageHeader, useDocumentTitle } from '../components/page';
+import { Page, useDocumentTitle } from '../components/page';
+import { display } from '../data/display-copy';
 import { getLocation, snapshot } from '../data/festival';
 import type { GeoCoordinate } from '../geo/coordinates';
 import { ORIGIN } from '../geo/coordinates';
@@ -24,7 +25,7 @@ const Debug = import.meta.env.DEV ? lazy(() => import('./RoutingDebug')) : null;
 type Phase = 'loading' | 'flat' | 'ready' | 'failed';
 
 export default function MapPage() {
-  useDocumentTitle('校園地圖');
+  useDocumentTitle(display.pages.map);
   const [query, setQuery] = useSearchParams();
   const [status, setStatus] = useState('校園資料載入中…');
   const [phase, setPhase] = useState<Phase>('loading');
@@ -114,13 +115,11 @@ export default function MapPage() {
   const related = location ? snapshot.events.filter((e) => e.locationId === location.id) : [];
 
   return (
-    <main id="route-content" tabIndex={-1} className="page container map-page">
-      <PageHeader
-        lines={['校園', '地圖']}
-        lede="從真實的中央校園，認識祭典發生的地方。資料來自 OpenStreetMap，建物高度多為估計，尚不可導航。"
-        accent="pine"
-        compact
-      />
+    <Page
+      title={display.pages.map}
+      lede="從真實的中央校園，認識祭典發生的地方。資料來自 OpenStreetMap，建物高度多為估計，尚不可導航。"
+      className="map-page"
+    >
       <div className="map-workspace">
         <section className="map-stage" aria-label="中央大學校園地圖" data-phase={phase}>
           {data && !ready && <FlatMap data={data} />}
@@ -177,7 +176,7 @@ export default function MapPage() {
           </div>
           <button
             type="button"
-            className="map-touch button button-quiet"
+            className="map-touch button button-ghost"
             disabled={!ready}
             aria-pressed={interactive}
             onClick={() => setInteractive(!interactive)}
@@ -186,20 +185,22 @@ export default function MapPage() {
           </button>
         </section>
 
-        <aside className="map-panel surface" aria-labelledby="map-panel-title">
+        <aside className="map-panel" aria-labelledby="map-panel-title">
           <p className="map-status" role="status">
             {status}
           </p>
           {phase === 'failed' && (
             <button
               type="button"
-              className="button button-quiet"
+              className="button button-ghost"
               onClick={() => setRetry((n) => n + 1)}
             >
               重試載入
             </button>
           )}
-          <h2 id="map-panel-title">選一個地點</h2>
+          <h2 className="serif" id="map-panel-title">
+            {display.sections.pick}
+          </h2>
           <div className="location-list" role="group" aria-label="地點清單">
             {snapshot.locations.map((l) => (
               <button
@@ -271,6 +272,6 @@ export default function MapPage() {
           <Debug onRoute={showRoute} />
         </Suspense>
       )}
-    </main>
+    </Page>
   );
 }

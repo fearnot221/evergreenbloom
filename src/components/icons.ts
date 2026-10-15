@@ -10,6 +10,7 @@ export {
   DotsNineIcon,
   HouseIcon,
   InfoIcon,
+  ListIcon,
   MapTrifoldIcon,
   MegaphoneIcon,
   MinusIcon,

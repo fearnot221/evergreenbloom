@@ -29,7 +29,7 @@ function render(url: string) {
   );
 }
 
-const text = (html: string) => html.replaceAll('<!-- -->', '');
+const text = (html: string) => html.replaceAll('<!-- -->', '').replace(/<[^>]+>/g, '');
 const h1 = (html: string) => html.match(/<h1[\s\S]*?<\/h1>/g) ?? [];
 
 describe('routes render one main landmark and one h1', () => {
@@ -47,7 +47,7 @@ describe('program filters', () => {
   it('filters by day and category from the URL', () => {
     expect(text(render('/program?day=demo-b'))).toContain('2 個測試時段');
     expect(text(render('/program?category=market'))).toContain('1 個測試時段');
-    expect(render('/program?day=demo-b&category=market')).toContain('沒有符合的時段');
+    expect(text(render('/program?day=demo-b&category=market'))).toContain('沒有符合的時段');
   });
 });
 
@@ -59,7 +59,7 @@ describe('detail routes', () => {
 
   it('renders an official announcement as poster lines', () => {
     const html = render('/news/crew-recruitment');
-    expect(h1(html)[0]).toContain('工人');
+    expect(text(h1(html)[0])).toContain('工人招募');
     expect(html).toContain('官方社群');
   });
 

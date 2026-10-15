@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { ArrowLeftIcon } from '../components/icons';
 import { Link } from '../components/links';
-import { PageHeader, useDocumentTitle } from '../components/page';
-import { officialTopics, snapshot } from '../data/festival';
+import { Sakura, Sparkle } from '../components/motifs';
+import { Page, useDocumentTitle } from '../components/page';
+import { snapshot } from '../data/festival';
+import { poster } from '../data/poster-copy';
 import NotFoundPage from './NotFoundPage';
 import '../styles/pages.css';
 
@@ -11,30 +13,42 @@ export default function NewsDetailPage() {
   const item = snapshot.announcements.find((entry) => entry.id === id);
   useDocumentTitle(item ? item.title : '找不到消息');
   if (!item) return <NotFoundPage what="這則消息" />;
-  const topic = officialTopics.find((entry) => entry.id === id);
+  const lines = poster.topics[id as keyof typeof poster.topics];
+
   return (
-    <main id="route-content" tabIndex={-1} className="page container detail news-detail">
+    <Page plainTitle={item.title} lede={item.summary} className="detail news-detail">
       <Link className="text-link back-link" to="/news">
         <ArrowLeftIcon size={18} aria-hidden="true" />
         所有消息
       </Link>
-      <PageHeader
-        lines={topic ? [...topic.lines] : item.title.split('，')}
-        lede={item.summary}
-        accent={topic ? 'both' : 'sakura'}
-        compact={!topic}
-        morph={topic ? `topic-${topic.id}` : undefined}
-      />
-      <article className="news-body surface">
-        <p className="news-meta">
-          <time dateTime={item.publishedAt ?? undefined}>
-            {item.publishedAt?.replaceAll('-', '.') ?? '日期待確認'}
-          </time>
-          <span>{item.context}</span>
-        </p>
-        <p>{item.body}</p>
-        <p className="small-note">{item.source}。本站不是國立中央大學的正式公告管道。</p>
-      </article>
-    </main>
+      <div className="news-detail-grid">
+        {lines && (
+          <figure className="news-poster" aria-hidden="true">
+            <Sakura className="news-poster-sakura" />
+            <Sparkle className="news-poster-sparkle" />
+            <span
+              className="poster news-poster-title"
+              style={{ viewTransitionName: `topic-${id}` }}
+            >
+              {lines.map((line) => (
+                <span className="line" key={line}>
+                  {line}
+                </span>
+              ))}
+            </span>
+            <span className="poster news-poster-byline">
+              {poster.school} {poster.edition} {poster.wordmark}
+            </span>
+          </figure>
+        )}
+        <article className="news-body">
+          <p className="note num">
+            {item.publishedAt?.replaceAll('-', '.') ?? '日期待確認'} · {item.context}
+          </p>
+          <p>{item.body}</p>
+          <p className="note">{item.source}。本站不是國立中央大學的正式公告管道。</p>
+        </article>
+      </div>
+    </Page>
   );
 }

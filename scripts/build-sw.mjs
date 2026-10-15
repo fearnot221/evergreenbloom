@@ -10,7 +10,8 @@ const core = new Set([
   '/icons/maskable-512.png',
   '/data/ncu-campus.json',
   '/data/LICENSE.txt',
-  '/fonts/songying-display.woff2',
+  '/fonts/songying-serif.woff2',
+  '/fonts/songying-poster.woff2',
 ]);
 const visited = new Set();
 function walk(key) {
@@ -31,7 +32,8 @@ const version = crypto
   .update(JSON.stringify(urls))
   .update(fs.readFileSync('dist/data/ncu-campus.json'))
   .update(fs.readFileSync('dist/data/LICENSE.txt'))
-  .update(fs.readFileSync('dist/fonts/songying-display.woff2'))
+  .update(fs.readFileSync('dist/fonts/songying-serif.woff2'))
+  .update(fs.readFileSync('dist/fonts/songying-poster.woff2'))
   .digest('hex')
   .slice(0, 12);
 const worker =

@@ -31,7 +31,7 @@ cache headers; domain and hosting are not chosen.
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` | Vitest (content, source hygiene, route rendering) + geo/routing node tests |
 | `npm run check` | lint, typecheck and tests together (what CI runs before `build`) |
-| `npm run fonts -- <NotoSansTC-Black.ttf>` | Rebuild the display-font subset after adding new copy |
+| `npm run fonts -- <serif.ttf> <sans.ttf>` | Rebuild the two display-font subsets after editing display copy |
 | `npm run map:fetch` / `map:data` / `map:test` | Campus data pipeline, see [MAP-DATA.md](docs/MAP-DATA.md) |
 
 CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and build on pushes to `main`
@@ -63,24 +63,25 @@ Design direction and tokens: [DESIGN.md](docs/DESIGN.md). Architecture and bound
 [ARCHITECTURE.md](docs/ARCHITECTURE.md). Latest verification:
 [PROTOTYPE-NOTES.md](docs/PROTOTYPE-NOTES.md).
 
-## Display font
+## Display fonts
 
-Headlines use a self-hosted subset of Noto Sans TC Black (SIL OFL 1.1, license in
-`public/fonts/OFL.txt`) that contains only characters present in `src/`. A test fails
-when new copy introduces a character the subset lacks; rebuild with:
+Two self-hosted subsets (SIL OFL 1.1, `public/fonts/OFL.txt`): Noto Serif TC Black for
+titles and statements, Noto Sans TC Black for the wordmark and official-post lettering.
+They contain only characters from `src/data/display-copy.ts` + `content.ts` and
+`src/data/poster-copy.ts`. A test fails when copy adds a missing character; rebuild:
 
 ```sh
-npm run fonts -- path/to/NotoSansTC-Black.ttf
+npm run fonts -- path/to/NotoSerifTC-Black.ttf path/to/NotoSansTC-Black.ttf
 ```
 
-The source is the Noto Sans TC variable font from google/fonts, instanced at `wght=900`
-with `fonttools varLib.instancer`. `pyftsubset` needs Brotli; set `PYFTSUBSET` to a
-specific binary if the default one lacks it.
+Sources: the google/fonts variable fonts, instanced at `wght=900` with
+`fonttools varLib.instancer`. `pyftsubset` needs Brotli; set `PYFTSUBSET` to a specific
+binary if the default one lacks it.
 
 ## Offline
 
 Open the production preview online and use 應用程式與離線閱讀 in the footer (or the
-更多 sheet on mobile) to save core pages. After a successful save you can go offline and
+選單 menu) to save core pages. After a successful save you can go offline and
 reload `/program`, an event detail, `/map` (flat plan and list) or `/visit`. Three.js is
 never precached. Without a save the worker serves a small offline page; a first-ever
 offline visit cannot work. Updates wait for old tabs to close; save again afterwards.

@@ -1,61 +1,64 @@
 /*
- * 松櫻祭 design tokens · "春空 Spring Sky"
- * Source of the visual direction: the second-edition social posts the user supplied
- * (lavender sky, blush clouds, heavy rose display type, grey-violet sub-line,
- * sparkles, sakura and pine cones). Values are re-derived here, not sampled pixels.
- * Every colour and font declaration in the app references these tokens.
+ * 松櫻祭 design tokens · v3 「松窗見春」 (spring through a pine window)
+ * Two poles: 松 pine-ink (endurance, night, the frame) and 櫻 spring sky (bloom, day,
+ * what you look through to). Rose is the single accent. Every colour and font in the
+ * app references these tokens; the WebGL sky and the 3D map mirror them in code.
  */
 @font-face {
-  font-family: "Songying Display";
-  src: url("/fonts/songying-display.woff2") format("woff2");
+  font-family: "Songying Serif";
+  src: url("/fonts/songying-serif.woff2") format("woff2");
   font-weight: 900;
-  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Songying Poster";
+  src: url("/fonts/songying-poster.woff2") format("woff2");
+  font-weight: 900;
   font-display: swap;
 }
 
 :root {
   color-scheme: light dark;
 
-  /* Type */
-  --font-display:
-    "Songying Display", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  /* Type: editorial serif voice, poster wordmark, system body, system Latin. */
+  --font-serif: "Songying Serif", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-poster: "Songying Poster", "Noto Sans TC", "PingFang TC", sans-serif;
   --font-body:
     "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --font-latin: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --text-xs: 0.8125rem;
-  --text-sm: 0.9375rem;
-  --text-md: 1.0625rem;
-  --text-lg: 1.25rem;
-  --text-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
-  --text-2xl: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
-  --text-3xl: clamp(2.75rem, 1.6rem + 5vw, 5.5rem);
-  --text-display: clamp(5.5rem, 1rem + 22vw, 15.5rem);
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: clamp(1.2rem, 1.1rem + 0.4vw, 1.4rem);
+  --step-2: clamp(1.5rem, 1.25rem + 1vw, 2.1rem);
+  --step-3: clamp(2rem, 1.4rem + 2.4vw, 3.4rem);
+  --step-4: clamp(2.8rem, 1.6rem + 4.8vw, 6rem);
+  --step-5: clamp(4rem, 2rem + 8vw, 10rem);
 
-  --leading-tight: 1.02;
-  --leading-snug: 1.3;
-  --leading-body: 1.8;
+  --leading-display: 1.04;
+  --leading-body: 1.85;
+  --tracking-latin: 0.14em;
 
-  /* Space · 4pt scale */
-  --space-3xs: 0.25rem;
-  --space-2xs: 0.5rem;
-  --space-xs: 0.75rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2rem;
-  --space-xl: 3rem;
-  --space-2xl: 4rem;
-  --space-3xl: 6rem;
-  --space-4xl: 8rem;
-  --gutter: clamp(1rem, 0.4rem + 3vw, 3.5rem);
-  --content: 72rem;
-  --measure: 34em;
+  /* Space: 4pt scale. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 9rem;
+  --gutter: clamp(1rem, 0.3rem + 3.2vw, 3.5rem);
+  --content: 82rem;
+  --measure: 32em;
+  --header-h: 4.25rem;
 
-  /* Shape rule: interactive controls are full pills, surfaces are 28px, tiles are square. */
+  /* Shape rule: panels and posters are sharp; buttons and chips are full pills. */
   --radius-pill: 999px;
-  --radius-surface: 28px;
-  --radius-small: 14px;
 
   /* Motion */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -63,39 +66,41 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --dur-press: 140ms;
   --dur-quick: 200ms;
-  --dur-panel: 320ms;
-  --dur-entrance: 720ms;
+  --dur-panel: 420ms;
 
   /* Layers */
   --z-sky: -1;
-  --z-header: 20;
+  --z-header: 30;
   --z-tabbar: 30;
-  --z-skip: 50;
+  --z-top: 60;
 
-  /* Colour · light sky (default) */
-  --sky-high: oklch(83% 0.072 280);
-  --sky-mid: oklch(87% 0.055 302);
-  --sky-low: oklch(92% 0.038 345);
-  --cloud: oklch(94% 0.045 350 / 0.95);
-  --cloud-shadow: oklch(86% 0.05 320 / 0.6);
+  /* Fixed poles (do not invert with the colour scheme). */
+  --pine-ink: oklch(20% 0.032 170);
+  --pine-ink-2: oklch(27% 0.04 166);
+  --pine: oklch(52% 0.075 160);
+  --on-ink: oklch(96% 0.012 340);
+  --on-ink-soft: oklch(80% 0.025 300);
+  --sky-high: oklch(82% 0.075 278);
+  --sky-mid: oklch(87% 0.058 302);
+  --sky-low: oklch(93% 0.04 348);
+  --cloud: oklch(96% 0.035 350);
+  --blush: oklch(93% 0.04 352);
 
-  --color-paper: oklch(98% 0.01 320);
-  --color-surface: oklch(99% 0.006 320 / 0.78);
-  --color-surface-solid: oklch(98.5% 0.008 320);
-  --color-ink: oklch(30% 0.045 318);
-  --color-ink-soft: oklch(44% 0.04 300);
-  --color-line: oklch(80% 0.04 300 / 0.7);
-
-  --color-rose: oklch(63% 0.135 352);
-  --color-rose-strong: oklch(54% 0.16 355);
-  --color-rose-wash: oklch(93% 0.04 352);
-  --color-violet: oklch(66% 0.05 288);
-  --color-violet-strong: oklch(47% 0.055 288);
-  --color-focus: oklch(42% 0.14 330);
-  --color-on-rose: oklch(99% 0.005 350);
+  /* Scheme-dependent surface roles (day). */
+  --bg: oklch(97.6% 0.008 345);
+  --bg-2: oklch(94.6% 0.02 348);
+  --fg: oklch(22% 0.03 168);
+  --fg-soft: oklch(42% 0.03 300);
+  --line: oklch(22% 0.03 168 / 0.16);
+  --line-strong: oklch(22% 0.03 168 / 0.5);
+  --accent: oklch(54% 0.17 356);
+  --accent-wash: oklch(91% 0.05 352);
+  --on-accent: oklch(99% 0.005 350);
+  --focus: oklch(42% 0.15 330);
+  --glass: oklch(98% 0.008 345 / 0.78);
 
   --motif-petal: oklch(96% 0.025 355);
-  --motif-petal-deep: oklch(82% 0.085 355);
+  --motif-petal-deep: oklch(80% 0.09 355);
   --motif-stamen: oklch(84% 0.12 85);
   --motif-pine: oklch(60% 0.055 38);
   --motif-pine-deep: oklch(45% 0.05 32);
@@ -103,48 +108,37 @@
   --motif-sparkle: oklch(90% 0.06 352);
   --motif-sparkle-core: oklch(99% 0.01 350);
 
-  --shadow-soft: 0 18px 50px -24px oklch(45% 0.08 300 / 0.45);
-  /* Layered surface edge: hairline ring, contact shadow, ambient lift, top highlight. */
-  --shadow-surface:
-    0 0 0 1px oklch(55% 0.05 300 / 0.14), 0 1px 2px oklch(40% 0.06 300 / 0.06),
-    0 14px 34px -18px oklch(45% 0.08 300 / 0.35), inset 0 1px 0 oklch(100% 0 0 / 0.65);
+  --shadow-lift: 0 1px 2px oklch(25% 0.04 300 / 0.08), 0 24px 48px -28px oklch(25% 0.06 300 / 0.45);
 }
 
-/* 夜櫻 · night sky. Same hierarchy, lifted rose, deep indigo sky. */
+/* 夜櫻 · night. Paper becomes ink; pine-ink panels deepen further. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --sky-high: oklch(24% 0.055 280);
-    --sky-mid: oklch(28% 0.06 300);
-    --sky-low: oklch(32% 0.065 335);
-    --cloud: oklch(40% 0.06 330 / 0.55);
-    --cloud-shadow: oklch(22% 0.05 290 / 0.6);
+    --pine-ink: oklch(13% 0.022 170);
+    --pine-ink-2: oklch(19% 0.03 166);
+    --sky-high: oklch(25% 0.055 280);
+    --sky-mid: oklch(30% 0.06 300);
+    --sky-low: oklch(35% 0.07 335);
+    --cloud: oklch(45% 0.06 330);
+    --blush: oklch(28% 0.05 340);
 
-    --color-paper: oklch(21% 0.035 295);
-    --color-surface: oklch(25% 0.04 300 / 0.8);
-    --color-surface-solid: oklch(25% 0.04 300);
-    --color-ink: oklch(95% 0.015 320);
-    --color-ink-soft: oklch(82% 0.03 305);
-    --color-line: oklch(55% 0.05 300 / 0.6);
-
-    --color-rose: oklch(78% 0.11 352);
-    --color-rose-strong: oklch(83% 0.095 352);
-    --color-rose-wash: oklch(34% 0.07 345);
-    --color-violet: oklch(72% 0.05 288);
-    --color-violet-strong: oklch(80% 0.045 288);
-    --color-focus: oklch(88% 0.09 350);
-    --color-on-rose: oklch(22% 0.04 320);
+    --bg: oklch(18% 0.026 168);
+    --bg-2: oklch(22% 0.03 168);
+    --fg: oklch(95% 0.012 340);
+    --fg-soft: oklch(80% 0.025 300);
+    --line: oklch(95% 0.012 340 / 0.16);
+    --line-strong: oklch(95% 0.012 340 / 0.5);
+    --accent: oklch(78% 0.12 352);
+    --accent-wash: oklch(32% 0.07 345);
+    --on-accent: oklch(20% 0.04 330);
+    --focus: oklch(88% 0.09 350);
+    --glass: oklch(20% 0.028 168 / 0.8);
 
     --motif-petal: oklch(90% 0.035 355);
     --motif-petal-deep: oklch(74% 0.1 355);
-    --motif-pine: oklch(55% 0.04 35);
-    --motif-pine-deep: oklch(42% 0.035 30);
-    --motif-pine-light: oklch(70% 0.04 45);
     --motif-sparkle: oklch(84% 0.08 352);
     --motif-sparkle-core: oklch(97% 0.02 350);
 
-    --shadow-soft: 0 18px 50px -24px oklch(10% 0.04 290 / 0.8);
-    --shadow-surface:
-      0 0 0 1px oklch(80% 0.04 300 / 0.12), 0 1px 2px oklch(5% 0.03 290 / 0.4),
-      0 14px 34px -18px oklch(5% 0.03 290 / 0.7), inset 0 1px 0 oklch(100% 0 0 / 0.08);
+    --shadow-lift: 0 1px 2px oklch(5% 0.02 290 / 0.5), 0 24px 48px -28px oklch(5% 0.02 290 / 0.9);
   }
 }

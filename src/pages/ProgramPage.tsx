@@ -1,7 +1,8 @@
 import { useSearchParams } from 'react-router-dom';
 import { CaretDownIcon } from '../components/icons';
 import { Link } from '../components/links';
-import { MapLink, PageHeader, PrototypeNotice, useDocumentTitle } from '../components/page';
+import { MapLink, Page, PrototypeNotice, useDocumentTitle } from '../components/page';
+import { display } from '../data/display-copy';
 import { categories, days, getEvent, getLocation, snapshot } from '../data/festival';
 import '../styles/pages.css';
 
@@ -22,7 +23,7 @@ function FilterGroup({
 }) {
   return (
     <fieldset className="filter-group">
-      <legend>{label}</legend>
+      <legend className="note">{label}</legend>
       <div className="chips">
         {options.map((option) => (
           <label key={option.id} className="chip">
@@ -42,7 +43,7 @@ function FilterGroup({
 }
 
 export default function ProgramPage() {
-  useDocumentTitle('節目表');
+  useDocumentTitle(display.pages.program);
   const [query, setQuery] = useSearchParams();
   const day = query.get('day') || 'all';
   const category = query.get('category') || 'all';
@@ -60,15 +61,13 @@ export default function ProgramPage() {
   const filtered = day !== 'all' || category !== 'all';
 
   return (
-    <main id="route-content" tabIndex={-1} className="page container program">
-      <PageHeader
-        lines={['春日', '節目表']}
-        lede="第二屆的日期與節目尚未公布。先用兩個測試日，體驗一天如何在祭典裡展開。"
-        accent="pine"
-      />
+    <Page
+      title={display.pages.program}
+      lede="第二屆的日期與節目尚未公布。先用兩個測試日，體驗一天如何在祭典裡展開。"
+      className="program"
+    >
       <PrototypeNotice />
-
-      <div className="program-filters surface">
+      <div className="filters">
         <FilterGroup
           label="日期"
           name="day"
@@ -87,11 +86,13 @@ export default function ProgramPage() {
           onChange={(value) => update('category', value)}
         />
         <div className="filter-summary">
-          <p role="status">{selected.length} 個測試時段</p>
+          <p role="status">
+            <span className="num">{selected.length}</span> 個測試時段
+          </p>
           {filtered && (
             <button
               type="button"
-              className="button button-quiet"
+              className="text-link"
               onClick={() => setQuery({}, { replace: true, preventScrollReset: true })}
             >
               清除篩選
@@ -101,7 +102,7 @@ export default function ProgramPage() {
       </div>
 
       {selected.length === 0 && (
-        <div className="empty-state surface">
+        <div className="empty">
           <h2>沒有符合的時段</h2>
           <p>這個組合目前沒有測試資料。換一個日期或類型看看。</p>
         </div>
@@ -110,12 +111,12 @@ export default function ProgramPage() {
       {days
         .filter((d) => selected.some((entry) => entry.dayId === d.id))
         .map((d) => (
-          <section className="schedule-day" key={d.id} aria-labelledby={`day-${d.id}`}>
-            <h2 className="schedule-day-title" id={`day-${d.id}`}>
-              <span className="display">{d.label}</span>
-              <span className="small-note">非實際活動日期</span>
+          <section className="day" key={d.id} aria-labelledby={`day-${d.id}`}>
+            <h2 className="day-title" id={`day-${d.id}`}>
+              {d.label}
+              <span className="note">非實際活動日期</span>
             </h2>
-            <ol className="schedule">
+            <ol className="rows schedule">
               {selected
                 .filter((entry) => entry.dayId === d.id)
                 .sort((a, b) => a.start.localeCompare(b.start))
@@ -124,12 +125,12 @@ export default function ProgramPage() {
                   if (!event) return null;
                   return (
                     <li className="slot" key={entry.id}>
-                      <p className="slot-time">
+                      <p className="slot-time num">
                         <time>{entry.start}</time>
-                        <span>至 {entry.end}</span>
+                        <span>{entry.end}</span>
                       </p>
                       <div className="slot-body">
-                        <p className="slot-kind">{categories[event.category]}</p>
+                        <p className="note">{categories[event.category]}</p>
                         <h3>
                           <Link to={`/events/${event.id}`}>{event.title}</Link>
                         </h3>
@@ -152,6 +153,6 @@ export default function ProgramPage() {
             </ol>
           </section>
         ))}
-    </main>
+    </Page>
   );
 }
