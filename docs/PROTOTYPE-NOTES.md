@@ -1,6 +1,29 @@
 # Prototype notes and historical records
 
-## Current pass · 春空 Spring Sky redesign (2026-10-16)
+## Current pass · award-level polish (2026-10-16, second pass)
+
+Skills applied: Taste, Hallmark, Emil and `make-interfaces-feel-better` (layered
+shadows, punctuation, hit areas, transition specificity), with Transitions.dev as
+the pattern reference. Audit first, then fixes, then a second browser review.
+
+| Audit finding | Change |
+| --- | --- |
+| Hero was flat: motifs floated beside the title with no depth | Scroll-driven parallax per motif depth, pointer depth on mouse devices, cloud bank closing the hero, larger title cap (15.5rem) |
+| Route changes cut hard and showed a skeleton flash | Data router with route-level lazy loading, View Transitions cross-fade, shared title morph from tiles/cards to detail pages, delayed pending bar, initial-load fallback |
+| Event rail showed a raw scrollbar and cut a card at tablet width | Rail only under 700 px with hidden scrollbar; three-up grid above |
+| Surfaces relied on hard 1 px borders | Layered `--shadow-surface` in both themes |
+| Footer offline panel was heavy on every page | Collapsed disclosure beside the footer navigation; the 更多 sheet link opens it |
+| Big CJK headlines had wide punctuation gaps | `palt` on display type |
+| Announcement tiles had no pointer response beyond lift | Soft light that follows the mouse inside each tile |
+
+Verified: lint, typecheck, Vitest 19/19 (new router coverage test), geo tests 6/6,
+build clean. In-browser at 1440 × 900 (light and dark), 820 × 1180 and 375 × 812:
+hero, triptych, story, ledger, events grid/rail, footer, events page, news detail via
+tile click (route, title, focus on `main`, scroll reset). The morph itself was not
+frame-inspected because the pane's screenshots lag a frame. Not verified: Safari and
+Firefox view-transition fallbacks, real devices, reduced motion in a browser.
+
+## Previous pass · 春空 Spring Sky redesign (2026-10-16)
 
 The user supplied a screenshot of the second-edition (第二屆) official social grid and
 asked for a full UI/UX redesign in that style, the clean-up items from the project

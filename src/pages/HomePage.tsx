@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { ArrowUpRightIcon } from '../components/icons';
+import { Link } from '../components/links';
 import { Petal, PineCone, Sakura, Sparkle } from '../components/motifs';
 import {
   AnnouncementTriptych,
@@ -10,6 +10,8 @@ import {
 } from '../components/page';
 import { story } from '../data/festival';
 import '../styles/home.css';
+import { useRef } from 'react';
+import { usePointerDepth } from './use-pointer-depth';
 
 const meaningArt = { 松: PineCone, 櫻: Sakura } as const;
 
@@ -23,19 +25,23 @@ const petals = [
   [86, 23, -2, 14],
 ] as const;
 
+const depth = (value: number) => ({ '--depth': value }) as React.CSSProperties;
+
 export default function HomePage() {
   useDocumentTitle('');
+  const hero = useRef<HTMLElement>(null);
+  usePointerDepth(hero);
   return (
     <main id="route-content" tabIndex={-1} className="home">
-      <section className="hero container" aria-labelledby="hero-title">
+      <section className="hero container" aria-labelledby="hero-title" ref={hero}>
         <div className="hero-art" aria-hidden="true">
-          <PineCone className="hero-pine" />
-          <Sakura className="hero-sakura big" />
-          <Sakura className="hero-sakura mid" />
-          <Sakura className="hero-sakura low" />
-          <Sparkle className="hero-sparkle s1" />
-          <Sparkle className="hero-sparkle s2" />
-          <Sparkle className="hero-sparkle s3" />
+          <PineCone className="hero-pine depth" style={depth(1.2)} />
+          <Sakura className="hero-sakura big depth" style={depth(0.7)} />
+          <Sakura className="hero-sakura mid depth" style={depth(1.05)} />
+          <Sakura className="hero-sakura low depth" style={depth(1.5)} />
+          <Sparkle className="hero-sparkle s1 depth" style={depth(0.45)} />
+          <Sparkle className="hero-sparkle s2 depth" style={depth(0.6)} />
+          <Sparkle className="hero-sparkle s3 depth" style={depth(0.8)} />
           <div className="petal-fall">
             {petals.map(([x, duration, delay, size]) => (
               <Petal
@@ -52,6 +58,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+        <div className="hero-clouds" aria-hidden="true" />
         <div className="hero-copy">
           <h1 className="display hero-title" id="hero-title">
             松櫻祭

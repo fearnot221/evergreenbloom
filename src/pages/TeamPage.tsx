@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { ArrowUpRightIcon } from '../components/icons';
+import { Link } from '../components/links';
 import { PageHeader, useDocumentTitle } from '../components/page';
 import { snapshot } from '../data/festival';
 import '../styles/pages.css';

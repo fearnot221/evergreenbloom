@@ -82,7 +82,7 @@
   padding: var(--space-md);
   border-radius: var(--radius-surface);
   background: var(--color-surface);
-  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-surface);
 }
 
 .place-name {
@@ -236,7 +236,7 @@
   padding: var(--space-md) var(--space-md) var(--space-sm) 0;
   border-radius: var(--radius-surface);
   background: var(--color-surface);
-  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-surface);
 }
 
 .slot-time {
@@ -455,7 +455,7 @@
   padding: var(--space-md);
   border-radius: var(--radius-surface);
   background: var(--color-surface);
-  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-surface);
 }
 
 .role-index {

@@ -22,8 +22,13 @@ the Bloom visuals with 春空 Spring Sky; the inventory below is the current beh
 | Buttons, tabs, tiles, cards | `base.css`, `components.css` | Press scale 0.94-0.97; hover lift only under `(hover: hover)` | Unchanged colour states |
 | Route change | `use-route-focus.ts` | Focus moves to the new `main`; Back/Forward restores scroll. Loading shows a pulsing skeleton (Transitions.dev "Skeleton loader") | No pulse |
 | Language notice | `App.tsx` | Expands under the header; Escape or button closes and returns focus | No movement |
+| Route transition | `links.tsx`, `transitions.css` | View Transitions API: page cross-fades and rises 12 px (out 160 ms, in 320 ms); header and tab bar stay fixed. Announcement tile and event card titles morph into the detail page title (`topic-*`, `event-*` names). Unsupported browsers navigate normally | None |
+| Pending navigation | `App.tsx`, `transitions.css` | Thin rose bar appears only if a route takes over 150 ms to load | Static bar |
+| Hero depth | `home.css`, `use-pointer-depth.ts` | Motifs drift by their own depth against scroll (CSS scroll timeline on a registered `--hero-scroll`) and, for mouse/trackpad, toward the pointer (smoothed rAF writing two CSS variables, stops when settled or off-screen); cloud bank rises over the motifs | None |
+| Tile light | `page.tsx`, `components.css` | Soft radial light follows a mouse pointer inside announcement tiles | Hover only, no motion |
 
 Transitions.dev was checked on 2026-10-16; patterns were re-implemented in CSS, not copied.
+Its "Page side-by-side" idea informed the route transition, reduced to a cross-fade.
 
 As features are defined and implemented, inventory each interaction with its route/component,
 trigger, state change, feedback, keyboard/touch behavior, focus handling,

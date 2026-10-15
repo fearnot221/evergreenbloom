@@ -17,6 +17,8 @@ Three.js cannot parse OKLCH.
 | Themes | Light 春空 by default, 夜櫻 night sky under `prefers-color-scheme: dark`; same hierarchy, lifted rose | `tokens.css` |
 | Spacing | 4 pt scale `--space-3xs` to `--space-4xl`; fluid `--gutter`; `--content` 72rem; reading `--measure` 34em | `tokens.css` |
 | Shape | Rule: interactive controls are full pills, surfaces 28 px, small notices 14 px, announcement tiles square | `tokens.css`, `components.css` |
+| Depth | Surfaces use the layered `--shadow-surface` (hairline ring, contact shadow, ambient lift, top highlight) instead of hard borders; controls keep 1.5 px outlines | `tokens.css` |
+| CJK detail | Display type uses `palt` so 「，」「。」 do not open gaps in large headlines | `base.css` (`.display`) |
 | Motifs | Hand-built SVG sakura, pine cone, four-point sparkle, loose petal and brand blossom; all `aria-hidden`, coloured by `--motif-*` tokens | `src/components/motifs.tsx` |
 | Icons | One family: Phosphor (`@phosphor-icons/react`), re-exported from `src/components/icons.ts` | `icons.ts` |
 

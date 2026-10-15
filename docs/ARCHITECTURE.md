@@ -9,7 +9,7 @@ not a claim that all proposed production systems now exist.
 
 | Implemented | Boundary / source |
 | --- | --- |
-| React Router, shared desktop/mobile shell | `src/app/App.tsx`; desktop pill navigation, mobile tab bar (首頁 / 消息 / 節目 / 地圖 / 更多 sheet); direct URLs, Back/Forward scroll restoration and focus in `src/app/use-route-focus.ts` |
+| React Router data router, shared desktop/mobile shell | `src/app/router.tsx` (`createBrowserRouter`, route-level `lazy` so each page loads before it swaps in, `errorElement` for chunk/offline failures, initial `HydrateFallback`); `src/app/App.tsx` layout with `<Outlet>`, `<ScrollRestoration>`, pending-navigation bar; desktop pill navigation, mobile tab bar and 更多 sheet; focus moves to `main` on path change (`use-route-focus.ts`). Links opt into View Transitions through `src/components/links.tsx` |
 | `/`, `/about`, `/program`, `/events`, event details, `/map`, `/news`, announcement details, `/team`, `/visit` | One lazy chunk per route in `src/pages/`; `/e` redirects to Home; unknown paths render `NotFoundPage`; the `/motion` lab was removed on 2026-10-16 |
 | Normalized typed prototype content | `src/data/model.ts`, `src/data/festival.ts`; Event → ProgramEntry → Location, plus Announcement/Organizer/Sponsor; immutable revisioned build snapshot |
 | 春空 Spring Sky visual system (2026-10-16) | Tokens in `src/styles/tokens.css`; shared components in `src/components/`; global CSS is tokens, base, shell and shared components, page CSS travels with its lazy route. Replaced the Bloom files (`direction-e`, `bloom-*`, `seed-*`, `motion-lab`) and the GSAP dependency; history is in commit a37e655 |

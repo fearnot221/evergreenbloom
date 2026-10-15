@@ -1,5 +1,4 @@
 import { type ReactNode, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
   categories,
   getLocation,
@@ -11,6 +10,7 @@ import {
 } from '../data/festival';
 import type { Event } from '../data/model';
 import { ArrowUpRightIcon, InfoIcon, MapTrifoldIcon } from './icons';
+import { Link } from './links';
 import { PineCone, Sakura, Sparkle } from './motifs';
 
 export function useDocumentTitle(title: string) {
@@ -30,11 +30,14 @@ export function PageHeader({
   lede,
   accent = 'sakura',
   compact = false,
+  morph,
 }: {
   lines: string[];
   lede?: ReactNode;
   accent?: Accent;
   compact?: boolean;
+  /** View-transition name shared with the tile or card that links here. */
+  morph?: string;
 }) {
   return (
     <header className={`page-header${compact ? ' is-compact' : ''}`}>
@@ -44,7 +47,7 @@ export function PageHeader({
         <Sparkle className="header-sparkle a" />
         <Sparkle className="header-sparkle b" />
       </div>
-      <h1 className="display page-title">
+      <h1 className="display page-title" style={morph ? { viewTransitionName: morph } : undefined}>
         {lines.map((line) => (
           <span className="display-line" key={line}>
             {line}
@@ -84,7 +87,7 @@ export function EventCard({ event, index }: { event: Event; index: number }) {
         <span>{categories[event.category]}</span>
         <span className="event-flag">虛構示範</span>
       </p>
-      <h2 className="event-title">
+      <h2 className="event-title" style={{ viewTransitionName: `event-${event.id}` }}>
         <Link to={`/events/${event.id}`}>{event.title}</Link>
       </h2>
       <p className="event-summary">{event.summary}</p>
@@ -92,6 +95,15 @@ export function EventCard({ event, index }: { event: Event; index: number }) {
       <MapLink locationId={event.locationId} label={event.title} />
     </article>
   );
+}
+
+/** Feeds the pointer position to the tile's soft light (decorative, mouse only). */
+function spotlight(event: React.PointerEvent<HTMLElement>) {
+  if (event.pointerType !== 'mouse') return;
+  const tile = event.currentTarget;
+  const box = tile.getBoundingClientRect();
+  tile.style.setProperty('--mx', `${event.clientX - box.left}px`);
+  tile.style.setProperty('--my', `${event.clientY - box.top}px`);
 }
 
 /**
@@ -113,8 +125,11 @@ export function AnnouncementTriptych() {
       <ul className="triptych-tiles">
         {officialTopics.map((topic) => (
           <li key={topic.id}>
-            <Link className="tile" to={`/news/${topic.id}`}>
-              <span className="display tile-title">
+            <Link className="tile" to={`/news/${topic.id}`} onPointerMove={spotlight}>
+              <span
+                className="display tile-title"
+                style={{ viewTransitionName: `topic-${topic.id}` }}
+              >
                 {topic.lines.map((line) => (
                   <span className="display-line" key={line}>
                     {line}

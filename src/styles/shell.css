@@ -443,6 +443,12 @@ body:has(.tab-bar) {
   width: 56px;
 }
 
+.footer-side {
+  display: grid;
+  gap: var(--space-lg);
+  align-content: start;
+}
+
 .footer-nav {
   display: flex;
   flex-wrap: wrap;
@@ -529,4 +535,27 @@ body:has(.tab-bar) {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
+}
+
+/* Footer app panel: collapsed by default so the closing stays a closing. */
+.footer-app {
+  align-self: start;
+  border-bottom: 0;
+}
+
+.footer-app summary {
+  min-height: 52px;
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-solid);
+  box-shadow: var(--shadow-surface);
+}
+
+.footer-app[open] summary {
+  margin-bottom: var(--space-sm);
+}
+
+.footer-app .pwa-panel {
+  box-shadow: none;
+  background: var(--color-surface);
 }

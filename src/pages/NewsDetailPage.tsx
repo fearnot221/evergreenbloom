@@ -1,5 +1,6 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ArrowLeftIcon } from '../components/icons';
+import { Link } from '../components/links';
 import { PageHeader, useDocumentTitle } from '../components/page';
 import { officialTopics, snapshot } from '../data/festival';
 import NotFoundPage from './NotFoundPage';
@@ -22,6 +23,7 @@ export default function NewsDetailPage() {
         lede={item.summary}
         accent={topic ? 'both' : 'sakura'}
         compact={!topic}
+        morph={topic ? `topic-${topic.id}` : undefined}
       />
       <article className="news-body surface">
         <p className="news-meta">
