@@ -9,11 +9,12 @@ not a claim that all proposed production systems now exist.
 
 | Implemented | Boundary / source |
 | --- | --- |
-| React Router, shared desktop/mobile shell | `src/app.tsx`; Home / Program / Map / More on mobile; direct URLs, Back, focus and short reduced-motion-aware route entrance |
-| `/`, `/about`, `/program`, `/events`, event details, `/map`, `/news`, announcement details, `/team`, `/visit` | `/e` redirects to Home; `/motion` stays a development reference; A/B/C/D remain removed |
+| React Router, shared desktop/mobile shell | `src/app/App.tsx`; desktop pill navigation, mobile tab bar (首頁 / 消息 / 節目 / 地圖 / 更多 sheet); direct URLs, Back/Forward scroll restoration and focus in `src/app/use-route-focus.ts` |
+| `/`, `/about`, `/program`, `/events`, event details, `/map`, `/news`, announcement details, `/team`, `/visit` | One lazy chunk per route in `src/pages/`; `/e` redirects to Home; unknown paths render `NotFoundPage`; the `/motion` lab was removed on 2026-10-16 |
 | Normalized typed prototype content | `src/data/model.ts`, `src/data/festival.ts`; Event → ProgramEntry → Location, plus Announcement/Organizer/Sponsor; immutable revisioned build snapshot |
-| Bloom home and inner-page vocabulary | `src/direction-e.tsx`, `src/pages.tsx`; pure SVG shapes separated from lazy story motion; no final official brand decision |
-| Functional Three.js map | `src/map/map-page.tsx` loads `engine.ts`; OrbitControls, selection/raycasting, camera controls, URL Location selection and text alternative |
+| 春空 Spring Sky visual system (2026-10-16) | Tokens in `src/styles/tokens.css`; shared components in `src/components/`; global CSS is tokens, base, shell and shared components, page CSS travels with its lazy route. Replaced the Bloom files (`direction-e`, `bloom-*`, `seed-*`, `motion-lab`) and the GSAP dependency; history is in commit a37e655 |
+| Tooling | Biome lint/format (`biome.json`), Vitest (`tests/`), node geo tests, GitHub Actions CI (`.github/workflows/ci.yml`) |
+| Functional Three.js map | `src/map/MapPage.tsx` loads `engine.ts`; OrbitControls, selection/raycasting, camera controls, URL Location selection and text alternative |
 | Real geographic campus foundation | Retained OSM extract → normalized geographic features → optimized JSON; WGS84 ECEF/ENU metre frame in `src/geo/coordinates.ts`; source footprints with separate visual height/width estimates. See [MAP-DATA.md](MAP-DATA.md). |
 | Development-only routing foundation | 394 source nodes / 460 edges, independent Dijkstra and GPS-candidate utilities; dev-only `/map?debug=1` route drawing. No public navigation, permission prompt, AR or accessible-routing promise. |
 | PWA foundation | Manifest, temporary icons, standalone configuration, generated service worker and explicit core-save workflow; HTTPS/localhost required |
@@ -47,7 +48,7 @@ The source-backed SVG plan and list survive renderer failure; explicit core save
 includes the small campus JSON and license, whose bytes participate in the worker
 version hash. A separate empty FestivalLayer represents future edition overlays.
 The production map never imports the development routing panel/algorithm.
- The remaining sections are the original
+Sections 2 onward are the original
 architecture proposals: read future tense and prototype gates literally, not as
 completed implementation. PRODUCT facts and final DESIGN direction are unchanged.
 

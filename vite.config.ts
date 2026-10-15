@@ -1,2 +1,18 @@
-import {defineConfig} from 'vite';
-export default defineConfig({build:{manifest:true}});
+/// <reference types="vitest/config" />
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  build: {
+    manifest: true,
+    // The Three.js renderer (~600 kB raw) is a lazy, map-only chunk by design.
+    chunkSizeWarningLimit: 650,
+    rolldownOptions: {
+      onwarn(warning, warn) {
+        // react-router ships "use client" directives that are irrelevant to this SPA.
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
+        warn(warning);
+      },
+    },
+  },
+  test: { include: ['tests/**/*.test.{ts,tsx}'], environment: 'node' },
+});

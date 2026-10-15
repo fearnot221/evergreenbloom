@@ -5,8 +5,25 @@
 The 2026-09-29 greenfield inspection predates the implemented E2 Festival Web App.
 For current behavior and verification, read [ARCHITECTURE.md](ARCHITECTURE.md),
 [PROTOTYPE-NOTES.md](PROTOTYPE-NOTES.md) and [MAP-DATA.md](MAP-DATA.md).
-This document defines permanent interaction policy; adding a reference resource
-is not authorization to redesign E2 or replace its existing Bloom motion.
+This document defines permanent interaction policy. On 2026-10-16 the user replaced
+the Bloom visuals with 春空 Spring Sky; the inventory below is the current behaviour.
+
+### Current interaction inventory (2026-10-16)
+
+| Interaction | Source | Behaviour | Reduced motion |
+| --- | --- | --- | --- |
+| Hero entrance | `src/styles/home.css` | Title rises once (720 ms ease-out), supporting copy fades up after 380 ms; content is visible if animation never runs | No movement |
+| Ambient sparkles and petals | `components.css`, `home.css` | Sparkles breathe three times; six petals fall for two passes, then stop. Transform/opacity only | Removed |
+| Scroll reveal | `.reveal` in `base.css` | CSS `animation-timeline: view()`, 28 px rise; no JS listener | Content static |
+| Header frost | `shell.css` | Scroll-driven fade-in of the frosted header bar over 120 px | Same (no motion) |
+| 更多 sheet | `App.tsx`, `shell.css` | Native `<dialog>`; slides up 320 ms (drawer curve), exits 200 ms; Escape, backdrop and close button; focus returns to 更多. Transitions.dev "Panel reveal" pattern | 150 ms opacity |
+| Disclosures (program, FAQ, map help) | `components.css` | Native `<details>`; chevron rotates; height animates via `::details-content` where supported. Transitions.dev "Accordion" pattern | Instant |
+| Filter chips | `ProgramPage.tsx` | Native radio inputs; URL holds state; press scale 0.96 | Colour change only |
+| Buttons, tabs, tiles, cards | `base.css`, `components.css` | Press scale 0.94-0.97; hover lift only under `(hover: hover)` | Unchanged colour states |
+| Route change | `use-route-focus.ts` | Focus moves to the new `main`; Back/Forward restores scroll. Loading shows a pulsing skeleton (Transitions.dev "Skeleton loader") | No pulse |
+| Language notice | `App.tsx` | Expands under the header; Escape or button closes and returns focus | No movement |
+
+Transitions.dev was checked on 2026-10-16; patterns were re-implemented in CSS, not copied.
 
 As features are defined and implemented, inventory each interaction with its route/component,
 trigger, state change, feedback, keyboard/touch behavior, focus handling,
@@ -35,7 +52,7 @@ toast to every action. Never invent a feature just to create an animation opport
 | Hallmark | Identify generic / AI-generated website patterns |
 | Emil | Interaction philosophy, purpose, timing and behavior |
 | [Transitions.dev](https://transitions.dev/) | UI state-transition references and implementation patterns |
-| GSAP | Complex choreography, timelines, scroll-driven animation and major Bloom sequences |
+| GSAP | Complex choreography, timelines, scroll-driven animation and major 春空 sequences |
 | Three.js / WebGL | Spatial / 3D experiences where DOM/CSS is insufficient |
 
 Transitions.dev is a **motion reference and implementation resource**, not the
@@ -51,8 +68,8 @@ For interactive UI:
    would be lost without motion. Keep an immediate state change when appropriate.
 2. **Reference — Transitions.dev:** look for a relevant pattern; if none fits,
    proceed with the simplest suitable behavior rather than forcing a match.
-3. **Adapt — Bloom:** translate the underlying behavior into our existing
-   **SEED → UNFOLD → BLOSSOM → FESTIVAL** vocabulary and visual system.
+3. **Adapt — Spring Sky:** translate the underlying behavior into the
+   **SEED → UNFOLD → BLOSSOM → FESTIVAL** vocabulary and the 春空 visual system.
 4. **Implement simply:** use CSS/native browser animation when sufficient.
 5. **Escalate deliberately:** use GSAP only when choreography/timeline complexity
    justifies it; consult the implementation hierarchy below for intermediate needs.
@@ -70,7 +87,12 @@ panels, PWA UI states, small page-transition details and other component-level
 transitions. This list defines where to consider the reference, not where motion
 must be added. Component-level map panels do not require the 3D renderer to animate.
 
-### Translation into Bloom
+### Translation into the SEED → FESTIVAL vocabulary
+
+Mapped onto 春空: SEED is the pine cone and closed states; UNFOLD is the sheet,
+disclosure and language notice opening from their triggers; BLOSSOM is the hero
+title and selected chip/location resolving; FESTIVAL is the triptych and the finite
+falling petals.
 
 Treat the vocabulary as a relationship between states: **SEED** is compact or
 latent; **UNFOLD** reveals context from its trigger; **BLOSSOM** makes the active or
@@ -81,7 +103,7 @@ save might resolve immediately into a clear active state. Do not invent literal
 petals, a flower icon morph or celebration effects for every transition.
 
 Adapt origin, direction, scale, duration, easing and interruption behavior to the
-existing Bloom language. Preserve semantic controls, immediate focus, keyboard and
+春空 Spring Sky language. Preserve semantic controls, immediate focus, keyboard and
 touch operation, and honest async/error state. Never delay event information or
 announce success before an operation actually completes. Small page transitions
 must preserve history, focus and scroll behavior and never gate essential content.
@@ -125,10 +147,10 @@ and purpose, not creative direction.
 | Tool | Use when | Do not use merely for |
 | --- | --- | --- |
 | Native HTML / CSS | Simple states, hover/press/focus styling and short transitions | Replacing semantic controls with animation code |
-| Transitions.dev reference | A relevant component-state pattern supports the task and can be adapted to Bloom | Importing a visual identity or adding motion everywhere |
+| Transitions.dev reference | A relevant component-state pattern supports the task and can be adapted to 春空 | Importing a visual identity or adding motion everywhere |
 | Web Animations API (WAAPI) | Programmatic playback/cancellation is needed beyond simple CSS | Adding an engine for a basic CSS state |
 | Motion | An existing compatible app needs interruptible gestures, coordinated presence, or shared-layout transitions that justify a dependency | A fade, simple hover, or animating every component |
-| GSAP | A real requirement calls for a complex timeline, precise multi-element choreography, major Bloom sequence or substantial scroll-driven explanation | Menus, button feedback, basic reveals or decorative scroll effects |
+| GSAP | A real requirement calls for a complex timeline, precise multi-element choreography, major 春空 sequence or substantial scroll-driven explanation | Menus, button feedback, basic reveals or decorative scroll effects |
 | Three.js / WebGL | A justified spatial / 3D experience cannot be adequately expressed with DOM/CSS | Component transitions, map information panels or decorative 3D novelty |
 
 Use the project's existing capabilities first. A reference pattern does not
@@ -182,13 +204,12 @@ native scrolling, browser history, selection, and zoom.
 ## Interactions that should not be added
 
 Do not blindly copy every Transitions.dev recipe, add motion to every component,
-replace Bloom's motion language, replace GSAP choreography with component
-transitions, or use a transition solely because it looks impressive. Existing
-SEED → UNFOLD → BLOSSOM → FESTIVAL sequences keep their role; adopting this
-reference does not authorize redesigning them or finalizing DESIGN.md.
+or use a transition solely because it looks impressive. GSAP is not currently a
+dependency; reintroduce it only under the documented choreography test below.
 
 No scroll hijacking, mandatory animated intros, custom cursor replacements,
-autoplaying decorative loops, magnetic controls, indiscriminate parallax,
+unbounded autoplaying decorative loops (finite ambience that stops, as above, is the
+documented exception), magnetic controls, indiscriminate parallax,
 letter-by-letter essential copy reveals, or routine page-wide stagger effects.
 Do not add auto-rotating content, sounds, particles, or 3D backgrounds without a
 specific product need. No delayed focus, gesture-only actions, or content that

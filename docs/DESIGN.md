@@ -1,26 +1,43 @@
 # Design
 
-## Current visual language
+## Current visual language · 春空 Spring Sky (adopted 2026-10-16)
 
-**Not observable as of 2026-09-29.** The workspace contains only documentation.
-There is no rendered page, stylesheet, asset collection, or component library.
-The user confirmed this is a greenfield project. These are future design rules
-and templates. No aesthetic, theme, framework, or design system is selected.
-See [PRODUCT.md](PRODUCT.md) for the inspection boundary.
+**Observed implementation.** The site now follows the second-edition social posts the
+user supplied on 2026-10-16 (三則 Instagram 貼文：活動說明會、工人招募、特約商店).
+Their visual DNA was extracted, not their pixels: no artwork from the posts is used.
+Tokens live only in [`src/styles/tokens.css`](../src/styles/tokens.css); the 3D map
+mirrors them as hex in [`src/map/map-data.ts`](../src/map/map-data.ts) because
+Three.js cannot parse OKLCH.
 
-| Area | Verified state | Decisions to define and later verify |
+| Area | Decision | Source |
 | --- | --- | --- |
-| Typography | Unknown | Families, sources/licenses, weights, sizes, leading, tracking, language coverage |
-| Colors | Unknown | Semantic tokens, actual values, themes, contrast pairs |
-| Spacing | Unknown | Existing scale, container gutters, component gaps, section rhythm |
-| Layout | Unknown | Containers, columns, breakpoints, reading measures, overflow behavior |
-| Components | None present | Ownership, variants, radii, borders, elevation, icons, interaction states |
-| Hierarchy | Unknown | Page titles, content priorities, primary and secondary actions |
-| Assets | None present | Logos, photographs, illustrations, font files, rights and purpose |
+| Direction | Poster-like spring sky: lavender-blue to blush gradient, soft clouds, watercolour grain; heavy rose display type stacked in 2-3 character lines; grey-violet identity line under each title | `tokens.css`, `base.css` (`.sky`, `.display`, `.byline`) |
+| Typography | Display: self-hosted Noto Sans TC Black subset (`--font-display`, weight 900, always roman). Body: system CJK sans (`--font-body`). Latin UI: system sans (`--font-latin`) | `tokens.css`, `scripts/fonts/` |
+| Colour | One accent: rose (`--color-rose-strong`). Neutrals tinted plum/violet. Display rose on the lightest sky tone measures about 3.3:1 (large-text AA); ink on sky above 7:1 | `tokens.css` |
+| Themes | Light 春空 by default, 夜櫻 night sky under `prefers-color-scheme: dark`; same hierarchy, lifted rose | `tokens.css` |
+| Spacing | 4 pt scale `--space-3xs` to `--space-4xl`; fluid `--gutter`; `--content` 72rem; reading `--measure` 34em | `tokens.css` |
+| Shape | Rule: interactive controls are full pills, surfaces 28 px, small notices 14 px, announcement tiles square | `tokens.css`, `components.css` |
+| Motifs | Hand-built SVG sakura, pine cone, four-point sparkle, loose petal and brand blossom; all `aria-hidden`, coloured by `--motif-*` tokens | `src/components/motifs.tsx` |
+| Icons | One family: Phosphor (`@phosphor-icons/react`), re-exported from `src/components/icons.ts` | `icons.ts` |
 
-For extracted values, cite the defining file and selector/token. Separate intended
-system rules from isolated implementation accidents. A screenshot alone does not
-verify font identity, CSS values, responsive behavior, or animation.
+**Signature components.**
+
+- *Poster page header* (`PageHeader`): stacked display lines, the 國立中央大學 第二屆 松櫻祭
+  identity line, one lede paragraph, motifs cropped at the edge.
+- *Announcement triptych* (`AnnouncementTriptych`): three square-ish tiles share one
+  continuous sky with motifs crossing the seams, the way the official posts read as one
+  strip on the social grid. Used on Home and News.
+- *Ticket card* (`EventCard`): admission-stub notches and a dashed tear line.
+
+**Layout families per page** (no family repeats on Home): poster hero; triptych grid;
+asymmetric glyph pair (松 / 櫻); ledger panel; horizontal scroll-snap event rail; campus
+band. Inner pages: alternating name rows and an asymmetric place bento (About), time
+thread schedule (Program), 2+1 / 1+2 bento (Events), role trio (Team), card pair plus
+definition rows and accordion (Visit).
+
+**Unknowns.** Official logo, final palette approval, photography and illustration
+rights remain open. The posts' hand-drawn hands were not reproduced; supply original
+artwork if they should appear on the site.
 
 ## Design direction
 
@@ -93,7 +110,7 @@ A familiar pattern is acceptable when it serves the product and is executed well
 
 ## Design decision template
 
-Before the first authorized visual implementation, record:
+The 春空 decision above follows this template. For the next consequential change, record:
 
 - Product/audience rationale and a one-sentence design direction.
 - Reference material and which principles apply to this product.
@@ -102,10 +119,6 @@ Before the first authorized visual implementation, record:
 - Component shapes, border/elevation rules, and icon conventions.
 - Content hierarchy and relevant component state coverage.
 - Alternatives considered, accessibility checks, and performance implications.
-
-Values remain unselected until the product brief supports them. After implementation,
-add source paths to the token and component definitions. Do not create token files,
-mockups, or a framework as part of this documentation baseline.
 
 ## Validation and maintenance
 

@@ -2,10 +2,26 @@
 
 ## Baseline and status
 
-This is a confirmed greenfield project; the following rules guide future development.
-As of 2026-09-29 there is no application, package manifest, asset, build command,
-or deployed URL in this workspace. Bundle sizes, media weights, runtime cost,
-and Core Web Vitals are **unmeasured**. There is no performance test result.
+The 2026-09-29 greenfield note is historical. **Measured 2026-10-16** (production
+build of the 春空 redesign, gzip -9 sizes in KiB; a build estimate, not field data):
+
+| Home route, cold cache | Size | Budget |
+| --- | --- | --- |
+| Initial JavaScript (entry 95.5 + Home 1.7 + shared page components 1.8) | ~99 KiB | ≤ 150 KiB |
+| Initial CSS (global 6.2 + Home 1.9) | ~8 KiB | ≤ 50 KiB |
+| Display font subset (woff2, preloaded; 632 glyphs) | 86.8 KiB | ≤ 100 KiB |
+| HTML | 0.7 KiB | |
+| Total before images/icons | ~195 KiB | ≤ 1,024 KiB |
+
+Before the redesign the same route loaded about 143 KiB of JavaScript (entry 90.9,
+GSAP + ScrollTrigger 43.8, Bloom chunks about 8). Removing GSAP and the Bloom scroll
+choreography accounts for the reduction. The Three.js renderer (146 KiB gzip) still
+loads only on `/map`, after the campus JSON, and is never precached.
+
+The font is the largest single cost and sits close to its budget because the subset
+includes every character in `src/`. If copy grows, restrict the subset to display
+strings or split it. Core Web Vitals, real-device INP and Safari/Firefox rendering
+remain unmeasured.
 
 The budgets below are provisional project policy for future implementation, not
 claims about the existing site or universal limits. Revisit them once product
