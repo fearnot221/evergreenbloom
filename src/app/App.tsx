@@ -1,8 +1,9 @@
-import { Component, lazy, type ReactNode, Suspense, useEffect, useRef, useState } from 'react';
-import { Link, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Outlet, ScrollRestoration, useLocation, useNavigation } from 'react-router-dom';
 import {
   ArrowUpRightIcon,
   CalendarDotsIcon,
+  CaretDownIcon,
   DotsNineIcon,
   HouseIcon,
   MapTrifoldIcon,
@@ -10,61 +11,12 @@ import {
   WifiSlashIcon,
   XIcon,
 } from '../components/icons';
+import { Link, NavLink } from '../components/links';
 import { BrandMark, Sparkle } from '../components/motifs';
 import { story } from '../data/festival';
 import { PwaPanel, useOnline } from '../pwa/PwaPanel';
 import { primaryNav, sheetNav } from './nav';
 import { useRouteFocus } from './use-route-focus';
-
-const HomePage = lazy(() => import('../pages/HomePage'));
-const AboutPage = lazy(() => import('../pages/AboutPage'));
-const ProgramPage = lazy(() => import('../pages/ProgramPage'));
-const EventsPage = lazy(() => import('../pages/EventsPage'));
-const EventDetailPage = lazy(() => import('../pages/EventDetailPage'));
-const NewsPage = lazy(() => import('../pages/NewsPage'));
-const NewsDetailPage = lazy(() => import('../pages/NewsDetailPage'));
-const TeamPage = lazy(() => import('../pages/TeamPage'));
-const VisitPage = lazy(() => import('../pages/VisitPage'));
-const MapPage = lazy(() => import('../map/MapPage'));
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
-
-class RouteBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  render() {
-    if (!this.state.failed) return this.props.children;
-    return (
-      <main id="route-content" tabIndex={-1} className="page container route-error">
-        <h1 className="display page-title">
-          <span className="display-line">暫時</span>
-          <span className="display-line">打不開</span>
-        </h1>
-        <p>可能是連線中斷，或這一頁尚未儲存為離線內容。請恢復連線後重新開啟。</p>
-        <p className="route-error-actions">
-          <a className="button" href={window.location.href}>
-            重新載入
-          </a>
-          <a className="button button-quiet" href="/program">
-            開啟節目表
-          </a>
-        </p>
-      </main>
-    );
-  }
-}
-
-function RouteFallback() {
-  return (
-    <main className="page container route-loading" aria-busy="true">
-      <span className="sr-only">頁面載入中</span>
-      <div className="skeleton skeleton-title" />
-      <div className="skeleton skeleton-line" />
-      <div className="skeleton skeleton-line short" />
-    </main>
-  );
-}
 
 const tabs = [
   { to: '/', label: '首頁', icon: HouseIcon },
@@ -75,6 +27,7 @@ const tabs = [
 
 export default function App() {
   const location = useLocation();
+  const navigation = useNavigation();
   const online = useOnline();
   const [sheet, setSheet] = useState(false);
   const [english, setEnglish] = useState(false);
@@ -180,26 +133,16 @@ export default function App() {
         )}
       </header>
 
+      <div
+        className="nav-progress"
+        role="progressbar"
+        aria-label="頁面載入中"
+        hidden={navigation.state !== 'loading'}
+      />
       <div id="route-stage">
-        <RouteBoundary key={location.pathname}>
-          <Suspense fallback={<RouteFallback />}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/e" element={<Navigate to="/" replace />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/program" element={<ProgramPage />} />
-              <Route path="/events" element={<EventsPage />} />
-              <Route path="/events/:id" element={<EventDetailPage />} />
-              <Route path="/news" element={<NewsPage />} />
-              <Route path="/news/:id" element={<NewsDetailPage />} />
-              <Route path="/team" element={<TeamPage />} />
-              <Route path="/visit" element={<VisitPage />} />
-              <Route path="/map" element={<MapPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
-        </RouteBoundary>
+        <Outlet />
       </div>
+      <ScrollRestoration />
 
       <footer className="app-footer">
         <div className="container footer-grid">
@@ -211,14 +154,22 @@ export default function App() {
             </p>
             <p className="byline">國立中央大學 {story.edition.ordinal} 松櫻祭</p>
           </div>
-          <nav className="footer-nav" aria-label="頁尾導覽">
-            {primaryNav.map((item) => (
-              <Link key={item.to} to={item.to}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <PwaPanel />
+          <div className="footer-side">
+            <nav className="footer-nav" aria-label="頁尾導覽">
+              {primaryNav.map((item) => (
+                <Link key={item.to} to={item.to}>
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <details className="footer-app disclosure" id="app-offline-details">
+              <summary>
+                應用程式與離線閱讀
+                <CaretDownIcon size={18} weight="bold" aria-hidden="true" />
+              </summary>
+              <PwaPanel />
+            </details>
+          </div>
           <p className="footer-legal small-note">
             本站為學生製作的活動資訊原型，並非國立中央大學正式網站。地圖資料 © OpenStreetMap
             contributors。插畫為暫用設計，官方視覺素材待提供。
@@ -280,7 +231,15 @@ export default function App() {
             ))}
           </nav>
           {/* biome-ignore lint/a11y/useValidAnchor: a real in-page link that also closes the sheet. */}
-          <a className="text-link" href="#app-offline" onClick={() => setSheet(false)}>
+          <a
+            className="text-link"
+            href="#app-offline-details"
+            onClick={() => {
+              setSheet(false);
+              const panel = document.getElementById('app-offline-details');
+              if (panel instanceof HTMLDetailsElement) panel.open = true;
+            }}
+          >
             應用程式與離線閱讀
           </a>
         </div>

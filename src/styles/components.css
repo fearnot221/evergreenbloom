@@ -165,7 +165,7 @@
   padding: var(--space-md) var(--space-md) var(--space-sm);
   border-radius: var(--radius-surface);
   background: var(--color-surface);
-  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-surface);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition:
@@ -246,7 +246,7 @@
 @media (hover: hover) and (pointer: fine) {
   .event-card:has(.event-title a:hover) {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--shadow-surface), var(--shadow-soft);
   }
 }
 
@@ -289,6 +289,7 @@
 
 .tile {
   position: relative;
+  isolation: isolate;
   display: grid;
   align-content: center;
   justify-items: center;
@@ -334,6 +335,27 @@
 
   .tile-byline {
     font-size: max(2.4cqi, 9px);
+  }
+}
+
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    180px circle at var(--mx, 50%) var(--my, 40%),
+    oklch(100% 0 0 / 0.45),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--dur-quick) ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover::before {
+    opacity: 1;
   }
 }
 
@@ -557,7 +579,7 @@
   padding: var(--space-md);
   border-radius: var(--radius-surface);
   background: var(--color-surface-solid);
-  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-surface);
 }
 
 .pwa-panel h2 {

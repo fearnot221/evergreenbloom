@@ -1,5 +1,6 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ArrowLeftIcon, ArrowUpRightIcon } from '../components/icons';
+import { Link } from '../components/links';
 import { MapLink, PageHeader, PrototypeNotice, useDocumentTitle } from '../components/page';
 import { categories, days, getEvent, getLocation, snapshot } from '../data/festival';
 import NotFoundPage from './NotFoundPage';
@@ -19,7 +20,12 @@ export default function EventDetailPage() {
         <ArrowLeftIcon size={18} aria-hidden="true" />
         所有活動
       </Link>
-      <PageHeader lines={event.title.split('，')} lede={event.summary} compact />
+      <PageHeader
+        lines={event.title.split('，')}
+        lede={event.summary}
+        compact
+        morph={`event-${event.id}`}
+      />
       <PrototypeNotice />
       <div className="detail-grid">
         <section className="detail-main">

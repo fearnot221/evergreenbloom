@@ -4,8 +4,16 @@
 }
 
 /* Hero ------------------------------------------------------------------------ */
+/* Scroll progress through the first viewport, driven by a scroll timeline (no JS). */
+@property --hero-scroll {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 .hero {
   position: relative;
+  isolation: isolate;
   display: grid;
   align-items: center;
   min-height: min(calc(100dvh - var(--app-header, 72px) - 2rem), 52rem);
@@ -14,7 +22,53 @@
 
 .hero-copy {
   position: relative;
+  z-index: 2;
+}
+
+/* Cloud bank that closes the hero and drifts up over the motifs on scroll. */
+.hero-clouds {
+  position: absolute;
   z-index: 1;
+  inset: auto calc(50% - 50vw) -4rem;
+  height: clamp(9rem, 22vw, 18rem);
+  pointer-events: none;
+  background:
+    radial-gradient(22% 60% at 8% 70%, var(--cloud) 0%, transparent 70%),
+    radial-gradient(26% 70% at 30% 85%, var(--cloud) 0%, transparent 72%),
+    radial-gradient(24% 55% at 55% 78%, var(--cloud) 0%, transparent 70%),
+    radial-gradient(28% 70% at 80% 82%, var(--cloud) 0%, transparent 72%),
+    radial-gradient(20% 50% at 98% 70%, var(--cloud) 0%, transparent 70%);
+  filter: blur(6px);
+}
+
+/* Depth: each motif drifts by its --depth with the pointer and against the scroll. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hero {
+      animation: hero-scroll linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+  }
+
+  .hero .depth {
+    translate: calc(var(--px, 0) * var(--depth) * 16px)
+      calc(var(--py, 0) * var(--depth) * 12px - var(--hero-scroll) * var(--depth) * 180px);
+  }
+
+  .hero-title {
+    translate: 0 calc(var(--hero-scroll) * -48px);
+  }
+
+  .hero-clouds {
+    translate: 0 calc(var(--hero-scroll) * -90px);
+  }
+}
+
+@keyframes hero-scroll {
+  to {
+    --hero-scroll: 1;
+  }
 }
 
 .hero-title {
@@ -383,11 +437,12 @@
   }
 }
 
-/* Event rail: horizontal scroll-snap, the one horizontal pattern on the page. */
+/* Event rail: horizontal scroll-snap on phones (the one horizontal pattern on the
+   page); a plain three-up grid once there is room. */
 .event-rail {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(16.5rem, 1fr);
+  grid-auto-columns: 82%;
   gap: var(--space-md);
   margin-block: 0 var(--space-md);
   padding: var(--space-2xs) 10px var(--space-sm);
@@ -395,16 +450,23 @@
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
+  scroll-padding-inline: 10px;
+  scrollbar-width: none;
+}
+
+.event-rail::-webkit-scrollbar {
+  display: none;
 }
 
 .event-rail li {
   scroll-snap-align: start;
 }
 
-@media (max-width: 699px) {
+@media (min-width: 700px) {
   .event-rail {
-    grid-auto-columns: 82%;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
   }
 }
 

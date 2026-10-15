@@ -107,7 +107,9 @@ export function PwaPanel() {
 
   return (
     <section className="pwa-panel" id="app-offline" aria-labelledby="pwa-title">
-      <h2 id="pwa-title">應用程式與離線閱讀</h2>
+      <h2 id="pwa-title" className="sr-only">
+        應用程式與離線閱讀
+      </h2>
       <p>
         {saved
           ? `已儲存本版本（${formatSaved(saved)}，台北時間）。`

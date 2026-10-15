@@ -1,5 +1,6 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { CaretDownIcon } from '../components/icons';
+import { Link } from '../components/links';
 import { MapLink, PageHeader, PrototypeNotice, useDocumentTitle } from '../components/page';
 import { categories, days, getEvent, getLocation, snapshot } from '../data/festival';
 import '../styles/pages.css';

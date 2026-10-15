@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '../components/links';
 import { PageHeader, useDocumentTitle } from '../components/page';
 import '../styles/pages.css';
 

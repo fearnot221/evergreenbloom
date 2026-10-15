@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   ArrowClockwiseIcon,
   ArrowCounterClockwiseIcon,
@@ -8,6 +8,7 @@ import {
   MinusIcon,
   PlusIcon,
 } from '../components/icons';
+import { Link } from '../components/links';
 import { PageHeader, useDocumentTitle } from '../components/page';
 import { getLocation, snapshot } from '../data/festival';
 import type { GeoCoordinate } from '../geo/coordinates';

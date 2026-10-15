@@ -7,13 +7,16 @@ build of the 春空 redesign, gzip -9 sizes in KiB; a build estimate, not field 
 
 | Home route, cold cache | Size | Budget |
 | --- | --- | --- |
-| Initial JavaScript (entry 95.5 + Home 1.7 + shared page components 1.8) | ~99 KiB | ≤ 150 KiB |
-| Initial CSS (global 6.2 + Home 1.9) | ~8 KiB | ≤ 50 KiB |
+| Initial JavaScript (entry 112.4 + Home 2.2 + shared page components 1.9) | ~117 KiB | ≤ 150 KiB |
+| Initial CSS (global 6.6 + Home 2.2) | ~9 KiB | ≤ 50 KiB |
 | Display font subset (woff2, preloaded; 632 glyphs) | 86.8 KiB | ≤ 100 KiB |
 | HTML | 0.7 KiB | |
 | Total before images/icons | ~195 KiB | ≤ 1,024 KiB |
 
-Before the redesign the same route loaded about 143 KiB of JavaScript (entry 90.9,
+The second 2026-10-16 pass moved to React Router's data router (route-level lazy
+loading, view transitions, scroll restoration), which added about 17 KiB to the entry
+chunk; it removed the Suspense skeleton flash between routes. Before the redesign the
+same route loaded about 143 KiB of JavaScript (entry 90.9,
 GSAP + ScrollTrigger 43.8, Bloom chunks about 8). Removing GSAP and the Bloom scroll
 choreography accounts for the reduction. The Three.js renderer (146 KiB gzip) still
 loads only on `/map`, after the campus JSON, and is never precached.
