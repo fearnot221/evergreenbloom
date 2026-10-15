@@ -10,12 +10,19 @@ campus festival map and one expressive, single-page homepage. A subsequent appro
 amendment requires **architectural readiness for future pedestrian navigation**.
 Full navigation is not required in the current prototype.
 
-Direction E / Bloom remains the working visual and motion direction. The user
-subsequently authorized implementation, which now includes the multi-page app,
-shared typed prototype data, a functional Three.js map study, and PWA/offline
-foundation. The homepage is `/`; `/e` redirects to it. `/motion` remains a reference.
-The map is arbitrary prototype geometry, not a measured campus or navigation tool.
-Final branding and DESIGN.md remain open. See [ARCHITECTURE.md](ARCHITECTURE.md)
+**Amended 2026-10-16:** the user replaced the Direction E / Bloom visuals with the
+春空 Spring Sky direction derived from the second-edition social posts (see
+[DESIGN.md](DESIGN.md)). Bloom references in later sections are historical context;
+their requirements apply to the current direction where they still make sense. The
+implemented app includes the multi-page shell, shared typed prototype data, a Three.js
+campus map built from OpenStreetMap geometry (community data, not surveyed, not a
+navigation tool) and the PWA/offline foundation. `/` is the homepage; `/e` redirects
+to it; the `/motion` lab and GSAP were removed. Official branding remains open.
+
+**Second-edition facts supplied 2026-10-16** (a screenshot of the official social grid):
+the upcoming edition is the 第二屆 松櫻祭 of 國立中央大學, and the official account has
+published posts titled 活動說明會, 工人招募 and 特約商店. Dates, venues, terms and shop
+lists were not part of the material and remain unconfirmed. See [ARCHITECTURE.md](ARCHITECTURE.md)
 and the latest [prototype notes](PROTOTYPE-NOTES.md) for implemented boundaries
 and verification. Requirements below retain their approval and factual scope.
 
@@ -64,7 +71,7 @@ schedule, and important attendee information whenever those details are confirme
 
 Usability, accessibility, mobile experience, and performance take priority over
 decorative effects. Interaction and motion may contribute to the experience, but
-each must have a clear purpose. Bloom now provides the shared visual/motion
+each must have a clear purpose. 春空 Spring Sky now provides the shared visual/motion
 language; it does not require every page to reproduce the homepage entrance.
 
 ## Factual festival identity

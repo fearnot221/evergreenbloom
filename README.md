@@ -1,9 +1,9 @@
 # 松櫻祭 · Festival Web App prototype
 
-React / TypeScript / Vite, with the chosen Bloom opening and a shared multi-page
-shell. This is a functional prototype, not a published official festival website.
-Official assets, upcoming dates/program, organizer identities and surveyed campus
-data remain TBD. Icons are temporary digital artwork, not an official logo.
+React 19 / TypeScript / Vite 8 multi-page app for the second edition (第二屆) of
+松櫻祭 at National Central University. It is a functional prototype, not the official
+festival website. Upcoming dates, program, venues and organizer identities remain TBD;
+events and program slots are clearly labelled fictional test data.
 
 ```sh
 npm install
@@ -17,40 +17,70 @@ npm run build
 npm run preview -- --port 4173 --strictPort
 ```
 
-**Full PWA preview:** http://127.0.0.1:4173/ . Build before preview. The build generates
-`dist/sw.js` from the Vite dependency manifest. HTTPS or localhost is required for
-service workers. Deployment must serve SPA routes with the application's HTML and
-serve `sw.js` with update-friendly cache headers; the domain/hosting are not chosen.
+Full PWA preview: http://127.0.0.1:4173/ (build first). The build generates `dist/sw.js`
+from the Vite manifest. HTTPS or localhost is required for service workers. Deployment
+must serve SPA routes with the application HTML and serve `sw.js` with update-friendly
+cache headers; domain and hosting are not chosen.
 
-Routes: `/`, `/about`, `/program`, `/events`, `/events/:id`, `/map`, `/news`,
-`/news/:id`, `/team`, `/visit`. `/e` is a compatibility redirect to `/`.
-`/motion` remains a development reference; A/B/C/D and the old index remain removed.
+## Scripts
 
-Try `/program?day=demo-a&category=activity` → “在地圖查看”, or open
-`/map?location=lake-plaza`. The map uses arbitrary prototype geometry and no real
-geographic coordinates. It supports selection, camera controls and an equivalent
-location list. No pedestrian routing, GPS permission, AR or accessibility claim.
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` / `build` / `preview` | Vite dev server, production build + service worker, local preview |
+| `npm run lint` / `npm run format` | Biome lint + format check / apply safe fixes |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Vitest (content, source hygiene, route rendering) + geo/routing node tests |
+| `npm run check` | lint, typecheck and tests together (what CI runs before `build`) |
+| `npm run fonts -- <NotoSansTC-Black.ttf>` | Rebuild the display-font subset after adding new copy |
+| `npm run map:fetch` / `map:data` / `map:test` | Campus data pipeline, see [MAP-DATA.md](docs/MAP-DATA.md) |
 
-Content maintenance:
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, tests and build on pushes to `main`
+and on pull requests.
 
-- `src/content.ts`: existing festival story and historical context.
-- `src/data/model.ts`: domain entities and future routing contracts.
-- `src/data/festival.ts`: a single typed, revisioned prototype content snapshot.
-- `src/map/map-data.ts`: replaceable visual geometry and coordinate-frame metadata.
-- `src/map/engine.ts`: lazy Three.js visualization, separate from domain/routing data.
+## Routes
 
-To test offline, open the production preview online, expand “應用程式／離線”, and
-select “儲存核心頁面”. Wait for successful confirmation, then go offline and reload
-`/program`, an event detail, `/map`, or `/visit`. Unvisited core routes are included.
-Three.js/map rendering modules and `/motion` are excluded; offline map selection
-and event links work through the text list. Without a completed save, the installed
-worker supplies a small offline fallback. A first-ever offline visit cannot work.
+`/`, `/about`, `/news`, `/news/:id`, `/program`, `/events`, `/events/:id`, `/map`,
+`/visit`, `/team`. `/e` redirects to `/`. Unknown paths render a not-found page.
+Every page is its own lazy chunk.
 
-The service worker does not force activation or reload visitors. Updates wait for
-old clients to close; the UI notes pending updates. After an update, save the new
-core version again. Saved content is a build snapshot, not live event information;
-browser storage may be cleared. Native installation depends on platform support.
+Try `/program?day=demo-a&category=activity`, then 在地圖查看, or open
+`/map?location=lake-plaza`. The map renders OpenStreetMap campus geometry (not surveyed);
+there is no public pedestrian routing, GPS permission request, AR or accessibility claim.
 
-See [prototype notes](docs/PROTOTYPE-NOTES.md) for current validation and limitations,
-and [architecture](docs/ARCHITECTURE.md) for implemented boundaries versus future
-navigation work. Final `DESIGN.md` and official branding are still open.
+## Source layout
+
+| Path | Owns |
+| --- | --- |
+| `src/app/` | Shell: header, routes, mobile tab bar and 更多 sheet, footer, route focus/scroll |
+| `src/pages/` | One component per route |
+| `src/components/` | Page header, cards, announcement triptych, motifs, icon re-exports |
+| `src/styles/` | `tokens.css` (all design tokens), `base`, `shell`, `components`, `home`, `pages` |
+| `src/data/` | `content.ts` (story copy), `festival.ts` (typed snapshot), `model.ts` (domain types) |
+| `src/map/`, `src/geo/` | Lazy Three.js renderer, flat SVG fallback, coordinate frames, dev routing |
+| `src/pwa/` | Service-worker registration and the explicit offline-save panel |
+
+Design direction and tokens: [DESIGN.md](docs/DESIGN.md). Architecture and boundaries:
+[ARCHITECTURE.md](docs/ARCHITECTURE.md). Latest verification:
+[PROTOTYPE-NOTES.md](docs/PROTOTYPE-NOTES.md).
+
+## Display font
+
+Headlines use a self-hosted subset of Noto Sans TC Black (SIL OFL 1.1, license in
+`public/fonts/OFL.txt`) that contains only characters present in `src/`. A test fails
+when new copy introduces a character the subset lacks; rebuild with:
+
+```sh
+npm run fonts -- path/to/NotoSansTC-Black.ttf
+```
+
+The source is the Noto Sans TC variable font from google/fonts, instanced at `wght=900`
+with `fonttools varLib.instancer`. `pyftsubset` needs Brotli; set `PYFTSUBSET` to a
+specific binary if the default one lacks it.
+
+## Offline
+
+Open the production preview online and use 應用程式與離線閱讀 in the footer (or the
+更多 sheet on mobile) to save core pages. After a successful save you can go offline and
+reload `/program`, an event detail, `/map` (flat plan and list) or `/visit`. Three.js is
+never precached. Without a save the worker serves a small offline page; a first-ever
+offline visit cannot work. Updates wait for old tabs to close; save again afterwards.

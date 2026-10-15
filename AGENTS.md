@@ -17,6 +17,11 @@ in ARCHITECTURE.md and the latest PROTOTYPE-NOTES.md; preserve explicit prototyp
 TBD, geography and official-brand boundaries. Earlier phase-specific prohibitions
 are not a ban on subsequently authorized implementation.
 
+Redesign note (2026-10-16): at the user's request the Bloom visuals, `/motion` lab and
+GSAP were replaced by the 春空 Spring Sky system derived from the second-edition posts.
+DESIGN.md records the adopted tokens and components; reuse them. Run `npm run check`
+(Biome, TypeScript, Vitest, geo tests) before handing back code changes.
+
 Read these documents before frontend work:
 
 - [Product](docs/PRODUCT.md)
@@ -49,7 +54,7 @@ keep commands path-scoped and never stage unrelated files.
    and provide keyboard/touch and reduced-motion equivalents. No animation is a
    valid decision. Then check [Transitions.dev](https://transitions.dev/) for a
    relevant component-state transition pattern and adapt it to the existing
-   松果 × 櫻花 / Bloom vocabulary. Follow the interactive-UI workflow in
+   松果 × 櫻花 / 春空 vocabulary. Follow the interactive-UI workflow in
    INTERACTIONS.md; a reference is not a mandate to animate or copy its styling.
 6. **Use GSAP only when justified.** Prefer CSS/native behavior for simple needs.
    Consider Motion only for justified state/gesture complexity. Use GSAP skills
@@ -80,14 +85,14 @@ keep commands path-scoped and never stage unrelated files.
 | Hallmark | Detect generic / AI-generated website patterns |
 | Emil / `emil-design-eng` | Interaction purpose, philosophy, timing and behavior |
 | [Transitions.dev](https://transitions.dev/) | High-quality UI state transitions and implementation patterns; a reference resource, not festival identity |
-| GSAP | Justified complex choreography, timelines, scroll-driven animation and major Bloom sequences |
+| GSAP | Justified complex choreography, timelines, scroll-driven animation and major 春空 sequences |
 | Three.js / WebGL | Spatial / 3D experiences where DOM/CSS is insufficient |
 
 For each interactive UI change, apply this sequence within the broader workflow:
 
 1. Determine purpose using Emil principles; no motion is a valid result.
 2. Check Transitions.dev for a relevant pattern.
-3. Translate it into 松果 × 櫻花 / Bloom: **SEED → UNFOLD → BLOSSOM → FESTIVAL**.
+3. Translate it into 松果 × 櫻花 / 春空: **SEED → UNFOLD → BLOSSOM → FESTIVAL**.
 4. Use CSS or native browser animation when sufficient.
 5. Use GSAP only when choreography or timeline complexity justifies it.
 6. Review reduced-motion behavior.
@@ -108,9 +113,9 @@ PWA states and small page-transition details. These are applicable contexts, not
 a feature or animation backlog. Detailed constraints live in INTERACTIONS.md.
 
 Do not blindly copy transitions, animate every component, or add impressive effects
-without purpose. Preserve Bloom's existing motion language and GSAP choreography;
+without purpose. Preserve the 春空 motion language documented in INTERACTIONS.md;
 component patterns do not replace major sequences. Adding this resource authorizes
-no E2 redesign, final DESIGN decision, dependency installation or automatic rewrite.
+no redesign, dependency installation or automatic rewrite.
 
 ## Using installed skills
 

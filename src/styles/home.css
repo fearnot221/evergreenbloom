@@ -1,0 +1,457 @@
+/* Home: hero poster, announcement strip, name pair, edition ledger, event rail, campus band. */
+.home > section + section {
+  margin-top: var(--space-4xl);
+}
+
+/* Hero ------------------------------------------------------------------------ */
+.hero {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: min(calc(100dvh - var(--app-header, 72px) - 2rem), 52rem);
+  padding-block: var(--space-xl) var(--space-2xl);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  display: flex;
+  font-size: var(--text-display);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.hero-byline {
+  margin-top: var(--space-md);
+  font-size: clamp(1rem, 0.7rem + 1.1vw, 1.6rem);
+}
+
+.hero-lede {
+  margin-top: var(--space-md);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-lg);
+}
+
+.hero-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-pine {
+  position: absolute;
+  width: clamp(120px, 20vw, 290px);
+  right: clamp(-30px, 4vw, 90px);
+  top: 4%;
+  transform: rotate(-18deg);
+}
+
+.hero-sakura {
+  position: absolute;
+}
+
+.hero-sakura.big {
+  width: clamp(170px, 26vw, 380px);
+  right: clamp(-60px, 16vw, 300px);
+  top: 30%;
+  transform: rotate(10deg);
+}
+
+.hero-sakura.mid {
+  width: clamp(80px, 11vw, 160px);
+  right: clamp(-10px, 2vw, 40px);
+  bottom: 10%;
+  transform: rotate(-30deg);
+}
+
+.hero-sakura.low {
+  width: clamp(60px, 7vw, 100px);
+  right: clamp(140px, 36vw, 560px);
+  bottom: 4%;
+  transform: rotate(40deg);
+  opacity: 0.9;
+}
+
+.hero-sparkle {
+  position: absolute;
+  width: clamp(30px, 4vw, 64px);
+}
+
+.hero-sparkle.s1 {
+  right: clamp(20px, 30vw, 520px);
+  top: 12%;
+}
+
+.hero-sparkle.s2 {
+  right: 3%;
+  top: 46%;
+  width: clamp(22px, 2.6vw, 40px);
+  --delay: -1.8s;
+}
+
+.hero-sparkle.s3 {
+  left: clamp(9rem, 36vw, 36rem);
+  bottom: 22%;
+  width: clamp(26px, 3.4vw, 54px);
+  --delay: -3.2s;
+}
+
+/* Loose petals drift down across the hero for two passes, then stop.
+   Ambience only; off for reduced motion. */
+.petal-fall {
+  position: absolute;
+  inset: -10% calc(-1 * var(--gutter)) 0;
+  overflow: hidden;
+  display: none;
+}
+
+.petal {
+  position: absolute;
+  top: -40px;
+  left: var(--x);
+  width: var(--size);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .petal-fall {
+    display: block;
+  }
+
+  .hero-art .petal {
+    animation: petal-fall var(--dur) linear var(--delay) 2;
+  }
+}
+
+@keyframes petal-fall {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  10% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(60px, 50vh) rotate(160deg);
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-20px, 105vh) rotate(320deg);
+  }
+}
+
+/* Entrance: the title rises once per visit to Home; supporting copy follows. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-title {
+    animation: char-rise var(--dur-entrance) var(--ease-out) 80ms both;
+  }
+
+  .hero-byline,
+  .hero-lede,
+  .hero-actions {
+    animation: fade-up 600ms var(--ease-out) both;
+    animation-delay: 380ms;
+  }
+
+  .hero-art .sparkle {
+    animation:
+      bloom-in 900ms var(--ease-out) both,
+      twinkle 4.8s var(--ease-in-out) 900ms 3;
+  }
+
+  .hero-art .sakura,
+  .hero-art .pine-cone {
+    animation: bloom-in 900ms var(--ease-out) both;
+  }
+}
+
+@keyframes char-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.18em);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bloom-in {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (max-width: 699px) {
+  .hero {
+    align-items: end;
+    min-height: auto;
+    padding-top: clamp(13rem, 62vw, 18rem);
+  }
+
+  .hero-pine {
+    width: 112px;
+    right: 18px;
+    top: 0;
+  }
+
+  .hero-sakura.big {
+    width: 168px;
+    right: auto;
+    left: -36px;
+    top: 26px;
+  }
+
+  .hero-sakura.mid {
+    width: 72px;
+    right: 132px;
+    bottom: auto;
+    top: 150px;
+  }
+
+  .hero-sakura.low {
+    display: none;
+  }
+
+  .hero-sparkle.s1 {
+    right: 150px;
+    top: 34px;
+  }
+
+  .hero-sparkle.s2 {
+    top: 150px;
+  }
+
+  .hero-sparkle.s3 {
+    left: auto;
+    right: 40px;
+    bottom: 34%;
+  }
+}
+
+/* Announcement strip ------------------------------------------------------- */
+.home-news > .text-link {
+  margin-top: var(--space-sm);
+}
+
+/* Name pair: 松 and 櫻 ------------------------------------------------------------ */
+.meaning-pair {
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+.meaning {
+  display: grid;
+  gap: var(--space-xs);
+  max-width: 30rem;
+}
+
+.meaning-figure {
+  position: relative;
+  height: clamp(11rem, 26vw, 17rem);
+  margin-bottom: var(--space-sm);
+}
+
+.meaning-glyph {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(9rem, 22vw, 15rem);
+  line-height: 1;
+}
+
+.meaning-art {
+  position: absolute;
+  left: clamp(6rem, 17vw, 11rem);
+  top: 10%;
+  width: clamp(110px, 16vw, 190px);
+}
+
+.meaning .pine-cone {
+  transform: rotate(16deg);
+}
+
+.meaning .sakura {
+  top: 30%;
+  transform: rotate(-12deg);
+}
+
+.meaning h3 {
+  font-size: var(--text-xl);
+}
+
+.meaning-note {
+  display: grid;
+  gap: var(--space-xs);
+  max-width: var(--measure);
+  margin-top: var(--space-2xl);
+  color: var(--color-ink-soft);
+}
+
+.meaning-note .text-link {
+  justify-self: start;
+}
+
+@media (min-width: 760px) {
+  .meaning-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .meaning:nth-child(2) {
+    margin-top: var(--space-4xl);
+    justify-self: end;
+  }
+}
+
+/* Edition ledger ------------------------------------------------------------------ */
+.edition-panel {
+  display: grid;
+  gap: var(--space-lg);
+  padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+}
+
+.edition-title {
+  font-size: var(--text-3xl);
+}
+
+.edition-ledger {
+  display: grid;
+  gap: var(--space-sm);
+  align-content: center;
+}
+
+.edition-ledger div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1.5px dashed var(--color-line);
+}
+
+.edition-ledger dt {
+  font-weight: 700;
+}
+
+.edition-ledger dd {
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: var(--color-violet-strong);
+}
+
+.edition-history {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-sm);
+}
+
+@media (min-width: 760px) {
+  .edition-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* Event rail: horizontal scroll-snap, the one horizontal pattern on the page. */
+.event-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(16.5rem, 1fr);
+  gap: var(--space-md);
+  margin-block: 0 var(--space-md);
+  padding: var(--space-2xs) 10px var(--space-sm);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.event-rail li {
+  scroll-snap-align: start;
+}
+
+@media (max-width: 699px) {
+  .event-rail {
+    grid-auto-columns: 82%;
+  }
+}
+
+/* Campus band ----------------------------------------------------------------- */
+.campus-band {
+  position: relative;
+  display: grid;
+  gap: var(--space-lg);
+  padding: clamp(2rem, 1rem + 5vw, 5rem) clamp(1.25rem, 1rem + 3vw, 4rem);
+  border-radius: var(--radius-surface);
+  background:
+    radial-gradient(50% 60% at 85% 20%, var(--cloud) 0%, transparent 70%),
+    linear-gradient(140deg, var(--color-rose-wash), var(--sky-mid));
+  overflow: hidden;
+}
+
+.campus-title {
+  font-size: clamp(4.5rem, 2rem + 11vw, 10rem);
+}
+
+.campus-copy {
+  display: grid;
+  gap: var(--space-sm);
+  max-width: var(--measure);
+  align-self: end;
+}
+
+.campus-sparkle {
+  position: absolute;
+  width: 48px;
+}
+
+.campus-sparkle.a {
+  top: 12%;
+  right: 8%;
+}
+
+.campus-sparkle.b {
+  bottom: 14%;
+  left: 42%;
+  width: 30px;
+  --delay: -2s;
+}
+
+@media (min-width: 860px) {
+  .campus-band {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+  }
+}

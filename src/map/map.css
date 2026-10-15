@@ -1,6 +1,312 @@
-.geo-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}.geo-labels button,.geo-labels span{position:absolute;top:0;left:0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:20px;padding:3px 5px;border:1px solid #9c819d;background:#fff8fc;color:#493047;text-align:center;box-shadow:0 1px 3px #49304720}.geo-labels button{pointer-events:auto;min-height:36px;cursor:pointer}.geo-labels .is-selected{background:#8d174c;color:white}.geo-labels [hidden]{display:none}.flat-campus{width:100%;height:100%;position:absolute;inset:0;background:#c9dcff}.map-attribution{font-size:12px;line-height:1.8;margin-top:24px}.map-attribution a{text-decoration:underline}.map-debug{margin:32px 0;padding:24px;border:2px dashed #a51e59}.map-debug label{display:block;margin:12px 0}.map-debug select{max-width:100%;margin-left:12px}.map-north{position:absolute;top:64px;left:20px;pointer-events:none;color:#493047;font-weight:700;transform-origin:center}.map-stage .map-tools button{min-width:44px;min-height:44px}.map-stage .map-instructions{pointer-events:none}.map-canvas canvas{width:100%;height:100%}@media(max-width:600px){.geo-labels button{min-height:44px}.map-stage .map-tools{gap:3px}.map-stage .map-tools button{padding:8px}.map-stage .map-watermark{font-size:9px}.map-stage .map-instructions{font-size:10px;max-width:calc(100% - 32px)}.map-stage{isolation:isolate}}
+/* Map route. The canvas, flat SVG plan and labels share one framed stage. */
+.map-page .page-header {
+  padding-bottom: var(--space-lg);
+}
 
-@media(max-width:600px){.map-stage .map-tools{display:flex;flex-wrap:nowrap;right:12px;top:12px;grid-template-columns:none}.map-stage .map-tools button{flex:0 0 auto}.map-stage .map-watermark{top:68px;max-width:none}.map-north{top:94px}.map-stage .map-tools button:last-child{font-size:11px}}
+.map-workspace {
+  display: grid;
+  gap: var(--space-md);
+}
 
-.map-canvas:focus-visible{outline:3px solid #8d174c;outline-offset:-3px}.geo-labels button:focus-visible{outline:3px solid #493047;outline-offset:2px}.map-stage button:active{background:#f5d8e7}.geo-labels button:active{background:#f5d8e7;color:#493047}.map-debug select{font-size:16px}
-.map-stage .map-tools{max-width:none}
+@media (min-width: 960px) {
+  .map-workspace {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    align-items: start;
+  }
+}
+
+.map-stage {
+  position: relative;
+  isolation: isolate;
+  height: clamp(22rem, 62vh, 40rem);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface-solid);
+  box-shadow: var(--shadow-soft);
+}
+
+.map-canvas,
+.flat-campus,
+.map-skeleton {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.map-canvas canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.map-canvas:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+.map-skeleton {
+  background: var(--color-surface);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .map-skeleton {
+    animation: skeleton-pulse 1.4s ease-in-out infinite alternate;
+  }
+}
+
+.map-tools {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.map-tools button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-ink);
+  transition:
+    background-color var(--dur-quick) ease,
+    transform var(--dur-press) var(--ease-out);
+}
+
+.map-tools button:active:not([disabled]) {
+  transform: scale(0.92);
+}
+
+.map-tools button[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .map-tools button:hover:not([disabled]) {
+    background: var(--color-rose-wash);
+    color: var(--color-rose-strong);
+  }
+}
+
+.map-touch {
+  position: absolute;
+  left: var(--space-sm);
+  bottom: var(--space-sm);
+  z-index: 2;
+}
+
+@media (pointer: fine) {
+  .map-touch {
+    display: none;
+  }
+}
+
+.map-touch[aria-pressed="true"] {
+  background: var(--color-rose-strong);
+  border-color: var(--color-rose-strong);
+  color: var(--color-on-rose);
+}
+
+/* Labels and the north arrow are DOM nodes created by engine.ts. */
+.geo-labels {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.geo-labels button,
+.geo-labels span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-solid);
+  color: var(--color-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px -6px oklch(40% 0.08 300 / 0.5);
+}
+
+.geo-labels span {
+  font-weight: 400;
+  color: var(--color-ink-soft);
+}
+
+.geo-labels button {
+  pointer-events: auto;
+  min-height: 36px;
+  cursor: pointer;
+}
+
+.geo-labels .is-selected {
+  background: var(--color-rose-strong);
+  border-color: var(--color-rose-strong);
+  color: var(--color-on-rose);
+}
+
+.geo-labels [hidden] {
+  display: none;
+}
+
+.geo-labels button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .geo-labels button {
+    min-height: 44px;
+  }
+}
+
+.map-north {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface-solid);
+  color: var(--color-rose-strong);
+  font-weight: 800;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+/* Side panel ------------------------------------------------------------------- */
+.map-panel {
+  display: grid;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.map-panel h2 {
+  font-size: var(--text-lg);
+}
+
+.map-status {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-violet-strong);
+}
+
+.location-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+}
+
+.location-list button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-height: 44px;
+  padding: 0 var(--space-sm);
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-solid);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-align: left;
+  transition:
+    background-color var(--dur-quick) ease,
+    border-color var(--dur-quick) ease,
+    color var(--dur-quick) ease,
+    transform var(--dur-press) var(--ease-out);
+}
+
+.location-list button:active {
+  transform: scale(0.97);
+}
+
+.location-list button[aria-pressed="true"] {
+  background: var(--color-rose-strong);
+  border-color: var(--color-rose-strong);
+  color: var(--color-on-rose);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .location-list button:not([aria-pressed="true"]):hover {
+    border-color: var(--color-rose-strong);
+  }
+}
+
+.location-flag {
+  font-size: var(--text-xs);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.location-detail {
+  display: grid;
+  gap: var(--space-2xs);
+  padding-top: var(--space-sm);
+  border-top: 1.5px dashed var(--color-line);
+}
+
+.location-detail h3 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-xl);
+  color: var(--color-rose-strong);
+}
+
+.location-detail h4 {
+  margin-top: var(--space-xs);
+  font-size: var(--text-sm);
+}
+
+.location-kind {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-violet-strong);
+}
+
+.map-help {
+  max-width: 48rem;
+}
+
+.map-debug {
+  margin-top: var(--space-xl);
+  padding: var(--space-md);
+  border: 2px dashed var(--color-rose-strong);
+  border-radius: var(--radius-small);
+}
+
+.map-debug label {
+  display: block;
+  margin: var(--space-xs) 0;
+}
+
+.map-debug select {
+  max-width: 100%;
+  margin-left: var(--space-xs);
+  font-size: 16px;
+}

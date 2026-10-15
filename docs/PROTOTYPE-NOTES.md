@@ -1,11 +1,73 @@
-# Phase 5 — Direction E / Bloom and historical records
+# Prototype notes and historical records
 
-Current pass · 2026-09-30 · Direction E is exploratory, not production or official branding.
-**A/B/C were rejected by the user.** Their implementations were subsequently removed; their evaluation records below
-are historical, not candidates to polish or combine.
-The earlier second-pass evaluation is preserved below as a historical record.
+## Current pass · 春空 Spring Sky redesign (2026-10-16)
 
-## Current pass — E2 full-site creative refinement
+The user supplied a screenshot of the second-edition (第二屆) official social grid and
+asked for a full UI/UX redesign in that style, the clean-up items from the project
+analysis, and preparation for a later architecture change. Skills applied: Taste
+(`design-taste-frontend`) for hierarchy and the pre-flight checklist, Hallmark for the
+anti-slop review and studied-DNA extraction (image mode, no pixels copied), Emil
+(`emil-design-eng`) for motion purpose, timing and reduced motion, and Transitions.dev
+for the sheet, accordion and skeleton patterns.
+
+**Design read:** event companion for students and campus visitors, poster-like and
+soft, built from the posts' lavender sky, blush clouds, heavy rose display type,
+grey-violet identity line, sparkles, sakura and pine cones. Dials: variance 7,
+motion 5, density 4. Decisions are recorded in [DESIGN.md](DESIGN.md).
+
+### What changed
+
+- Code: the dense one-line sources were reformatted (Biome) and the app split into
+  `src/app`, `src/pages` (one lazy chunk per route), `src/components`, `src/styles`,
+  `src/pwa`; the map modules were renamed (`MapPage.tsx`, `FlatMap.tsx`,
+  `RoutingDebug.tsx`) and re-coloured through a shared palette.
+- Removed: Direction E home, Bloom/seed components, the `/motion` lab, four global
+  stylesheets (about 90 KB raw), and the GSAP dependency. Recoverable from a37e655.
+- Added: self-hosted Noto Sans TC Black subset and its build script, Phosphor icons,
+  hand-built motif SVGs, new app icons, dark (夜櫻) theme, offline page restyle.
+- Content: edition copy now says 第二屆; three announcements (活動說明會, 工人招募,
+  特約商店) record only what the posts show, with source and pending status. Events
+  and program slots remain fictional and labelled.
+- Tooling: `npm run lint|format|typecheck|test|check|fonts`, Vitest suites in `tests/`,
+  GitHub Actions CI. Package renamed `songying-festival-app`.
+
+### Verification performed
+
+- `npm run lint` (Biome) clean; `tsc --noEmit` clean; Vitest 18/18 (content integrity,
+  font coverage, no em/en dashes or stray hex colours in `src`, every route renders one
+  `main` and one `h1`, program URL filters, detail and not-found routes); geo node tests
+  6/6; `npm run build` succeeds with no warnings.
+- Browser (in-app Chromium, dev server): all 12 representative routes rendered with
+  one `main`/`h1`, a route title and no horizontal overflow at 1440 px; no console
+  errors. Home, Program, News, About, Events, Team and Map inspected at 1440 × 900;
+  Home, Program and News at 375 × 812; Home and News in the dark theme.
+- Keyboard: skip link and header focus rings visible; route changes move focus to
+  `main`; the 更多 sheet opens with focus on 關閉, closes on Escape and returns focus
+  to 更多.
+- Contrast (computed from tokens): display rose on the lightest sky about 3.3:1
+  (large text), on paper 5.2:1; ink on sky above 7:1; white on rose about 5.2:1.
+
+### Iterations made from the review
+
+| Found | Change |
+| --- | --- |
+| Display rose read brown and failed 3:1 on the darker sky | Lightened the sky top, moved rose to `oklch(54% 0.16 355)` |
+| Announcement tile byline overlapped at 375 px | Container query drops 國立中央大學 under 560 px tile strip width |
+| Header text collided with scrolled content | Scroll-driven frosted header bar |
+| Events bento left an empty cell | 2+1 / 1+2 rhythm on a fixed three-column grid |
+| Sheet stayed off-screen | Nested `@starting-style` was not honoured; moved to top-level rules |
+| Duplicate CTA labels for the same destination | One label per intent (最新消息, 校園地圖) |
+| Letter-by-letter title and infinite loops conflicted with INTERACTIONS.md | Whole-title entrance; sparkles and petals stop after finite passes |
+
+### Not verified
+
+Real phones, Safari/Firefox, screen readers, 200% zoom, the reduced-motion and
+reduced-transparency media queries in a browser (reviewed in CSS only), the
+production service-worker save/offline flow after this change, Core Web Vitals,
+and tablet widths between 768 and 960 px. The hands from the posts are not
+reproduced; official artwork and logo are still needed.
+
+## Historical pass — E2 full-site creative refinement
 
 2026-09-30. Implemented against the working multi-page app, after inspecting and
 scrolling all eight principal routes plus representative event/news details at
