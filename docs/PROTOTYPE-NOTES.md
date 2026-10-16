@@ -1,5 +1,29 @@
 # Prototype notes and historical records
 
+## Current pass · website / game repository split (2026-10-17)
+
+The official website now builds independently for GitHub Pages. Game code, device
+storage, install manifest and offline-save UI moved to `fearnot221/evergreenbloom-pwa`.
+The public site retains `/play` as an introduction and a configurable external
+handoff. No game origin has been selected, so its entry currently says the URL is
+not announced. Historical combined-app records below are superseded by this pass.
+
+Verified: `npm run check` (30 Vitest tests and 6 geo tests), project-base production
+build with `VITE_BASE_PATH=/evergreenbloom/`, 21 route-entry files through a strict
+static HTTP server, all referenced HTML/CSS public assets, absent game chunks and
+install manifest in the website output. Tests cover configured/unconfigured game
+links, QR query preservation and scoped legacy-worker retirement. Desktop browser
+inspection of `/evergreenbloom/play/` confirmed the preserved design and unavailable
+app-URL notice. `npm audit` reports zero vulnerabilities after a source-map-js patch
+lock update. Existing Biome deprecation and Vite future-native-config warnings remain.
+The main entry is 119.71 kB gzip; this is a build artifact measurement, not a mobile
+performance result or budget compliance claim.
+
+Not verified: real mobile install, screen readers, cross-browser / narrow viewport /
+zoom / reduced-motion sessions, migration of previous installed apps, production
+custom domain or a PWA public origin. No backend, login or prize redemption was
+implemented. See README.md for setup and old device-local progress limitations.
+
 ## Current pass · v6 「櫻吹雪 · 一陣風」 main handoff (2026-10-17)
 
 This snapshot promotes the current `claude/songying-season-website-91487a`

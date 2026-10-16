@@ -1,5 +1,17 @@
 # Interactions
 
+## Deployment split · 2026-10-17
+
+The official website is a static GitHub Pages build. Install, offline-save and game
+interactions now belong to the separate Docker PWA repository; historical inventories
+below describe the previous combined app. Existing official-site visual/motion tokens
+are preserved. Cross-site links use native anchors and existing button styles, without
+new animation or dependencies. Consulted https://transitions.dev/ for component-state
+patterns: this handoff needs no animated state transition. Reduced motion keeps the
+same link behavior. Website JS no longer imports game/install modules; measurements
+must be taken again before asserting any budget improvement. See ARCHITECTURE.md
+and README.md for deployment and legacy-worker boundaries.
+
 ## Existing behavior
 
 The 2026-09-29 greenfield inspection predates the implemented E2 Festival Web App.

@@ -18,7 +18,7 @@ export default function RouteError() {
         <a className="button" href={window.location.href}>
           重新載入
         </a>
-        <a className="button button-ghost" href="/program">
+        <a className="button button-ghost" href={`${import.meta.env.BASE_URL}program`}>
           開啟節目表
         </a>
       </p>

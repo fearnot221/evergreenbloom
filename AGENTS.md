@@ -144,3 +144,12 @@ and performance. Record consequential design decisions in the appropriate doc.
 - Do not fabricate content or performance measurements to fill a template.
 - Choose validation proportional to the change. For docs, check links, consistency,
   evidence, and file scope; application builds are unnecessary for prose-only edits.
+
+## Deployment split (2026-10-17)
+
+This repository now owns the static official website only (GitHub Pages). The game
+PWA is the independent `fearnot221/evergreenbloom-pwa` repository, deployed with Docker.
+Do not reintroduce game storage, install UI or an active caching worker here. Keep
+`public/sw.js` as the retirement worker for the former combined app. See the current
+boundary at the top of docs/ARCHITECTURE.md. Run `npm run check` and a project-base
+production build before handing back deployment changes.

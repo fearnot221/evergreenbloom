@@ -1,5 +1,5 @@
 import type { CampusFeature, FestivalLayer } from '../geo/types';
-export const CAMPUS_URL = '/data/ncu-campus.json';
+export const CAMPUS_URL = `${import.meta.env.BASE_URL}data/ncu-campus.json`;
 export const festivalLayer: FestivalLayer = {
   editionId: 'upcoming-tbd',
   revision: 'empty-1',

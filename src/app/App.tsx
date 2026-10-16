@@ -10,7 +10,6 @@ import {
 import {
   ArrowUpRightIcon,
   CalendarDotsIcon,
-  CaretDownIcon,
   HouseIcon,
   ListIcon,
   MapTrifoldIcon,
@@ -23,8 +22,8 @@ import { Roll } from '../components/Roll';
 import { display } from '../data/display-copy';
 import { story } from '../data/festival';
 import { poster } from '../data/poster-copy';
-import { PwaPanel, useOnline } from '../pwa/PwaPanel';
 import { type NavItem, primaryNav, quickNav, secondaryNav } from './nav';
+import { useOnline } from './use-online';
 import { useRouteFocus } from './use-route-focus';
 
 // Header condensing, the scroll-turned emblem and the footer reveal (GSAP), after paint.
@@ -189,13 +188,6 @@ export default function App() {
               </Link>
             ))}
           </nav>
-          <details className="footer-app" id="app-offline-details">
-            <summary>
-              應用程式與離線閱讀
-              <CaretDownIcon size={16} weight="bold" aria-hidden="true" />
-            </summary>
-            <PwaPanel />
-          </details>
         </div>
         {/* 緞帶: the closing band runs the width of the page. */}
         <Ribbon text={display.footerRibbon} className="footer-ribbon" />
@@ -280,18 +272,6 @@ export default function App() {
                 </NavLink>
               ))}
             </nav>
-            {/* biome-ignore lint/a11y/useValidAnchor: a real in-page link that also closes the menu. */}
-            <a
-              className="menu-offline"
-              href="#app-offline-details"
-              onClick={() => {
-                setMenu(false);
-                const panel = document.getElementById('app-offline-details');
-                if (panel instanceof HTMLDetailsElement) panel.open = true;
-              }}
-            >
-              應用程式與離線閱讀
-            </a>
           </div>
         </div>
       </dialog>

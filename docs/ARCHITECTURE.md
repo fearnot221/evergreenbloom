@@ -1,5 +1,35 @@
 # Festival Web App — architecture and implementation status
 
+## Current deployment boundary · 2026-10-17
+
+The user authorized two independent public repositories. This supersedes earlier
+one-origin/installable-official-site descriptions below; those remain historical.
+
+- `fearnot221/evergreenbloom` (this repository): static React/Vite official-site
+  prototype, deployed only to GitHub Pages. Public information, map and `/play`
+  introduction remain here. No login, game implementation, install manifest or
+  offline-save UI. `VITE_PWA_URL` configures the independent game origin; when absent
+  the page says the app URL has not been announced.
+- `fearnot221/evergreenbloom-pwa`: independently built game PWA, deployed through
+  Docker Compose/Nginx. Owns `/game`, `/play` installation/privacy and `/stamp/:spot`.
+  The official map is reached through an external link. `VITE_WEBSITE_URL` identifies
+  the official site. No workspace dependency, shared runtime API or automatic data
+  synchronization exists; copied visual/content foundations evolve independently.
+- Game storage is still the existing device-local prototype. Docker deployment does
+  not add authentication, a database, server verification, photo review or redemption.
+  These require a separately authorized backend implementation before prize use.
+- The official-site build emits HTML entry files at known public paths (including
+  content-derived event/news details) plus `404.html`; React still renders content in
+  the browser. This is static hosting, not server rendering or SEO prerendering.
+  Vite base, router basename and fetched assets support project Pages subpaths.
+- Official `public/sw.js` retires the old worker and only its `songying-core-*` /
+  `songying-shell-*` caches. Device-local stamps are not deleted. Old offline clients
+  must reconnect to receive retirement. A new origin cannot read old localStorage;
+  installed prototypes must be reinstalled and progress does not migrate automatically.
+- Deployment instructions and URL settings are in README.md. Official branding,
+  content, geography and prototype boundaries are unchanged.
+
+
 2026-09-30 · Implementation pass authorized after the documentation phase.
 
 ## 1. Current implementation and future boundaries

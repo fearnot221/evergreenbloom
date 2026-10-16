@@ -10,7 +10,7 @@ export default function RoutingDebug({ onRoute }: { onRoute: (points: GeoCoordin
     [error, setError] = useState('');
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/data/ncu-graph.json', { signal: controller.signal })
+    fetch(`${import.meta.env.BASE_URL}data/ncu-graph.json`, { signal: controller.signal })
       .then((r) => {
         if (!r.ok) throw Error();
         return r.json();

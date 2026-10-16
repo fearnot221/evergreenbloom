@@ -1,11 +1,11 @@
 {
-  "name": "songying-festival-app",
+  "name": "songying-festival-website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build && node scripts/build-sw.mjs",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "map:fetch": "python3 scripts/geo/fetch.py",
     "map:data": "python3 scripts/geo/normalize.py && node --experimental-strip-types scripts/geo/process.mjs",

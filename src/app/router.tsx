@@ -1,6 +1,11 @@
 import type { ComponentType } from 'react';
-import { createBrowserRouter, type RouteObject, redirect } from 'react-router-dom';
-import { isStandalone } from '../game/stamp-store';
+import {
+  createBrowserRouter,
+  type RouteObject,
+  redirect,
+  redirectDocument,
+} from 'react-router-dom';
+import { gameHref } from '../data/deployment';
 import App from './App';
 import RouteError from './RouteError';
 
@@ -19,6 +24,11 @@ function InitialFallback() {
       <div className="skeleton skeleton-line short" />
     </main>
   );
+}
+
+function gameEntry(search: string) {
+  const href = gameHref(search);
+  return href ? redirectDocument(href) : redirect(`/play${search}`);
 }
 
 export const routes: RouteObject[] = [
@@ -43,14 +53,14 @@ export const routes: RouteObject[] = [
           { path: 'play', lazy: page(() => import('../pages/PlayPage')) },
           { path: 'partners', lazy: page(() => import('../pages/PartnersPage')) },
           { path: 'donate', lazy: page(() => import('../pages/DonatePage')) },
-          { path: 'game', lazy: page(() => import('../game/GamePage')) },
+          { path: 'game', loader: ({ request }) => gameEntry(new URL(request.url).search) },
           // QR codes on site point here: /stamp/<spot>?k=<key>.
           {
             path: 'stamp/:spot',
             loader: ({ params, request }) => {
               const k = new URL(request.url).searchParams.get('k') ?? '';
               const query = new URLSearchParams({ spot: params.spot ?? '', k });
-              return redirect(`${isStandalone() ? '/game' : '/play'}?${query}`);
+              return gameEntry(`?${query}`);
             },
           },
           { path: '*', lazy: page(() => import('../pages/NotFoundPage')) },
@@ -60,4 +70,5 @@ export const routes: RouteObject[] = [
   },
 ];
 
-export const createRouter = () => createBrowserRouter(routes);
+export const createRouter = () =>
+  createBrowserRouter(routes, { basename: import.meta.env.BASE_URL });

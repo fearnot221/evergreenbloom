@@ -257,8 +257,8 @@ export default function MapPage() {
           <p>
             地圖資料 ©{' '}
             <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors，ODbL</a>。
-            <a href="/data/ncu-campus.json">下載校園資料</a>，
-            <a href="/data/LICENSE.txt">來源與授權</a>
+            <a href={`${import.meta.env.BASE_URL}data/ncu-campus.json`}>下載校園資料</a>，
+            <a href={`${import.meta.env.BASE_URL}data/LICENSE.txt`}>來源與授權</a>
             {data && <>，擷取於 {data.source.retrievedAt.slice(0, 10)}</>}。
           </p>
           <p className="small-note">

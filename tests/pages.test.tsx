@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
-import GamePage from '../src/game/GamePage';
 import AboutPage from '../src/pages/AboutPage';
 import DonatePage from '../src/pages/DonatePage';
 import EventDetailPage from '../src/pages/EventDetailPage';
@@ -32,7 +31,6 @@ function render(url: string) {
         <Route path="/play" element={<PlayPage />} />
         <Route path="/partners" element={<PartnersPage />} />
         <Route path="/donate" element={<DonatePage />} />
-        <Route path="/game" element={<GamePage />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -53,7 +51,6 @@ describe('routes render one main landmark and one h1', () => {
     '/play',
     '/partners',
     '/donate',
-    '/game',
   ]) {
     it(url, () => {
       const html = render(url);
@@ -90,19 +87,11 @@ describe('detail routes', () => {
   });
 });
 
-describe('stamp rally', () => {
-  it('tells a QR visitor the spot was saved and how to enter it by hand', () => {
+describe('stamp rally handoff', () => {
+  it('explains that installation and progress belong to the separate app', () => {
     const html = text(render('/play?spot=lake&k=lake-26'));
-    expect(html).toContain('已記下「中大湖」');
-    expect(html).toContain('LAKE-26');
-  });
-
-  it('ignores a claim whose key does not match the spot', () => {
-    expect(text(render('/play?spot=lake&k=GATE-26'))).not.toContain('已記下');
-  });
-
-  it('keeps the game out of a browser tab', () => {
-    expect(text(render('/game'))).toContain('只在安裝到主畫面');
+    expect(html).toContain('官網不需要安裝，也不儲存集章紀錄');
+    expect(html).not.toContain('已記下');
   });
 });
 
@@ -146,7 +135,6 @@ describe('display font', () => {
       '/play',
       '/partners',
       '/donate',
-      '/game',
       '/news/briefing',
       '/events/lake-study',
     ];
