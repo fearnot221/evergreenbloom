@@ -26,6 +26,27 @@ lists were not part of the material and remain unconfirmed. See [ARCHITECTURE.md
 and the latest [prototype notes](PROTOTYPE-NOTES.md) for implemented boundaries
 and verification. Requirements below retain their approval and factual scope.
 
+**Amended 2026-10-17 (v5 「櫻吹雪」).** Sakura pink became the main colour and the UI was
+rebuilt to an editorial, motion-led standard (GSAP ScrollTrigger, SplitText, timelines).
+The home page keeps the plan's three parts and adds a manifesto, 松 / 櫻, and 走進中央
+sections that elaborate the 理念 and lead to the map and stamp rally. See DESIGN.md.
+
+**Amended 2026-10-17 (v4 redesign).** The whole UI was rebuilt to the same site plan:
+primary navigation is the plan's outline, the home page has only the plan's three parts
+(subtitle, live direction, partners), and the sakura burst and scroll petal fall are
+implemented with GSAP. 最新消息 and 來訪須知 remain as footer pages. See [DESIGN.md](DESIGN.md).
+
+**Amended 2026-10-16 (site plan 「松櫻季官網規劃」).** The site splits into two parts on one
+origin: the official site (static reading, no login) and the 大地遊戲 實景集章, which runs
+only in the installed PWA (`/game`, gated on `display-mode: standalone`). The site adds
+`/play` (install guide, planned sign-in methods, photo privacy), `/partners`, `/donate`
+(no channel yet; no account numbers are published) and, on About, purpose, sustainability
+(campus wood, tentative) and a second-edition timeline. QR codes point at
+`/stamp/<spot>?k=<key>`; a browser visit keeps the claim and points the install at it so
+the app opens on that stamp. Sign-in (Portal for campus members; Google and LINE for
+visitors) needs the game backend and is shown as not yet open; until then stamps are kept
+on the device. Stamp spots, questions and keys are prototype placeholders.
+
 Festival facts below remain the user's supplied context. Preserve their factual
 scope and verify publication-ready copy against official sources before release.
 Future dates, venues, program, assets, and geographic accuracy remain unconfirmed.

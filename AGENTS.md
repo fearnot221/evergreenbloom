@@ -17,10 +17,11 @@ in ARCHITECTURE.md and the latest PROTOTYPE-NOTES.md; preserve explicit prototyp
 TBD, geography and official-brand boundaries. Earlier phase-specific prohibitions
 are not a ban on subsequently authorized implementation.
 
-Redesign note (2026-10-16): at the user's request the Bloom visuals, `/motion` lab and
-GSAP were replaced; the current system is v3 「松窗見春」 (see DESIGN.md), built on the
-second-edition identity. Titles in the serif must come from `src/data/display-copy.ts`.
-DESIGN.md records the adopted tokens and components; reuse them. Run `npm run check`
+Redesign note (2026-10-17): at the user's request the whole UI was rebuilt, now as v6
+「櫻吹雪 · 一陣風」 (see DESIGN.md), sakura-pink and editorial, to the 「松櫻季官網規劃」 brief. Display-face
+titles must come from `src/data/display-copy.ts` (or `title`/`name` values in the data
+files). DESIGN.md records the adopted tokens and components; reuse them. GSAP drives the
+v6 motion system through `src/motion/gsap.ts` (record in INTERACTIONS.md). Run `npm run check`
 (Biome, TypeScript, Vitest, geo tests) before handing back code changes.
 
 Read these documents before frontend work:
@@ -55,7 +56,7 @@ keep commands path-scoped and never stage unrelated files.
    and provide keyboard/touch and reduced-motion equivalents. No animation is a
    valid decision. Then check [Transitions.dev](https://transitions.dev/) for a
    relevant component-state transition pattern and adapt it to the existing
-   松果 × 櫻花 / 松窗見春 vocabulary. Follow the interactive-UI workflow in
+   松 × 櫻 / 櫻吹雪 vocabulary. Follow the interactive-UI workflow in
    INTERACTIONS.md; a reference is not a mandate to animate or copy its styling.
 6. **Use GSAP only when justified.** Prefer CSS/native behavior for simple needs.
    Consider Motion only for justified state/gesture complexity. Use GSAP skills
@@ -93,7 +94,7 @@ For each interactive UI change, apply this sequence within the broader workflow:
 
 1. Determine purpose using Emil principles; no motion is a valid result.
 2. Check Transitions.dev for a relevant pattern.
-3. Translate it into 松果 × 櫻花 / 松窗見春: **SEED → UNFOLD → BLOSSOM → FESTIVAL**.
+3. Translate it into 松 × 櫻 / 櫻吹雪: **SEED → UNFOLD → BLOSSOM → FESTIVAL**.
 4. Use CSS or native browser animation when sufficient.
 5. Use GSAP only when choreography or timeline complexity justifies it.
 6. Review reduced-motion behavior.

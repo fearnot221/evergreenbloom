@@ -1,43 +1,47 @@
 # Design
 
-## Current visual language · v3 「松窗見春」 (adopted 2026-10-16)
+## Current visual language · v6 「櫻吹雪 · 一陣風」 (adopted 2026-10-17)
 
-**Why v3.** The user judged both the original Bloom version and the first 春空 redesign
-short of an Awwwards-level result and asked for a new, fully re-composed version. v3
-keeps the second-edition identity (sky, sakura, pine, the posts' lettering) but stages
-it as an editorial, typographic experience instead of a pastel template.
+**Why v6.** The user judged v5 still ordinary and set Awwwards Site-of-the-Day as the
+target, banning templates, card stacks, heavy rounding, gratuitous gradients, emoji,
+one animation everywhere, centred everything and placeholder images; text motion should
+not all "pop up", with ui.fearnot.tw's text-motion catalogue as the reference.
 
-**Concept.** 松 is the pine-ink frame (endurance, night); 櫻 is the spring sky you look
-through to. The home page opens on pine ink with 松櫻祭 cut out of it; a living WebGL
-sky with falling petals shows through the letters, and scrolling zooms through them
-into spring. Solid chapters then slide over that sky.
+**Concept.** One gust of wind carries petals from 松 (rooted, still) to 櫻 (moving)
+through the campus. Everything that moves travels with that wind, left to right.
 
 | Area | Decision | Source |
 | --- | --- | --- |
-| Colour | Two fixed poles (`--pine-ink`, sky `--sky-*`) plus scheme roles (`--bg`, `--fg`, `--line`, `--accent`). One accent: rose. Night (夜櫻) inverts paper to ink | `src/styles/tokens.css` |
-| Type | Editorial serif (Noto Serif TC Black subset, `--font-serif`) for titles and statements, set vertically (`writing-mode: vertical-rl`) where it carries meaning; poster sans (Noto Sans TC Black subset, `--font-poster`) only for the wordmark and official-post lettering; system body and Latin | `tokens.css`, `base.css`, `src/data/display-copy.ts`, `src/data/poster-copy.ts` |
-| Shape | Panels and posters are sharp; buttons and chips are full pills; hairlines separate rows | `base.css`, `components.css` |
-| Motion | Scroll-driven CSS (window zoom, glyph drift, scroll unroll, ticket pan, campus line draw), button fill wipe, underline growth, menu circle reveal, view transitions; all off for reduced motion | `home.css`, `components.css`, `shell.css`, `transitions.css` |
-| WebGL | One fragment shader: gradient sky, fbm clouds, three petal layers; half resolution, paused off-screen, still frame for reduced motion, CSS gradient fallback | `src/components/SkyCanvas.tsx`, `sky-shader.ts` |
-| Icons | Phosphor only | `src/components/icons.ts` |
+| Colour | Unchanged from v5: blush paper, sakura field, pine ink, one hot rose; night stays plum-pink. No gradients (the only `linear-gradient` is a one-colour highlighter band) | `tokens.css` |
+| Type | LXGW WenKai TC at poster scale; titles are outline + fill (`Ink.tsx`); phrases atomic (`Phrases.tsx`); vertical CJK for 松 and the hero edge | `components/`, `base.css` |
+| Images | No placeholders. Hero: a live canvas petal storm (`motion/PetalStorm.tsx`) with near petals in front of the wordmark. 松 and 櫻: the glyphs are the pictures, filled with drawn textures (`public/art/cones.svg`, `petals.svg`, from `scripts/art/build-textures.mjs`). Campus: the real OpenStreetMap drawing. Menu: the destination's first character as an outline | as listed |
+| Shape | Square corners everywhere; only petals and the 松櫻 emblem are round. Header is a full-width bar with a hairline; tab bar a square bottom bar with a rose rule on the current tab; buttons square with an ink/rose wipe from the left | `base.css`, `shell.css` |
+| Mark | Flat five-petal blossom (`Blossom` in `motifs.tsx`), no gradients | `motifs.tsx` |
 
-**Home chapters** (each a different layout family): pine window (masked wordmark) ·
-vertical statement on open sky · 松 / 櫻 split panels · three hanging scrolls (掛軸)
-that unroll · 貳 filled with sky beside the edition ledger · horizontally panned
-ticket strip · campus line sketch drawn from OpenStreetMap · pine-ink footer with a
-full-width wordmark.
+**Home:** hero (storm, ink-filled wordmark, actions offset right, facts ledger) ·
+小副標 slogan (two centred lines at slogan size, the story paragraph beneath) · 松 (pine-cone glyph, three vertical
+columns) · 櫻 (petal window glyph) · 即時導向 (pine departure board) · 走進中央 (giant
+bands across the campus plate) · 合作夥伴 (splitting heading) · footer (stamped wordmark).
 
-**Inner pages.** A vertical serif title spine (sticky, like a book spine) beside the
-content on wide screens; horizontal on phones. Editorial rows with hairlines, tickets
-for events, posters for official news. Dynamic titles (events, announcements) use the
-body face so the serif subset stays small.
+**Inner pages (2026-10-17).** Every page head is a sakura field with the title and lede on
+the left and the title's own outlined columns flowing on the right (直書逆走); section
+titles are outline-and-fill ink titles. Pages carry one FLOW element each where it means
+something: categories (活動介紹), first-edition facts (關於我們 history), recruitment
+tape (團隊成員), the partner ribbon (合作單位); 活動期程 shares the home board's
+split-flap times. About's 松 / 櫻 are unboxed textured glyphs (pine cones, petals).
+Grids that hold full-bleed bands use `minmax(0, 1fr)` tracks so the bands cannot widen
+the page.
 
-**Fonts.** `npm run fonts -- <NotoSerifTC-Black.ttf> <NotoSansTC-Black.ttf>` rebuilds
-both subsets from the copy modules; a test fails when copy introduces a missing
-character. Measured: serif 68.8 KiB, poster 10.6 KiB.
+**Footer.** The closing wordmark is a full-width ink ribbon (緞帶) carrying the festival's
+name along a wave.
 
-**Unknowns.** Official logo, palette approval, photography and illustration rights.
-The hands from the posts are still not reproduced.
+**Per-page signatures.** 合作單位: a split-invert call 「成為合作夥伴」; 互動平台: seals for
+the three ways to collect; 捐款: an outlined 「支持」 filling with sakura; 最新消息: a 快訊
+ticker; 來訪須知: highlighted cautions; 404: an echoing 「迷路了嗎」. Phone spacing between
+inner-page sections is 4rem (9rem from 900px). The page-head pill uses a 94% opaque glass
+so large titles do not smear behind it.
+
+**Unknowns.** Official logo, key visual and photography; palette approval.
 
 ## Design direction
 

@@ -1,5 +1,15 @@
 self.addEventListener('install', (event) =>
-  event.waitUntil(caches.open(SHELL).then((cache) => cache.addAll(['/offline.html']))),
+  event.waitUntil(
+    (async () => {
+      await (await caches.open(SHELL)).addAll(['/offline.html']);
+      // Activating deletes the old caches, so a visitor who saved the site offline would
+      // lose it on the next update. Installs happen online: save this version's core now.
+      // If that fails, install fails and the old version keeps serving the saved copy.
+      for (const key of await caches.keys())
+        if (key.startsWith('songying-core-') && key !== CORE)
+          if (await (await caches.open(key)).match('/__saved')) return saveCore();
+    })(),
+  ),
 );
 self.addEventListener('activate', (event) =>
   event.waitUntil(

@@ -1,8 +1,43 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { snapshot } from '../data/festival';
 
 type WorkerReply = { ready: boolean; savedAt?: string; error?: string };
 type InstallPrompt = Event & { prompt: () => Promise<void> };
+
+/*
+ * Chrome fires beforeinstallprompt once, early, on whichever page loads first. Catch it
+ * here at app start (this module is in the entry chunk) and share it, so every install
+ * button works and all of them hide once the prompt has been used.
+ */
+let deferred: InstallPrompt | null = null;
+const listeners = new Set<() => void>();
+const notify = () => {
+  for (const listener of listeners) listener();
+};
+if (typeof window !== 'undefined')
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferred = event as InstallPrompt;
+    notify();
+  });
+
+/** The install action while the browser offers one, else null. */
+export function useInstallPrompt() {
+  const prompt = useSyncExternalStore(
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    () => deferred,
+    () => null,
+  );
+  if (!prompt) return null;
+  return async () => {
+    deferred = null;
+    notify();
+    await prompt.prompt();
+  };
+}
 
 let registrationPromise: Promise<ServiceWorkerRegistration> | undefined;
 function registration() {
@@ -48,16 +83,11 @@ export function PwaPanel() {
   const [saved, setSaved] = useState('');
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
-  const [install, setInstall] = useState<InstallPrompt | null>(null);
+  const install = useInstallPrompt();
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     let alive = true;
-    const prompt = (event: Event) => {
-      event.preventDefault();
-      setInstall(event as InstallPrompt);
-    };
-    window.addEventListener('beforeinstallprompt', prompt);
     if (import.meta.env.PROD && 'serviceWorker' in navigator) {
       registration()
         .then(async (reg) => {
@@ -79,7 +109,6 @@ export function PwaPanel() {
     }
     return () => {
       alive = false;
-      window.removeEventListener('beforeinstallprompt', prompt);
     };
   }, []);
 
@@ -126,14 +155,7 @@ export function PwaPanel() {
           {busy ? '儲存中…' : saved ? '重新儲存' : '儲存核心頁面'}
         </button>
         {install && (
-          <button
-            type="button"
-            className="button button-quiet"
-            onClick={async () => {
-              await install.prompt();
-              setInstall(null);
-            }}
-          >
+          <button type="button" className="button button-quiet" onClick={install}>
             安裝應用程式
           </button>
         )}

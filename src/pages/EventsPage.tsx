@@ -1,3 +1,4 @@
+import { Bands } from '../components/Bands';
 import { Page, PrototypeNotice, Ticket, useDocumentTitle } from '../components/page';
 import { display } from '../data/display-copy';
 import { snapshot } from '../data/festival';
@@ -12,6 +13,8 @@ export default function EventsPage() {
       className="events"
     >
       <PrototypeNotice />
+      {/* 跑馬燈: the categories run past at two speeds before the list. */}
+      <Bands bands={display.flows.events} />
       <ul className="ticket-grid">
         {snapshot.events.map((event) => (
           <li key={event.id} className="reveal">

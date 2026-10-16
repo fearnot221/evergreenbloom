@@ -27,40 +27,42 @@ export function pathWidth(feature: CampusFeature) {
 }
 
 /**
- * Map colour tokens. Three.js cannot parse OKLCH, so the spring-sky and night-sky
- * palettes are mirrored here as hex. Keep them in step with src/styles/tokens.css.
+ * Map colour tokens, v5 「櫻吹雪」. Three.js cannot parse OKLCH, so the roles are mirrored
+ * here as hex. Keep them in step with src/styles/tokens.css: sakura pink is the field
+ * (--bg, --bg-2, --sakura), pine-green ink the structure (--fg, --pine), and the hot rose
+ * (--accent) marks only the selected location; other markers use --sakura-deep.
  */
 const lightPalette = {
-  clear: '#cfd4f6',
-  campus: '#f8eff7',
-  building: '#fffafd',
-  edge: '#a690b4',
-  water: '#a3b9ef',
-  green: '#ddd7f3',
-  sport: '#f2cadd',
-  road: '#cdb9d7',
-  walk: '#ab7aa3',
-  marker: '#a33a6e',
-  seed: '#e07aa8',
-  label: '#4a3150',
+  clear: '#fddce7',
+  campus: '#ffeff4',
+  building: '#fff5f9',
+  edge: '#05261a',
+  water: '#f8bcd2',
+  green: '#bbdac8',
+  sport: '#f9cfdd',
+  road: '#e9d4db',
+  walk: '#69887c',
+  marker: '#c1195a',
+  seed: '#e993b2',
+  label: '#05261a',
   ambient: '#ffffff',
-  sun: '#fff6fa',
+  sun: '#fff5f9',
 } as const;
 const darkPalette = {
-  clear: '#25244a',
-  campus: '#312d55',
-  building: '#4a4372',
-  edge: '#8b80b6',
-  water: '#3d4f90',
-  green: '#3a3764',
-  sport: '#5a3a5f',
-  road: '#5d507f',
-  walk: '#c48ab8',
-  marker: '#f0a3c6',
-  seed: '#ff9cc6',
-  label: '#f3e9f4',
-  ambient: '#d9d4ff',
-  sun: '#ffe9f4',
+  clear: '#210c16',
+  campus: '#2d131f',
+  building: '#492a38',
+  edge: '#ba9ba6',
+  water: '#55263b',
+  green: '#0e2a1f',
+  sport: '#452030',
+  road: '#402832',
+  walk: '#aa8793',
+  marker: '#fea6c5',
+  seed: '#d97d9f',
+  label: '#fde8ef',
+  ambient: '#f4e3e8',
+  sun: '#fef1f5',
 } as const;
 export type MapPalette = { [K in keyof typeof lightPalette]: string };
 export function mapPalette(): MapPalette {

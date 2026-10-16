@@ -1,27 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
-import { Outlet, ScrollRestoration, useLocation, useNavigation } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import {
+  Link,
+  NavLink,
+  Outlet,
+  ScrollRestoration,
+  useLocation,
+  useNavigation,
+} from 'react-router-dom';
+import {
+  ArrowUpRightIcon,
   CalendarDotsIcon,
   CaretDownIcon,
   HouseIcon,
   ListIcon,
   MapTrifoldIcon,
-  MegaphoneIcon,
+  SealCheckIcon,
   WifiSlashIcon,
-  XIcon,
 } from '../components/icons';
-import { Link, NavLink } from '../components/links';
+import { Blossom } from '../components/motifs';
+import { Ribbon } from '../components/Ribbon';
+import { Roll } from '../components/Roll';
 import { display } from '../data/display-copy';
+import { story } from '../data/festival';
 import { poster } from '../data/poster-copy';
 import { PwaPanel, useOnline } from '../pwa/PwaPanel';
-import { primaryNav, quickNav } from './nav';
+import { type NavItem, primaryNav, quickNav, secondaryNav } from './nav';
 import { useRouteFocus } from './use-route-focus';
+
+// Header condensing, the scroll-turned emblem and the footer reveal (GSAP), after paint.
+const ShellMotion = lazy(() => import('../motion/ShellMotion'));
 
 const tabs = [
   { to: '/', label: '首頁', icon: HouseIcon },
-  { to: '/news', label: '消息', icon: MegaphoneIcon },
-  { to: '/program', label: '節目', icon: CalendarDotsIcon },
+  { to: '/program', label: '期程', icon: CalendarDotsIcon },
   { to: '/map', label: '地圖', icon: MapTrifoldIcon },
+  { to: '/play', label: '集章', icon: SealCheckIcon },
 ];
 
 export default function App() {
@@ -30,10 +43,14 @@ export default function App() {
   const online = useOnline();
   const [menu, setMenu] = useState(false);
   const [english, setEnglish] = useState(false);
+  const [preview, setPreview] = useState<NavItem['to']>('/about');
+  const [motion, setMotion] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
   const languageButton = useRef<HTMLButtonElement>(null);
   useRouteFocus();
+
+  useEffect(() => setMotion(!matchMedia('(prefers-reduced-motion: reduce)').matches), []);
 
   useEffect(() => {
     if (menu) dialog.current?.showModal();
@@ -48,12 +65,12 @@ export default function App() {
 
   const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     opener.current = event.currentTarget;
-    // The menu grows out of the button that opened it.
-    const box = event.currentTarget.getBoundingClientRect();
-    dialog.current?.style.setProperty('--ox', `${box.left + box.width / 2}px`);
-    dialog.current?.style.setProperty('--oy', `${box.top + box.height / 2}px`);
+    // The preview starts on the page you are on.
+    const here = primaryNav.find((item) => item.to === location.pathname);
+    if (here) setPreview(here.to);
     setMenu(true);
   };
+  const previewLabel = primaryNav.find((item) => item.to === preview)?.label ?? '';
 
   return (
     <div className="app" data-route={location.pathname === '/' ? 'home' : 'page'}>
@@ -62,49 +79,55 @@ export default function App() {
       </a>
 
       <header className="app-header">
-        <Link className="brand" to="/" aria-label="松櫻祭 首頁">
-          <span className="poster brand-word" aria-hidden="true">
-            {poster.wordmark}
-          </span>
-          <span className="poster brand-edition" aria-hidden="true">
-            {poster.edition}
-          </span>
-        </Link>
-        <nav className="quick-nav" aria-label="主要任務">
-          {quickNav.map((item) => (
-            <NavLink key={item.to} to={item.to}>
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="header-tools">
-          {!online && (
-            <span className="offline-pill" role="status">
-              <WifiSlashIcon size={16} weight="bold" aria-hidden="true" />
-              離線閱讀
+        <div className="header-bar">
+          <Link className="brand" to="/" aria-label="松櫻祭 首頁">
+            <span className="brand-emblem" aria-hidden="true">
+              <Blossom />
             </span>
-          )}
-          <button
-            type="button"
-            ref={languageButton}
-            className="round-button latin"
-            aria-expanded={english}
-            aria-controls="language-notice"
-            onClick={() => setEnglish(!english)}
-            lang="en"
-          >
-            EN
-          </button>
-          <button
-            type="button"
-            className="menu-button"
-            aria-haspopup="dialog"
-            aria-expanded={menu}
-            onClick={openMenu}
-          >
-            <ListIcon size={18} weight="bold" aria-hidden="true" />
-            選單
-          </button>
+            <span className="display brand-word" aria-hidden="true">
+              {poster.wordmark}
+            </span>
+          </Link>
+          <p className="header-status">
+            <span className="status-dot" aria-hidden="true" />
+            {poster.edition} · {story.edition.status}
+          </p>
+          <nav className="quick-nav" aria-label="主要頁面">
+            {quickNav.map((item) => (
+              <NavLink key={item.to} to={item.to}>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="header-tools">
+            {!online && (
+              <span className="offline-pill" role="status">
+                <WifiSlashIcon size={16} weight="bold" aria-hidden="true" />
+                離線
+              </span>
+            )}
+            <button
+              type="button"
+              ref={languageButton}
+              className="round-button latin"
+              aria-expanded={english}
+              aria-controls="language-notice"
+              onClick={() => setEnglish(!english)}
+              lang="en"
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              className="menu-button"
+              aria-haspopup="dialog"
+              aria-expanded={menu}
+              onClick={openMenu}
+            >
+              <span className="menu-lines" aria-hidden="true" />
+              選單
+            </button>
+          </div>
         </div>
         {english && (
           // biome-ignore lint/a11y/noStaticElementInteractions: Escape closes the notice and returns focus.
@@ -152,7 +175,7 @@ export default function App() {
 
       <footer className="app-footer">
         <div className="wrap footer-grid">
-          <p className="serif footer-statement">
+          <p className="display footer-statement">
             {display.closing.map((line) => (
               <span className="line" key={line}>
                 {line}
@@ -160,10 +183,9 @@ export default function App() {
             ))}
           </p>
           <nav className="footer-nav" aria-label="頁尾導覽">
-            {primaryNav.map((item) => (
+            {[...primaryNav, ...secondaryNav].map((item) => (
               <Link key={item.to} to={item.to}>
-                <span>{item.label}</span>
-                <span className="latin">{item.en}</span>
+                <Roll>{item.label}</Roll>
               </Link>
             ))}
           </nav>
@@ -175,9 +197,8 @@ export default function App() {
             <PwaPanel />
           </details>
         </div>
-        <p className="poster footer-wordmark" aria-hidden="true">
-          {poster.wordmark}
-        </p>
+        {/* 緞帶: the closing band runs the width of the page. */}
+        <Ribbon text={display.footerRibbon} className="footer-ribbon" />
         <div className="wrap footer-legal">
           <p className="note">
             {poster.school} {poster.edition} 松櫻祭 ·
@@ -214,16 +235,18 @@ export default function App() {
       >
         <div className="menu-inner wrap">
           <div className="menu-head">
-            <span className="poster menu-word" aria-hidden="true">
-              {poster.wordmark}
-            </span>
+            <p className="header-status">
+              <span className="status-dot" aria-hidden="true" />
+              {poster.edition} · {story.edition.status}
+            </p>
             <button
               type="button"
-              className="round-button"
+              className="menu-button is-close"
               aria-label="關閉選單"
               onClick={() => setMenu(false)}
             >
-              <XIcon size={20} weight="bold" aria-hidden="true" />
+              <span className="menu-lines" aria-hidden="true" />
+              關閉
             </button>
           </div>
           <nav className="menu-nav" aria-label="全部頁面">
@@ -233,26 +256,51 @@ export default function App() {
                 to={item.to}
                 end={item.to === '/'}
                 style={{ '--i': index } as React.CSSProperties}
+                onPointerEnter={() => setPreview(item.to)}
+                onFocus={() => setPreview(item.to)}
               >
-                <span className="serif">{item.label}</span>
-                <span className="latin">{item.en}</span>
+                <span className="display menu-label">
+                  <span>{item.label}</span>
+                </span>
+                <ArrowUpRightIcon className="menu-arrow" size={28} aria-hidden="true" />
               </NavLink>
             ))}
           </nav>
-          {/* biome-ignore lint/a11y/useValidAnchor: a real in-page link that also closes the menu. */}
-          <a
-            className="text-link menu-offline"
-            href="#app-offline-details"
-            onClick={() => {
-              setMenu(false);
-              const panel = document.getElementById('app-offline-details');
-              if (panel instanceof HTMLDetailsElement) panel.open = true;
-            }}
-          >
-            應用程式與離線閱讀
-          </a>
+          {/* The hovered or focused destination's first character, as an outline. */}
+          <div className="menu-preview" aria-hidden="true">
+            <span className="display menu-glyph" key={preview}>
+              {previewLabel.slice(0, 1)}
+            </span>
+          </div>
+          <div className="menu-foot">
+            <nav className="menu-secondary" aria-label="其他頁面">
+              {secondaryNav.map((item) => (
+                <NavLink key={item.to} to={item.to}>
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+            {/* biome-ignore lint/a11y/useValidAnchor: a real in-page link that also closes the menu. */}
+            <a
+              className="menu-offline"
+              href="#app-offline-details"
+              onClick={() => {
+                setMenu(false);
+                const panel = document.getElementById('app-offline-details');
+                if (panel instanceof HTMLDetailsElement) panel.open = true;
+              }}
+            >
+              應用程式與離線閱讀
+            </a>
+          </div>
         </div>
       </dialog>
+
+      {motion && (
+        <Suspense fallback={null}>
+          <ShellMotion path={location.pathname} />
+        </Suspense>
+      )}
     </div>
   );
 }

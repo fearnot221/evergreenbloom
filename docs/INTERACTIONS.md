@@ -5,30 +5,58 @@
 The 2026-09-29 greenfield inspection predates the implemented E2 Festival Web App.
 For current behavior and verification, read [ARCHITECTURE.md](ARCHITECTURE.md),
 [PROTOTYPE-NOTES.md](PROTOTYPE-NOTES.md) and [MAP-DATA.md](MAP-DATA.md).
-This document defines permanent interaction policy. On 2026-10-16 the user replaced
-the Bloom visuals with 春空 Spring Sky; the inventory below is the current behaviour.
+This document defines permanent interaction policy. On 2026-10-17 the user replaced
+v5 with v6 「櫻吹雪 · 一陣風」 (see [DESIGN.md](DESIGN.md)); the inventory below is current.
 
-### Current interaction inventory (v3, 2026-10-16)
+### Current interaction inventory (v6, 2026-10-17)
+
+Text motions follow ui.fearnot.tw's catalogue (numbers in brackets), one per context. Near
+petals pass in front of the wordmark only; meta, actions and ledger sit above both canvases.
 
 | Interaction | Source | Behaviour | Reduced motion |
 | --- | --- | --- | --- |
-| Pine window | `home.css` | 230svh track; masked wordmark scales 1 to 7 and fades as the window zooms into the sky (CSS view timeline) | Single still screen |
-| Living sky | `SkyCanvas.tsx` | WebGL clouds and petals; eases toward the pointer on mouse devices; runs only while a sky section is visible and the tab is shown | One still frame |
-| Statement, glyph drift, campus line draw | `home.css` | Scroll-driven transforms and stroke-dashoffset tied to each section's view timeline | Static |
-| Hanging scrolls | `components.css` | Sheet unrolls from the rod (clip-path) on a shared per-scroll timeline, staggered; sways 1.2deg from the rod on hover/focus; pointer light | No unroll, no sway transition change |
-| Ticket strip | `home.css` | Desktop: pinned stage, track pans sideways with scroll; phones: native swipe with snap | Native swipe |
-| Full-screen menu | `App.tsx`, `shell.css` | Native `<dialog>`; circle reveal from the button that opened it (620ms in, 260ms out); links rise in a 40ms stagger; Escape and close return focus | 150ms fade |
-| Route transition | `links.tsx`, `transitions.css` | View Transitions cross-fade; poster/ticket titles morph into detail titles | None |
-| Buttons and links | `base.css` | Rose fill wipes up on hover; press 0.97; text-link underline and arrow nudge | Colour only |
-| Disclosures, chips | `components.css` | Native details/radios; chevron rotate; height via `::details-content` | Instant |
-| Scroll reveal | `base.css` | `.reveal` rises 40px on entry (view timeline) | Static |
+| 櫻吹雪 storm | `motion/PetalStorm.tsx` | 44 (phone) or 100 flat petals on two canvases; on arrival they burst from the wordmark (櫻花爆開) and the wind takes them; pointer movement and scroll speed add gusts; GSAP ticker only while the hero is on screen | One still frame |
+| Hero titles [33 空心字] | `inkFill` in `motion/gsap.ts` | Ink floods each outlined character left to right (clip-path, 1.1s, 0.12s stagger); meta, subtitle, actions and ledger drift in from the left (opacity + x) | Filled, static |
+| 小副標 slogan | `HomePage.tsx` | The two-line slogan opens from each line's centre outward (clip-path, 1.2s, 0.35s apart), once; the story paragraph fades in after. Replaced the pinned 螢光筆 highlighter on 2026-10-17: the user found it janky and too large | Static |
+| 松 [15 直書三層] | `HomePage.tsx` | Three vertical columns and the pine-cone glyph travel at different speeds with scroll (wide screens) | Static |
+| 櫻 [35 圖案遮罩] | `HomePage.tsx` | Petals flow diagonally through the 櫻 glyph (background-position, 24s loop), only while it is on screen | Static texture |
+| 即時導向 [25 翻牌] | `flap` in `motion/gsap.ts` | When the board arrives, each status riffles through characters to its value (ScrambleText, 0.15s apart); rows fill with sakura from the left on hover | Text static |
+| 走進中央 [09 巨字滑過] | `HomePage.tsx` | Two giant lines cross the campus plate in opposite directions at different scrub speeds; the plate settles from 1.14; strokes draw in (CSS view timeline) | Static |
+| 合作夥伴 [32 上下裂開] | `SplitSwap.tsx` | Every 2.4s the word splits (top up, bottom down) over the next one: 合作夥伴, 特約商店, 贊助單位 | First word only |
+| Footer [13 緞帶] | `App.tsx`, `Ribbon.tsx`, `ShellMotion.tsx` | A full-width ink ribbon carries 松櫻祭・第二屆・國立中央大學・春日校園祭典 along a wave; `flowRibbon()` slides it by exactly one phrase per loop, only while the footer is on screen. The Ribbon is markup only so the shell loads no GSAP | Static |
+| Inner-page heads [10 直書逆走] | `components/page.tsx`, `components.css` | Three outlined vertical columns of the page title flow up and down in turn (60s and 75s loops) beside the title; the title itself never animates, so pages switch without a flash | Static |
+| Inner-page section titles [33] | `ShellMotion.tsx` | Ink fills each title as it arrives, only for titles that start below the fold | Static |
+| 活動介紹 [14 跑馬燈] | `Bands.tsx` | Two stacked bands of categories and edition copy at different speeds and weights | Static |
+| 關於我們 history [12 斜線帶] | `Bands.tsx` | Two bands of first-edition facts tilted against each other, running opposite ways | Static |
+| 團隊成員 [16 封鎖膠帶] | `Bands.tsx` | The recruitment call as two crossing tapes above the call to join | Static |
+| 合作單位 [39 雙色反轉] | `SplitInvert.tsx`, `PartnersPage.tsx` | 「成為合作夥伴」 in ink and sakura, split by a diagonal (`--split`) that GSAP scrubs across the words with scroll, swapping the colours | Split at 55% |
+| 互動平台 [03 印章] | `stamp` in `motion/gsap.ts`, `PlayPage.tsx` | The three ways to collect (掃・答・拍) are pressed on as seals, 0.28s apart, when the list arrives | Static seals |
+| 捐款 [37 液體填滿] | `DonatePage.tsx`, `pages.css` | The outlined 「支持」 fills with a sakura liquid (`public/art/liquid.svg`, background-clip) whose surface keeps moving; GSAP raises the level once on arrival. No figures: there is no channel or goal yet | Filled, still |
+| 最新消息 [30 標題切換] | `HeadlineSwap.tsx` | A 快訊 ticker: every 3.2s the headline slides up and out and the next rises in; every headline is a real link, only the visible one is focusable (`inert`) | First headline |
+| 來訪須知 [38 螢光筆] | `VisitPage.tsx` | A sakura highlighter runs under each caution (not following 2026 dates; the map cannot navigate) once it is read | Highlight shown |
+| 404 [40 殘影] | `NotFoundPage.tsx`, `pages.css` | Three soft sakura echoes trail 「迷路了嗎」 and drift | Static echoes |
+| 活動期程 | `ProgramPage.tsx` | No time animation (removed at the user's request, 2026-10-17) | Same |
+| Page switches | `links.tsx` | Instant: no View Transition cross-fade and no title re-animation (removed 2026-10-17; the user found both jumpy) | Same |
+| Header | `ShellMotion.tsx`, `shell.css` | Bar takes paper and a hairline after 80px; hides while scrolling down; emblem turns 720° across the page. Nav links: a rose underline draws in from the left on hover and wipes out to the right; the current page keeps it | Bar always on; underline without transition |
+| Menu | `App.tsx`, `shell.css` | Sakura curtain drops (clip-path); labels rise from masks clipped vertically only, so the hover nudge never cuts a label; the destination's first character drifts in as an outline | 150ms fade |
+| Buttons, links | `base.css` | Ink or rose wipes in from the left; label rolls; press 0.97; underline wipes out and back | Colour only |
 
-The living sky is the documented exception to "no unbounded decorative loops": it is
-the brand scene, it stops off-screen and in hidden tabs, and it is a still frame for
-reduced motion.
+**FLOW and catalogue record (2026-10-17).** The user asked for ui.fearnot.tw's FLOW group on
+the footer and inner pages, then allowed any technique from the catalogue. FLOW: 09, 15
+(home), 10, 12, 13, 14, 16; others: 03, 25, 30, 32, 33, 35, 37, 38, 39, 40, each in one
+place where its meaning fits.
+Continuous loops are CSS transforms (or a GSAP `startOffset` tween for the ribbon) and run
+only on composited layers; the footer wave is the one paint-based loop and is gated to
+when the footer is visible.
+
+**GSAP record (v6).** As v5, plus ScrambleTextPlugin for the board. Lesson recorded: never
+tween `transform` on an element that also has a CSS `transition: transform` (the hero
+buttons stuck at x −28px); tween a wrapper instead.
 
 Transitions.dev was checked on 2026-10-16; patterns were re-implemented in CSS, not copied.
 Its "Page side-by-side" idea informed the route transition, reduced to a cross-fade.
+Checked again 2026-10-17 for the side-sheet menu: its "Modal open/close" recipe (named
+transition properties, reduced-motion guard) matches the sheet, which keeps a drawer ease.
 
 As features are defined and implemented, inventory each interaction with its route/component,
 trigger, state change, feedback, keyboard/touch behavior, focus handling,

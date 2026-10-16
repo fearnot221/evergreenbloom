@@ -2,16 +2,30 @@
 
 ## Baseline and status
 
-The 2026-09-29 greenfield note is historical. **Measured 2026-10-16** (production
-build of the 春空 redesign, gzip -9 sizes in KiB; a build estimate, not field data):
+The 2026-09-29 greenfield note is historical. **Measured 2026-10-17, v6** (production
+build, Vite gzip sizes in kB; a build estimate, not field data):
 
 | Home route, cold cache | Size | Budget |
 | --- | --- | --- |
-| Initial JavaScript, v3 (entry 113.9 + Home with WebGL sky 5.0) | ~119 KiB | ≤ 150 KiB |
-| Initial CSS, v3 (global 7.5 + Home 2.3) | ~10 KiB | ≤ 50 KiB |
-| Fonts, v3 (serif subset 68.8 + poster subset 10.6, both preloaded) | 79.4 KiB | ≤ 100 KiB |
+| Initial JavaScript (entry 119.3 + Home 4.9 + GSAP, ScrollTrigger, SplitText, ScrambleText 52.0) | ~176 kB | ≤ 150 KiB (153.6 kB): **over by ~23 kB** |
+| Initial CSS | ~8 kB | ≤ 50 KiB |
+| Fonts (one display subset, LXGW WenKai TC Bold, preloaded) | 75.2 KiB | ≤ 100 KiB |
+| Glyph textures (cones.svg 174 KB, petals.svg 21 KB raw; ~2 + 1.4 kB gzip) | ~3.4 kB | |
+
+The petal storm draws at most 130 petals on two canvases at device pixel ratio ≤ 2 and
+stops when the hero leaves the viewport; it has not been profiled on a low-end phone.
 | HTML | 0.7 KiB | |
-| Total before images/icons | ~195 KiB | ≤ 1,024 KiB |
+
+**Known overrun (not resolved by changing the budget).** The entry chunk is React DOM and
+React Router; the overrun is the GSAP bundle the user requested for the hero timeline
+(SplitText) and scroll system (ScrollTrigger). Other routes load it after first paint.
+Options if the budget must hold: defer ScrollTrigger until after the hero, or replace
+the hero's SplitText with CSS. Needs a real-device LCP/INP measurement before deciding.
+
+v4 (earlier the same day) loaded ~120 kB initially with GSAP deferred.
+
+History: v3 (2026-10-16) loaded ~119 KiB initial JS (entry 113.9 + Home with WebGL
+sky 5.0) and 79.4 KiB of fonts (serif 68.8 + poster 10.6).
 
 The second 2026-10-16 pass moved to React Router's data router (route-level lazy
 loading, view transitions, scroll restoration), which added about 17 KiB to the entry

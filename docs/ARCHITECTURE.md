@@ -13,7 +13,7 @@ not a claim that all proposed production systems now exist.
 | `/`, `/about`, `/program`, `/events`, event details, `/map`, `/news`, announcement details, `/team`, `/visit` | One lazy chunk per route in `src/pages/`; `/e` redirects to Home; unknown paths render `NotFoundPage`; the `/motion` lab was removed on 2026-10-16 |
 | Normalized typed prototype content | `src/data/model.ts`, `src/data/festival.ts`; Event → ProgramEntry → Location, plus Announcement/Organizer/Sponsor; immutable revisioned build snapshot |
 | 春空 Spring Sky visual system (2026-10-16) | Tokens in `src/styles/tokens.css`; shared components in `src/components/`; global CSS is tokens, base, shell and shared components, page CSS travels with its lazy route. Replaced the Bloom files (`direction-e`, `bloom-*`, `seed-*`, `motion-lab`) and the GSAP dependency; history is in commit a37e655 |
-| v3 visual system (2026-10-16) | 「松窗見春」: `src/components/SkyCanvas.tsx` (raw WebGL2, home only), `Page` spine layout and `HangingScrolls`/`Ticket` in `src/components/page.tsx`, copy for display fonts in `src/data/display-copy.ts` and `poster-copy.ts`; see DESIGN.md |
+| v5 visual system (2026-10-17) | 「櫻吹雪」: `Page` head and cards in `src/components/page.tsx`; `Plate` illustration plates and the OSM `CampusSketch` in `src/components/`; all GSAP in `src/motion/` (`gsap.ts` registers ScrollTrigger and SplitText, `ShellMotion` is lazy, `PetalFall`); display-face copy in `src/data/display-copy.ts` and `poster-copy.ts`; see DESIGN.md |
 | Tooling | Biome lint/format (`biome.json`), Vitest (`tests/`), node geo tests, GitHub Actions CI (`.github/workflows/ci.yml`) |
 | Functional Three.js map | `src/map/MapPage.tsx` loads `engine.ts`; OrbitControls, selection/raycasting, camera controls, URL Location selection and text alternative |
 | Real geographic campus foundation | Retained OSM extract → normalized geographic features → optimized JSON; WGS84 ECEF/ENU metre frame in `src/geo/coordinates.ts`; source footprints with separate visual height/width estimates. See [MAP-DATA.md](MAP-DATA.md). |
@@ -502,6 +502,15 @@ Then controlled campus walks and accessibility review using verified data.
 No routing accuracy or accessibility claim follows from passing synthetic tests.
 
 ## 7. PWA as an event companion
+
+**Stamp rally boundary (2026-10-16).** `src/game/` holds the PWA-only game. `isStandalone()`
+gates `/game`; `/stamp/:spot` redirects to `/game` in the app and to `/play` in a browser.
+`/play` saves the claim to localStorage (shared with the installed app on Android and
+desktop) and swaps the manifest link for a blob copy whose `start_url` carries the claim
+(iOS home-screen apps do not share Safari storage). Every spot also has a printed code for
+manual entry. Stamps live in localStorage (`src/game/stamp-store.ts`); keys are checked on
+the client, which is not tamper-proof and must move to the backend with SSO. The manifest
+`start_url` is now `/game`. Unverified: iOS Safari honouring the swapped manifest.
 
 ### Manifest and installation
 

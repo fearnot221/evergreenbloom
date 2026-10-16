@@ -1,12 +1,17 @@
+import fs from 'node:fs';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
+import GamePage from '../src/game/GamePage';
 import AboutPage from '../src/pages/AboutPage';
+import DonatePage from '../src/pages/DonatePage';
 import EventDetailPage from '../src/pages/EventDetailPage';
 import EventsPage from '../src/pages/EventsPage';
 import HomePage from '../src/pages/HomePage';
 import NewsDetailPage from '../src/pages/NewsDetailPage';
 import NewsPage from '../src/pages/NewsPage';
+import PartnersPage from '../src/pages/PartnersPage';
+import PlayPage from '../src/pages/PlayPage';
 import ProgramPage from '../src/pages/ProgramPage';
 import TeamPage from '../src/pages/TeamPage';
 import VisitPage from '../src/pages/VisitPage';
@@ -24,6 +29,10 @@ function render(url: string) {
         <Route path="/news/:id" element={<NewsDetailPage />} />
         <Route path="/team" element={<TeamPage />} />
         <Route path="/visit" element={<VisitPage />} />
+        <Route path="/play" element={<PlayPage />} />
+        <Route path="/partners" element={<PartnersPage />} />
+        <Route path="/donate" element={<DonatePage />} />
+        <Route path="/game" element={<GamePage />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -33,7 +42,19 @@ const text = (html: string) => html.replaceAll('<!-- -->', '').replace(/<[^>]+>/
 const h1 = (html: string) => html.match(/<h1[\s\S]*?<\/h1>/g) ?? [];
 
 describe('routes render one main landmark and one h1', () => {
-  for (const url of ['/', '/about', '/program', '/events', '/news', '/team', '/visit']) {
+  for (const url of [
+    '/',
+    '/about',
+    '/program',
+    '/events',
+    '/news',
+    '/team',
+    '/visit',
+    '/play',
+    '/partners',
+    '/donate',
+    '/game',
+  ]) {
     it(url, () => {
       const html = render(url);
       expect(html.match(/<main /g)).toHaveLength(1);
@@ -66,5 +87,74 @@ describe('detail routes', () => {
   it('falls back to the not-found page for unknown ids', () => {
     expect(render('/events/nope')).toContain('找不到這個活動');
     expect(render('/news/nope')).toContain('找不到這則消息');
+  });
+});
+
+describe('stamp rally', () => {
+  it('tells a QR visitor the spot was saved and how to enter it by hand', () => {
+    const html = text(render('/play?spot=lake&k=lake-26'));
+    expect(html).toContain('已記下「中大湖」');
+    expect(html).toContain('LAKE-26');
+  });
+
+  it('ignores a claim whose key does not match the spot', () => {
+    expect(text(render('/play?spot=lake&k=GATE-26'))).not.toContain('已記下');
+  });
+
+  it('keeps the game out of a browser tab', () => {
+    expect(text(render('/game'))).toContain('只在安裝到主畫面');
+  });
+});
+
+describe('home accessibility', () => {
+  it('names the hero heading and keeps the manifesto readable', () => {
+    const html = render('/');
+    expect(h1(html)[0]).toContain('aria-label="松櫻祭，國立中央大學第二屆春日校園祭典"');
+    expect(text(html)).toContain('松的堅忍，櫻的綻放。在中央，把春天一屆一屆傳下去。');
+  });
+});
+
+/** Text inside every element whose class list includes `display`, from rendered HTML. */
+function displayText(html: string) {
+  let depth = 0;
+  let out = '';
+  for (const [, close, tag, attrs, text] of html.matchAll(/<(\/?)([a-z0-9]+)([^>]*)>|([^<]+)/g)) {
+    if (text !== undefined) {
+      if (depth > 0) out += text;
+    } else if (/^(br|img|input|meta|link|hr)$/.test(tag) || attrs?.endsWith('/')) {
+      // void element: no depth change
+    } else if (close) {
+      if (depth > 0) depth -= 1;
+    } else if (depth > 0 || /class="[^"]*\bdisplay\b/.test(attrs ?? '')) {
+      depth += 1;
+    }
+  }
+  return out;
+}
+
+describe('display font', () => {
+  it('covers every character the pages set in the display face', () => {
+    const subset = new Set(fs.readFileSync('public/fonts/songying-display.chars.txt', 'utf8'));
+    const urls = [
+      '/',
+      '/about',
+      '/program',
+      '/events',
+      '/news',
+      '/team',
+      '/visit',
+      '/play',
+      '/partners',
+      '/donate',
+      '/game',
+      '/news/briefing',
+      '/events/lake-study',
+    ];
+    const missing = new Set<string>();
+    for (const url of urls)
+      for (const ch of displayText(render(url).replaceAll('<!-- -->', '')))
+        if (!/\s/.test(ch) && !subset.has(ch) && !ch.startsWith('&')) missing.add(ch);
+    // Run `npm run fonts` after adding display copy.
+    expect([...missing].join('')).toBe('');
   });
 });

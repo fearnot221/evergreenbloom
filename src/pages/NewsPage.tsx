@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
+import { HeadlineSwap } from '../components/HeadlineSwap';
+import { Ink } from '../components/Ink';
 import { ArrowUpRightIcon } from '../components/icons';
-import { Link } from '../components/links';
-import { HangingScrolls, Page, useDocumentTitle } from '../components/page';
+import { AnnouncementCards, Page, useDocumentTitle } from '../components/page';
 import { display } from '../data/display-copy';
 import { officialTopics, snapshot } from '../data/festival';
 import '../styles/pages.css';
@@ -16,15 +18,16 @@ export default function NewsPage() {
       lede="第二屆的公告會陸續發布。每則消息都標示來源；正式資訊以官方社群與主辦單位為準。"
       className="news"
     >
+      <HeadlineSwap items={snapshot.announcements} />
       <section aria-labelledby="official-title" className="news-official">
-        <h2 className="serif section-title" id="official-title">
-          {display.sections.official}
+        <h2 className="display section-title" id="official-title" data-ink>
+          <Ink text={display.sections.official} />
         </h2>
-        <HangingScrolls size="small" />
+        <AnnouncementCards />
       </section>
       <section aria-labelledby="site-title">
-        <h2 className="serif section-title" id="site-title">
-          {display.sections.site}
+        <h2 className="display section-title" id="site-title" data-ink>
+          <Ink text={display.sections.site} />
         </h2>
         <ul className="rows news-list">
           {others.map((item) => (

@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { createBrowserRouter, type RouteObject, redirect } from 'react-router-dom';
+import { isStandalone } from '../game/stamp-store';
 import App from './App';
 import RouteError from './RouteError';
 
@@ -8,18 +9,15 @@ const page = (load: () => Promise<{ default: ComponentType }>) => async () => ({
   Component: (await load()).default,
 });
 
-/** First paint while the initial route chunk loads: the sky and a page skeleton. */
+/** First paint while the initial route chunk loads: a page skeleton. */
 function InitialFallback() {
   return (
-    <>
-      <div className="sky" aria-hidden="true" />
-      <main className="page container route-loading" aria-busy="true">
-        <span className="sr-only">頁面載入中</span>
-        <div className="skeleton skeleton-title" />
-        <div className="skeleton skeleton-line" />
-        <div className="skeleton skeleton-line short" />
-      </main>
-    </>
+    <main className="wrap route-loading" aria-busy="true">
+      <span className="sr-only">頁面載入中</span>
+      <div className="skeleton skeleton-title" />
+      <div className="skeleton skeleton-line" />
+      <div className="skeleton skeleton-line short" />
+    </main>
   );
 }
 
@@ -42,6 +40,19 @@ export const routes: RouteObject[] = [
           { path: 'map', lazy: page(() => import('../map/MapPage')) },
           { path: 'visit', lazy: page(() => import('../pages/VisitPage')) },
           { path: 'team', lazy: page(() => import('../pages/TeamPage')) },
+          { path: 'play', lazy: page(() => import('../pages/PlayPage')) },
+          { path: 'partners', lazy: page(() => import('../pages/PartnersPage')) },
+          { path: 'donate', lazy: page(() => import('../pages/DonatePage')) },
+          { path: 'game', lazy: page(() => import('../game/GamePage')) },
+          // QR codes on site point here: /stamp/<spot>?k=<key>.
+          {
+            path: 'stamp/:spot',
+            loader: ({ params, request }) => {
+              const k = new URL(request.url).searchParams.get('k') ?? '';
+              const query = new URLSearchParams({ spot: params.spot ?? '', k });
+              return redirect(`${isStandalone() ? '/game' : '/play'}?${query}`);
+            },
+          },
           { path: '*', lazy: page(() => import('../pages/NotFoundPage')) },
         ],
       },

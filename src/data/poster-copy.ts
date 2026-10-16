@@ -1,7 +1,6 @@
 /**
- * Strings set in the poster face (Noto Sans TC Black subset): the wordmark and the
- * official-post lettering. Keep this list short; every character here ships in
- * public/fonts/songying-poster.woff2. Run `npm run fonts` after editing.
+ * The wordmark and the official-post lettering, set in the display face. Every
+ * character here ships in public/fonts/songying-display.woff2; run `npm run fonts`.
  */
 export const poster = {
   wordmark: '松櫻祭',

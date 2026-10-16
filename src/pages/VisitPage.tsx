@@ -1,8 +1,10 @@
+import { Link } from 'react-router-dom';
+import { Ink } from '../components/Ink';
 import { ArrowUpRightIcon, CaretDownIcon } from '../components/icons';
-import { Link } from '../components/links';
 import { Page, useDocumentTitle } from '../components/page';
 import { display } from '../data/display-copy';
 import { story } from '../data/festival';
+import { gsap, MOTION, useGSAP } from '../motion/gsap';
 import '../styles/pages.css';
 
 const faq = [
@@ -21,6 +23,24 @@ const faq = [
 
 export default function VisitPage() {
   useDocumentTitle(display.pages.visit);
+  // 螢光筆: a sakura highlighter runs under each caution once it is read.
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add(MOTION, () => {
+      for (const mark of gsap.utils.toArray<HTMLElement>('.visit .hl'))
+        gsap.fromTo(
+          mark,
+          { backgroundSize: '0% 0.45em' },
+          {
+            backgroundSize: '100% 0.45em',
+            duration: 1.1,
+            ease: 'power2.inOut',
+            scrollTrigger: { trigger: mark, start: 'top 82%', once: true },
+          },
+        );
+    });
+    return () => mm.revert();
+  });
   return (
     <Page
       title={display.pages.visit}
@@ -31,8 +51,8 @@ export default function VisitPage() {
         <section className="reveal" aria-labelledby="arrival-title">
           <h2 id="arrival-title">先確認，再出發</h2>
           <p>
-            第二屆的日期與場地尚未公布，交通、接駁、停車與開放入口資訊均待確認。請勿依 2026
-            首屆的日期或原型地圖安排行程。
+            第二屆的日期與場地尚未公布，交通、接駁、停車與開放入口資訊均待確認。
+            <mark className="hl">請勿依 2026 首屆的日期或原型地圖安排行程。</mark>
           </p>
           <Link className="text-link" to="/news">
             最新消息
@@ -42,8 +62,8 @@ export default function VisitPage() {
         <section className="reveal" aria-labelledby="campus-title">
           <h2 id="campus-title">在校園裡相遇</h2>
           <p>
-            3D 地圖採用 OpenStreetMap
-            的校園輪廓、建物與道路；建物高度多為估計，活動場地仍待確認，尚不可導航。
+            3D 地圖採用 OpenStreetMap 的校園輪廓、建物與道路；建物高度多為估計，
+            <mark className="hl">活動場地仍待確認，尚不可導航。</mark>
           </p>
           <Link className="text-link" to="/map">
             校園地圖
@@ -52,8 +72,8 @@ export default function VisitPage() {
         </section>
       </div>
       <section aria-labelledby="info-title">
-        <h2 className="serif section-title" id="info-title">
-          {display.sections.before}
+        <h2 className="display section-title" id="info-title" data-ink>
+          <Ink text={display.sections.before} />
         </h2>
         <dl className="rows info-rows">
           {story.attendee.rows.map((row) => (
@@ -65,8 +85,8 @@ export default function VisitPage() {
         </dl>
       </section>
       <section aria-labelledby="faq-title">
-        <h2 className="serif section-title" id="faq-title">
-          {display.sections.faq}
+        <h2 className="display section-title" id="faq-title" data-ink>
+          <Ink text={display.sections.faq} />
         </h2>
         <div className="faq">
           {faq.map(([question, answer]) => (

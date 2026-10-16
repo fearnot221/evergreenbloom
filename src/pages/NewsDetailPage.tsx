@@ -1,7 +1,6 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ArrowLeftIcon } from '../components/icons';
-import { Link } from '../components/links';
-import { Sakura, Sparkle } from '../components/motifs';
+import { Blossom } from '../components/motifs';
 import { Page, useDocumentTitle } from '../components/page';
 import { snapshot } from '../data/festival';
 import { poster } from '../data/poster-copy';
@@ -24,19 +23,15 @@ export default function NewsDetailPage() {
       <div className="news-detail-grid">
         {lines && (
           <figure className="news-poster" aria-hidden="true">
-            <Sakura className="news-poster-sakura" />
-            <Sparkle className="news-poster-sparkle" />
-            <span
-              className="poster news-poster-title"
-              style={{ viewTransitionName: `topic-${id}` }}
-            >
+            <Blossom className="news-poster-sakura" />
+            <span className="display news-poster-title">
               {lines.map((line) => (
                 <span className="line" key={line}>
                   {line}
                 </span>
               ))}
             </span>
-            <span className="poster news-poster-byline">
+            <span className="display news-poster-byline">
               {poster.school} {poster.edition} {poster.wordmark}
             </span>
           </figure>

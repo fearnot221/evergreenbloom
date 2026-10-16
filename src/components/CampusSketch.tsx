@@ -27,8 +27,8 @@ function toSketch(data: CampusDataset): Sketch {
 }
 
 /**
- * A line drawing of the real campus (OpenStreetMap), drawn stroke by stroke as it
- * scrolls into view. Data loads only when the section approaches the viewport.
+ * A line drawing of the real campus (OpenStreetMap). Data loads only when the plate
+ * approaches the viewport; the home motion draws the strokes in with scroll.
  */
 export function CampusSketch() {
   const ref = useRef<HTMLDivElement>(null);

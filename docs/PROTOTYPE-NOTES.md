@@ -1,6 +1,26 @@
 # Prototype notes and historical records
 
-## Current pass · v3 「松窗見春」 full re-composition (2026-10-16)
+## Current pass · v6 「櫻吹雪 · 一陣風」 main handoff (2026-10-17)
+
+This snapshot promotes the current `claude/songying-season-website-91487a`
+worktree to `main`. Earlier passes below are historical. The current visual system
+is documented in DESIGN.md: sakura-pink editorial typography, textured 松 / 櫻
+glyphs, a canvas petal storm and GSAP motion in `src/motion/`.
+
+The snapshot also includes `/partners`, `/donate`, `/play`, `/game` and
+`/stamp/:spot` (`src/app/router.tsx`), device-local prototype stamp storage
+(`src/game/stamp-store.ts`), and revised PWA install/core-save behavior. Login,
+server-validated stamps, donation channels and confirmed festival placements remain
+unavailable; prototype content and geography boundaries remain in force.
+
+**Verified for this handoff:** `npm run check` passed (Biome, TypeScript, Vitest
+33/33 and geo tests 6/6); `npm run build` passed and generated the service worker
+with 37 core files. Biome reports an existing configuration deprecation notice.
+`git diff --check` passed. No browser, installed-PWA, screen-reader, real-device or
+cross-browser checks were performed during this handoff. The initial-JavaScript
+budget overrun recorded in PERFORMANCE.md remains unresolved.
+
+## Previous pass · v3 「松窗見春」 full re-composition (2026-10-16)
 
 The user judged the 春空 versions worse than the original Bloom site and asked for a
 new, fully re-composed version at Awwwards top-prize level, reviewed and iterated until

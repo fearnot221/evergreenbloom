@@ -1,62 +1,151 @@
-/* Shared components: sky canvas, page spine, tickets, hanging scrolls, disclosure,
-   chips, PWA panel, motifs. */
+/* Shared components: plates, page head, cards, disclosures, chips, PWA panel, petals. */
 
-/* Sky canvas: fixed world behind sky-window sections. CSS gradient until WebGL is up. */
-.sky-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-sky);
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(50% 30% at 20% 80%, var(--cloud) 0%, transparent 70%),
-    radial-gradient(40% 24% at 85% 18%, var(--cloud) 0%, transparent 70%),
-    linear-gradient(175deg, var(--sky-high), var(--sky-mid) 50%, var(--sky-low));
-}
-
-/* Motifs ------------------------------------------------------------------------ */
 .motif {
-  pointer-events: none;
   overflow: visible;
 }
 
-.pine-cone {
-  filter: drop-shadow(0 10px 18px oklch(40% 0.05 30 / 0.2));
+/* Campus plate -----------------------------------------------------------------------
+   The real campus framed like a photograph: the figure clips, .plate-inner is the
+   oversized layer the motion system scales. */
+.plate {
+  position: relative;
+  margin: 0;
+  overflow: clip;
+  aspect-ratio: 16 / 10;
+  background: var(--plate-paper);
 }
 
-.sakura {
-  filter: drop-shadow(0 8px 16px oklch(60% 0.1 350 / 0.22));
+.plate-inner {
+  position: absolute;
+  inset: -6%;
+  display: grid;
+  place-items: center;
 }
 
-/* Inner page: vertical title spine + body ------------------------------------------- */
-.page {
-  padding-top: calc(var(--header-h) + var(--space-8));
-  padding-bottom: var(--space-9);
+.campus-sketch {
+  aspect-ratio: 1520 / 940;
 }
 
-.page-grid {
+.plate-campus .campus-sketch {
+  width: 92%;
+}
+
+.campus-sketch svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.sketch-water {
+  fill: var(--sakura);
+}
+
+.sketch-road {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 2;
+}
+
+.sketch-building {
+  fill: var(--bg-2);
+  stroke: var(--fg);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .sketch-building,
+    .sketch-road {
+      stroke-dasharray: 1;
+      animation: sketch-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 50%;
+    }
+  }
+}
+
+@keyframes sketch-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* 空心字 titles (Ink.tsx): an outline with a fill layer on top. -------------------- */
+.ink {
+  display: inline-grid;
+}
+
+.ink > * {
+  grid-area: 1 / 1;
+}
+
+.ink-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
+}
+
+.ink-fill {
+  color: currentColor;
+}
+
+/* 上下裂開 (SplitSwap.tsx): each word is two clipped halves stacked on one cell. */
+.swap {
+  display: inline-grid;
+}
+
+.swap-word,
+.swap-word > * {
+  grid-area: 1 / 1;
+}
+
+.swap-word {
+  display: grid;
+}
+
+.swap-top {
+  clip-path: inset(0 0 50% 0);
+}
+
+.swap-bottom {
+  clip-path: inset(50% 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swap-word + .swap-word {
+    display: none;
+  }
+}
+
+/* Inner-page head: a sakura field with a poster-scale title and a cropped bloom. */
+.page-head {
+  position: relative;
+  overflow: clip;
+  padding: calc(var(--header-h) + var(--space-9)) 0 var(--space-9);
+  background: var(--sakura);
+}
+
+.page-head-grid {
+  /* Above the flowing columns. */
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: var(--space-6);
 }
 
 .page-title {
-  font-size: var(--step-5);
-  color: var(--accent);
-}
-
-.page-title.is-plain {
   font-size: var(--step-4);
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.01em;
+  line-height: 1.1;
   color: var(--fg);
 }
 
-.page-mark {
-  margin-top: var(--space-4);
-  font-size: 0.875rem;
-  letter-spacing: 0.08em;
-  color: var(--fg-soft);
+.page-title.is-plain {
+  font-size: var(--step-3);
+  font-weight: 800;
+  line-height: 1.3;
 }
 
 .page-lede {
@@ -65,384 +154,239 @@
   line-height: 1.8;
 }
 
+/* 直書逆走: three outlined columns of the title, flowing up and down in turn. */
+.head-flow {
+  position: absolute;
+  inset: 0 var(--gutter) 0 auto;
+  display: flex;
+  gap: 0.35em;
+  overflow: clip;
+  font-size: clamp(3rem, 1.5rem + 5vw, 7rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+  pointer-events: none;
+}
+
+.head-flow-col {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+}
+
+.head-flow-col:nth-child(2) {
+  -webkit-text-stroke-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .head-flow-col {
+    animation: flow-up 60s linear infinite;
+  }
+
+  .head-flow-col:nth-child(even) {
+    animation-name: flow-down;
+    animation-duration: 75s;
+  }
+}
+
+@keyframes flow-up {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes flow-down {
+  from {
+    transform: translateY(-50%);
+  }
+}
+
+/* Wide screens: title and lede share the left 7 columns; the flow owns the right. */
+@media (min-width: 900px) {
+  /* Room for the flowing columns; a plain (dynamic) title has none and stays compact. */
+  .page-head:has(.head-flow) {
+    min-height: 34rem;
+    display: grid;
+    align-items: end;
+  }
+
+  .page-head-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
+  .page-head-grid > * {
+    grid-column: 1;
+  }
+}
+
+/* Phones: no room beside the text, so the flow stays a faint backdrop. */
+@media (max-width: 899px) {
+  .head-flow {
+    opacity: 0.18;
+  }
+}
+
 .page-body {
   display: grid;
-  gap: var(--space-7);
-  align-content: start;
-  min-width: 0;
+  /* One viewport-bound track: full-bleed bands overflow it instead of widening it. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  padding-top: var(--space-8);
 }
 
-/* Wide screens: title becomes a sticky vertical spine. */
 @media (min-width: 900px) {
-  .page-grid {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: clamp(3rem, 6vw, 7rem);
-  }
-
-  .page-spine {
-    position: sticky;
-    top: calc(var(--header-h) + var(--space-6));
-    align-self: start;
-    display: flex;
-    flex-direction: row-reverse;
-    gap: var(--space-3);
-    max-height: calc(100dvh - var(--header-h) - var(--space-8));
-  }
-
-  .page-spine .page-title:not(.is-plain) {
-    writing-mode: vertical-rl;
-    font-feature-settings: "vert", "vrt2", "vpal";
-    font-size: clamp(4rem, 2rem + 4.5vw, 7.5rem);
-    line-height: 1;
-  }
-
-  .page-spine:not(:has(.is-plain)) .page-mark {
-    writing-mode: vertical-rl;
-    margin-top: 0;
-    padding-top: var(--space-2);
-  }
-
-  /* Dynamic (plain) titles stay horizontal above the body. */
-  .page-grid:has(.is-plain) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .page-grid:has(.is-plain) .page-spine {
-    display: block;
-    position: static;
-    max-height: none;
-    max-width: 52rem;
+  .page-body {
+    gap: var(--space-10);
+    padding-top: var(--space-9);
   }
 }
 
-/* Section headings inside pages: serif, mid size, no eyebrows. */
+.page-body > section {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+}
+
 .section-title {
   font-size: var(--step-3);
-  color: var(--fg);
 }
 
-/* Ticket ------------------------------------------------------------------------------ */
-.ticket {
+.section-lede {
+  max-width: var(--measure);
+  font-size: var(--step-1);
+  line-height: 1.8;
+}
+
+.sub-title {
+  margin-top: var(--space-6);
+  font-size: var(--step-2);
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+/* Event entry: an editorial block with a top rule, no box. ---------------------------- */
+.event-card {
   position: relative;
   display: grid;
-  grid-template-columns: 6.5rem minmax(0, 1fr);
-  min-height: 15rem;
-  background: var(--bg);
-  color: var(--fg);
-  box-shadow:
-    0 0 0 1px var(--line),
-    var(--shadow-lift);
-  transition: translate 320ms var(--ease-out);
+  gap: var(--space-3);
+  align-content: start;
+  height: 100%;
+  padding-top: var(--space-5);
+  border-top: 2px solid var(--fg);
 }
 
-.ticket-stub {
-  display: grid;
-  align-content: space-between;
-  gap: var(--space-2);
-  padding: var(--space-4) var(--space-3);
-  background: var(--accent);
-  color: var(--on-accent);
-  /* Perforation between stub and body. */
-  mask: radial-gradient(circle 5px at 100% 10px, transparent 98%, black) 0 0 / 100% 20px repeat-y;
-}
-
-.ticket-time {
-  font-size: 1.875rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.ticket-day {
+.event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--fg-soft);
   font-size: var(--step--1);
+}
+
+.event-tag {
+  color: var(--accent);
   font-weight: 700;
 }
 
-.ticket-body {
-  display: grid;
-  gap: var(--space-2);
-  align-content: start;
-  padding: var(--space-5);
-}
-
-.ticket-title {
+.event-title {
   font-size: var(--step-2);
   font-weight: 800;
-  line-height: 1.25;
+  transition: color var(--dur-quick) ease;
 }
 
-.ticket-title a {
+.event-title a {
   text-decoration: none;
 }
 
-.ticket-title a::after {
+/* The title link covers the entry; the map link stays on top. */
+.event-title a::after {
   content: "";
   position: absolute;
   inset: 0;
 }
 
-.ticket .text-link {
+.event-card .text-link {
   position: relative;
   z-index: 1;
   justify-self: start;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .ticket:has(.ticket-title a:hover) {
-    translate: 0 -6px;
-  }
-
-  .ticket:has(.ticket-title a:hover) .ticket-title {
+  .event-card:has(.event-title a:hover) .event-title {
     color: var(--accent);
   }
 }
 
-.ticket:has(.ticket-title a:focus-visible) {
+.event-card:has(.event-title a:focus-visible) {
   outline: 2px solid var(--focus);
-  outline-offset: 4px;
+  outline-offset: 6px;
 }
 
-.ticket-title a:focus-visible {
+.event-title a:focus-visible {
   outline: none;
 }
 
-/* Hanging scrolls (掛軸) -------------------------------------------------------------- */
-.scrolls {
+/* Announcement posters ------------------------------------------------------------ */
+.announce-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.75rem, 2.4vw, 3rem);
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
 }
 
-/* Each scroll is its own size container: lettering scales with the poster. */
-.scroll {
-  display: grid;
-  justify-items: center;
-  transform-origin: 50% 0;
-  container-type: inline-size;
-}
-
-/* Wooden rods with rounded knobs at each end. */
-.scroll-rod {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: clamp(7px, 4cqi, 14px);
-  border-radius: 6px;
-  background: linear-gradient(var(--motif-pine-light), var(--motif-pine-deep));
-  box-shadow: 0 3px 6px oklch(20% 0.03 40 / 0.3);
-}
-
-.scroll-rod::before,
-.scroll-rod::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: clamp(10px, 6cqi, 18px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--pine-ink);
-  translate: 0 -50%;
-}
-
-.scroll-rod::before {
-  left: -6px;
-}
-
-.scroll-rod::after {
-  right: -6px;
-}
-
-.scroll-sheet {
+.announce-card {
   position: relative;
   isolation: isolate;
   display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: 7cqi;
-  width: 92%;
-  aspect-ratio: 3 / 4.2;
-  padding: 10cqi 4cqi;
-  overflow: hidden;
-  text-align: center;
+  align-content: space-between;
+  gap: var(--space-8);
+  min-height: 19rem;
+  padding: var(--space-6);
+  overflow: clip;
+  background: var(--sakura);
   text-decoration: none;
-  /* Posters keep the day palette of the official posts in both colour schemes. */
-  background:
-    radial-gradient(60% 30% at 20% 90%, oklch(96% 0.035 350) 0%, transparent 70%),
-    radial-gradient(50% 26% at 85% 15%, oklch(96% 0.035 350) 0%, transparent 70%),
-    linear-gradient(170deg, oklch(82% 0.075 278), oklch(87% 0.058 302) 55%, oklch(93% 0.04 348));
-  box-shadow: 0 18px 30px -18px oklch(25% 0.06 300 / 0.55);
 }
 
-/* Soft light that follows the mouse inside the poster. */
-.scroll-sheet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(
-    200px circle at var(--mx, 50%) var(--my, 40%),
-    oklch(100% 0 0 / 0.5),
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity var(--dur-quick) ease;
+.announce-card-title {
+  font-size: var(--step-3);
+  line-height: 1.1;
 }
 
-.scroll-title {
-  font-size: 25cqi;
-  line-height: 1.04;
-  color: oklch(54% 0.17 356);
-}
-
-.scroll-byline {
-  font-size: max(4.4cqi, 8px);
-  letter-spacing: 0.02em;
-  color: oklch(47% 0.055 288);
-  white-space: nowrap;
-}
-
-.scroll-cta {
-  position: absolute;
-  bottom: 7cqi;
+.announce-card-cta {
   display: inline-flex;
   align-items: center;
-  gap: 0.3em;
-  font-size: max(4.6cqi, 0.75rem);
+  gap: var(--space-1);
   font-weight: 700;
-  color: oklch(22% 0.03 168);
-  opacity: 0;
-  translate: 0 6px;
-  transition:
-    opacity var(--dur-quick) var(--ease-out),
-    translate var(--dur-quick) var(--ease-out);
 }
 
-.scroll-art {
+.announce-card-art {
   position: absolute;
-  inset: 0;
   z-index: -1;
-}
-
-.scroll-sakura,
-.scroll-pine,
-.scroll-sparkle {
-  position: absolute;
-}
-
-.scroll-sakura.a {
-  width: 34%;
-  right: -8%;
-  top: 6%;
-  rotate: 18deg;
-}
-
-.scroll-sakura.b {
-  width: 26%;
-  left: -6%;
-  bottom: 10%;
-  rotate: -24deg;
-}
-
-.scroll-pine {
-  width: 26%;
-  right: 4%;
-  top: 4%;
-  rotate: 24deg;
-}
-
-.scroll-sparkle {
-  width: 9%;
-}
-
-.scroll-sparkle.a {
-  left: 10%;
-  top: 14%;
-}
-
-.scroll-sparkle.b {
-  right: 12%;
-  bottom: 22%;
-}
-
-.scroll-sparkle.c {
-  left: 14%;
-  bottom: 18%;
-}
-
-/* Interaction: the scroll sways from its top rod; the poster lights up. */
-.scroll:has(.scroll-sheet:hover),
-.scroll:has(.scroll-sheet:focus-visible) {
-  rotate: -1.2deg;
-}
-
-.scroll {
-  transition: rotate 600ms var(--ease-out);
+  right: -3rem;
+  bottom: -3rem;
+  width: 11rem;
+  transition: transform 900ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .scroll-sheet:hover::before,
-  .scroll-sheet:hover .scroll-cta {
-    opacity: 1;
-    translate: 0 0;
+  .announce-card:hover .announce-card-art {
+    transform: rotate(40deg) scale(1.15);
   }
 }
 
-.scroll-sheet:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 4px;
+/* Rows ------------------------------------------------------------------------------ */
+.rows {
+  border-top: 1px solid var(--line-strong);
 }
 
-.scroll-sheet:focus-visible .scroll-cta {
-  opacity: 1;
-  translate: 0 0;
-}
-
-@container (max-width: 200px) {
-  .scroll-byline {
-    display: none;
-  }
-
-  .scroll-cta {
-    display: none;
-  }
-}
-
-/* Unroll on entry: the sheet is revealed from the rod down, staggered per scroll. */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    /* Sheet and bottom rod share the scroll's timeline so they stay in step. */
-    .scroll {
-      view-timeline: --scroll block;
-    }
-
-    .scroll-sheet,
-    .scroll-rod.is-bottom {
-      animation: unroll linear both;
-      animation-timeline: --scroll;
-      animation-range: entry calc(20% + var(--i) * 10%) cover calc(42% + var(--i) * 8%);
-    }
-
-    .scroll-rod.is-bottom {
-      animation-name: unroll-rod;
-    }
-  }
-}
-
-@keyframes unroll {
-  from {
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    clip-path: inset(0);
-  }
-}
-
-@keyframes unroll-rod {
-  from {
-    translate: 0 calc(-1 * 128cqi);
-  }
-  to {
-    translate: 0 0;
-  }
+.rows > * {
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--line);
 }
 
 /* Disclosure ------------------------------------------------------------------------- */
@@ -483,31 +427,33 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .disclosure::details-content {
+  .disclosure::details-content,
+  .timeline-item::details-content {
     block-size: 0;
     overflow: clip;
     transition:
-      block-size var(--dur-panel) var(--ease-out),
-      content-visibility var(--dur-panel) allow-discrete;
+      block-size 500ms var(--ease-out),
+      content-visibility 500ms allow-discrete;
   }
 
-  .disclosure[open]::details-content {
+  .disclosure[open]::details-content,
+  .timeline-item[open]::details-content {
     block-size: auto;
   }
 }
 
-/* Filter chips -------------------------------------------------------------------------- */
+/* Filter chips ------------------------------------------------------------------------ */
 .filter-group {
+  display: grid;
+  gap: var(--space-2);
   margin: 0;
   padding: 0;
   border: 0;
-  min-width: 0;
 }
 
 .filter-group legend {
-  padding: 0;
   margin-bottom: var(--space-2);
-  color: var(--fg-soft);
+  font-weight: 700;
 }
 
 .chips {
@@ -523,21 +469,18 @@
 .chip input {
   position: absolute;
   inset: 0;
-  margin: 0;
   opacity: 0;
+  margin: 0;
   cursor: pointer;
 }
 
 .chip span {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 var(--space-4);
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  font-size: 0.9375rem;
   font-weight: 700;
-  white-space: nowrap;
   transition:
     background-color var(--dur-quick) ease,
     border-color var(--dur-quick) ease,
@@ -546,28 +489,27 @@
 }
 
 .chip input:checked + span {
-  background: var(--fg);
   border-color: var(--fg);
+  background: var(--fg);
   color: var(--bg);
 }
 
 .chip input:focus-visible + span {
   outline: 2px solid var(--focus);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .chip input:active + span {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .chip input:not(:checked):hover + span {
-    border-color: var(--accent);
-    color: var(--accent);
+    background: var(--sakura);
   }
 }
 
-/* PWA panel ---------------------------------------------------------------------------- */
+/* PWA panel (footer) ---------------------------------------------------------------- */
 .pwa-panel {
   display: grid;
   gap: var(--space-3);
@@ -579,54 +521,163 @@
   gap: var(--space-2);
 }
 
-.app-footer .pwa-panel .button {
-  background: var(--on-ink);
-  border-color: var(--on-ink);
-  color: var(--pine-ink);
-}
-
-.app-footer .pwa-panel .note {
-  color: var(--on-ink-soft);
-}
-
 .pwa-status:empty {
   display: none;
 }
 
 .pwa-status {
   font-weight: 700;
+  color: var(--accent);
 }
 
-/* Rows: hairline-separated editorial lists ----------------------------------------------- */
-.rows > * {
-  padding-block: var(--space-5);
-  border-top: 1px solid var(--line);
+/* Petal burst (PetalBurst.tsx) ------------------------------------------------------ */
+.petal-burst {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  pointer-events: none;
 }
 
-.rows > *:last-child {
-  border-bottom: 1px solid var(--line);
+.burst-petal {
+  grid-area: 1 / 1;
+  width: clamp(18px, 2.4vw, 32px);
+  visibility: hidden;
 }
 
-/* Phones: scrolls become a swipeable row at a readable size. */
-@media (max-width: 699px) {
-  .scrolls.is-large,
-  .scrolls.is-small {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 64vw;
-    margin-inline: calc(-1 * var(--gutter));
-    padding: var(--space-2) var(--gutter) var(--space-4);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--gutter);
-    scrollbar-width: none;
-  }
+/* Petal fall (motion/PetalFall.tsx): behind the content, never over the header. */
+.petal-fall {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: clip;
+  pointer-events: none;
+  visibility: hidden;
+}
 
-  .scrolls::-webkit-scrollbar {
-    display: none;
-  }
+.fall-petal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(16px, 1.6vw, 24px);
+  opacity: 0.9;
+}
 
-  .scroll {
-    scroll-snap-align: start;
+/* A notice belongs to the content right after it. */
+.page-body > .notice {
+  margin-bottom: calc(var(--space-5) - var(--space-8));
+}
+
+@media (min-width: 900px) {
+  .page-body > .notice {
+    margin-bottom: calc(var(--space-6) - var(--space-10));
   }
+}
+
+/* Bands (Bands.tsx): 跑馬燈 / 斜線帶 / 封鎖膠帶. ------------------------------------- */
+.bands {
+  display: grid;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.band-row {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  line-height: 1.15;
+}
+
+.band-row.is-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .band-row {
+    animation: band-run var(--seconds) linear infinite;
+    animation-direction: var(--direction);
+  }
+}
+
+@keyframes band-run {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.bands.is-stack {
+  gap: var(--space-2);
+  margin-inline: calc(-1 * var(--gutter));
+  font-size: clamp(2.2rem, 1rem + 5vw, 6rem);
+}
+
+.bands.is-stack .band-row:nth-child(2) {
+  font-size: 0.55em;
+  color: var(--fg-soft);
+}
+
+/* Two bands tilted against each other: an X across the section. */
+.bands.is-cross,
+.bands.is-tape {
+  position: absolute;
+  inset: 0;
+  align-content: center;
+  font-size: clamp(1.6rem, 0.8rem + 3vw, 3.4rem);
+}
+
+.bands.is-cross .band-row,
+.bands.is-tape .band-row {
+  grid-area: 1 / 1;
+  margin-left: -10vw;
+  /* Rows are thousands of pixels wide: tilt them around the viewport's middle (the
+     row starts at -10vw), or the visible part swings out of the strip. */
+  transform-origin: 60vw 50%;
+}
+
+.bands.is-cross .band-row:first-child,
+.bands.is-tape .band-row:first-child {
+  rotate: -7deg;
+}
+
+.bands.is-cross .band-row:last-child,
+.bands.is-tape .band-row:last-child {
+  rotate: 6deg;
+}
+
+.bands.is-cross .band-row {
+  color: var(--sakura-deep);
+}
+
+.bands.is-tape .band-row {
+  padding-block: 0.15em;
+  background: var(--fg);
+  color: var(--sakura);
+}
+
+.bands.is-tape .band-row:last-child {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Ribbon (Ribbon.tsx): 緞帶. */
+.ribbon {
+  display: block;
+  width: 100%;
+  height: clamp(9rem, 5rem + 12vw, 17rem);
+  overflow: visible;
+}
+
+.ribbon-line {
+  fill: none;
+  stroke: var(--sakura-deep);
+  stroke-width: 54;
+  stroke-linecap: round;
+}
+
+.ribbon-text {
+  font-size: 34px;
+  fill: var(--fg);
+  dominant-baseline: middle;
 }

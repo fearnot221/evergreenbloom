@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   ArrowClockwiseIcon,
   ArrowCounterClockwiseIcon,
@@ -8,7 +8,6 @@ import {
   MinusIcon,
   PlusIcon,
 } from '../components/icons';
-import { Link } from '../components/links';
 import { Page, useDocumentTitle } from '../components/page';
 import { display } from '../data/display-copy';
 import { getLocation, snapshot } from '../data/festival';
@@ -198,7 +197,7 @@ export default function MapPage() {
               重試載入
             </button>
           )}
-          <h2 className="serif" id="map-panel-title">
+          <h2 className="display" id="map-panel-title">
             {display.sections.pick}
           </h2>
           <div className="location-list" role="group" aria-label="地點清單">

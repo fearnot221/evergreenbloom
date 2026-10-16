@@ -1,10 +1,5 @@
 // Shared, disposable prototype content. Not approved publication copy.
 export const festival = {
-  name: '松櫻祭',
-  university: '國立中央大學',
-  universityEn: 'National Central University',
-  descriptor: '中央大學的春日校園祭典',
-  headline: ['讓春天，', '成為中央的日常。'],
   intro:
     '松櫻祭是由學生發起的春日校園祭典，讓校園風景、藝術文化與學生創意相遇，逐步長成屬於中央大學的春季傳統。',
   story:
@@ -13,12 +8,12 @@ export const festival = {
     {
       name: '松',
       title: '扎根，然後生長。',
-      text: '松，代表中央的韌性、長久累積與深厚的學術根基。',
+      text: '松，代表堅忍與毅力：中央的韌性、長久累積與深厚的學術根基。',
     },
     {
       name: '櫻',
       title: '從這裡，向新意綻放。',
-      text: '櫻，代表春日、新的開始、創意與生命力。松與櫻相遇，讓既有的傳統向新的表達延伸。',
+      text: '櫻，代表延續、傳承與綻放：一屆接一屆，把春天交到下一群人手上。松與櫻相遇，讓既有的傳統向新的表達延伸。',
     },
   ],
   places: [
@@ -42,6 +37,50 @@ export const festival = {
       relation: '一起形塑文化',
       title: '校園文化，由參與開始。',
       text: '松櫻祭由學生發起，透過創作與參與，讓學生不只是活動的觀眾，也成為校園文化的共同塑造者。',
+    },
+  ],
+  purposes: [
+    {
+      title: '在春天認識中央',
+      text: '讓學生、校友與訪客走進校園，從風景、創作與人重新認識中央。',
+    },
+    {
+      title: '把每一屆記下來',
+      text: '保存歷屆活動的資料與過程，讓人看見祭典怎麼一年一年長成。',
+    },
+    {
+      title: '每年換一種參與方式',
+      text: '每一屆設計不同的互動。第二屆規劃的是在校園裡走動的實景集章。',
+    },
+  ],
+  sustainability: {
+    text: '松櫻祭希望祭典本身也回應學校的永續理念。第二屆規劃使用校園內的木材製作活動相關物件，讓校園的樹以另一種形式參與春天。',
+    note: '木材來源、製作物件與數量仍待團隊確認，確認後會在這裡補上。',
+  },
+  timeline: [
+    {
+      id: 'briefing',
+      title: '活動說明會',
+      when: '已公告，日期見官方社群',
+      text: '向有意參與的同學與單位說明第二屆的規劃與參與方式。',
+    },
+    {
+      id: 'crew-recruitment',
+      title: '工人招募',
+      when: '已公告，期限見官方社群',
+      text: '招募一起籌備與執行祭典的工作人員。',
+    },
+    {
+      id: 'partner-shops',
+      title: '特約商店',
+      when: '已公告，名單見官方社群',
+      text: '與周邊店家合作，在祭典期間提供參與者優惠。',
+    },
+    {
+      id: null,
+      title: '祭典期間',
+      when: '待公布',
+      text: '日期、場地與節目確認後公布。實景集章將在祭典期間開放。',
     },
   ],
   history: {

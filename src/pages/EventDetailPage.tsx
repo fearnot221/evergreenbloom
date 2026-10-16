@@ -1,6 +1,6 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { Ink } from '../components/Ink';
 import { ArrowLeftIcon, ArrowUpRightIcon } from '../components/icons';
-import { Link } from '../components/links';
 import { MapLink, Page, PrototypeNotice, useDocumentTitle } from '../components/page';
 import { display } from '../data/display-copy';
 import { categories, days, getEvent, getLocation, snapshot } from '../data/festival';
@@ -16,12 +16,7 @@ export default function EventDetailPage() {
   const location = getLocation(event.locationId);
 
   return (
-    <Page
-      plainTitle={event.title}
-      lede={event.summary}
-      morph={`event-${event.id}`}
-      className="detail"
-    >
+    <Page plainTitle={event.title} lede={event.summary} className="detail">
       <Link className="text-link back-link" to="/events">
         <ArrowLeftIcon size={18} aria-hidden="true" />
         所有活動
@@ -29,7 +24,9 @@ export default function EventDetailPage() {
       <PrototypeNotice />
       <div className="detail-grid">
         <section className="detail-main">
-          <h2 className="serif section-title">{display.sections.about}</h2>
+          <h2 className="display section-title" data-ink>
+            <Ink text={display.sections.about} />
+          </h2>
           <p>{event.description}</p>
           <p className="note">尚無報名連結。正式活動與參與條件待公布。</p>
         </section>

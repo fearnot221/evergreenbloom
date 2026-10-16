@@ -1,55 +1,3 @@
-/*
- * Route transitions (View Transitions API via React Router `viewTransition`).
- * The page content cross-fades and rises a few pixels; header and tab bar stay put.
- * A poster title shared between a tile and its detail page morphs in place.
- * Unsupported browsers simply navigate.
- */
-.app-header {
-  view-transition-name: app-header;
-}
-
-.tab-bar {
-  view-transition-name: tab-bar;
-}
-
-.sky-canvas {
-  view-transition-name: sky;
-}
-
-::view-transition-old(root) {
-  animation: vt-out 160ms var(--ease-out) both;
-}
-
-::view-transition-new(root) {
-  animation: vt-in 320ms var(--ease-out) both;
-}
-
-::view-transition-group(*) {
-  animation-duration: 420ms;
-  animation-timing-function: var(--ease-in-out);
-}
-
-@keyframes vt-out {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes vt-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none;
-  }
-}
-
 /* Pending navigation: a thin rose line under the header, shown after a short delay
    so fast (cached) navigations never flash it. */
 .nav-progress {
@@ -57,7 +5,7 @@
   inset: 0 0 auto;
   z-index: var(--z-top);
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--accent), var(--motif-sparkle));
+  background: var(--accent);
   transform-origin: left;
   pointer-events: none;
 }
