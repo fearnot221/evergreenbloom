@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { HeadlineSwap } from '../src/components/HeadlineSwap';
+import { gsap } from '../src/motion/gsap';
 import { PetalStorm } from '../src/motion/PetalStorm';
 
 type Context = { add: (name: string, callback: () => void) => void; swap?: () => void };
@@ -35,7 +36,7 @@ vi.mock('../src/motion/gsap', () => ({
       revert() {},
     }),
     utils: { toArray: () => motion.lines },
-    set() {},
+    set: vi.fn(),
     to() {},
     fromTo() {},
     timeline: () => motion.loop,
@@ -89,6 +90,28 @@ it('keeps ticker rotation stopped for focus, hover, manual pause and an offscree
   ticker.props.onPointerLeave();
   expect(motion.loop.paused).toHaveBeenLastCalledWith(true);
   cleanup?.();
+  expect(motion.lines.every((line) => !line.inert)).toBe(true);
+});
+
+it('clears animated headline styles when returning to the static reduced-motion view', () => {
+  HeadlineSwap({
+    items: [
+      { id: 'a', title: 'A' },
+      { id: 'b', title: 'B' },
+    ],
+  });
+  motion.setup();
+  const context: Context = {
+    add(name, callback) {
+      if (name === 'swap') this.swap = callback;
+    },
+  };
+  const cleanup = motion.media.run(context);
+  context.swap?.();
+  cleanup?.();
+  expect(gsap.set).toHaveBeenLastCalledWith(motion.lines, {
+    clearProps: 'transform,opacity,visibility',
+  });
   expect(motion.lines.every((line) => !line.inert)).toBe(true);
 });
 

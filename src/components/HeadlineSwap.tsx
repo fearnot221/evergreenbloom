@@ -61,6 +61,7 @@ export function HeadlineSwap({ items }: { items: readonly { id: string; title: s
         sync();
         return () => {
           playback.current.sync = () => {};
+          gsap.set(lines, { clearProps: 'transform,opacity,visibility' });
           for (const line of lines) line.inert = false;
         };
       });

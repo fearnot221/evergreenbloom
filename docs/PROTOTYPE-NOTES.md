@@ -1,5 +1,21 @@
 # Prototype notes and historical records
 
+## Current pass · reduced-motion ticker follow-up (2026-10-19)
+
+Fixed the two findings from the follow-up review: animated headline styles are
+cleared during media-context cleanup, and the pause control stays hidden in reduced
+motion despite the production CSS order. Added a focused cleanup regression test;
+its GSAP double checks the cleanup request, not browser rendering.
+
+Verified `npm run check` (44 Vitest and 6 geo tests) and a project-base production
+build. In Chrome's production preview, allowed the ticker to rotate before switching
+to reduced motion without reloading: the first headline became visible, all animated
+inline styles were cleared, and the pause control computed to `display: none`.
+At 320 and 375 CSS pixels there was no horizontal overflow; the same visibility and
+control checks passed at 414 pixels. These are desktop mobile-emulation checks.
+The existing SVG `textPath startOffset` console error remains outside these two fixes.
+Real phones, Safari/Firefox and field performance were not measured.
+
 ## Current pass · eight audit repairs (2026-10-18)
 
 Fixed the eight audit findings: reciprocal map zoom factors, current website/game

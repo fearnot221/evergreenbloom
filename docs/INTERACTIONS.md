@@ -1,5 +1,13 @@
 # Interactions
 
+## Reduced-motion ticker follow-up · 2026-10-19
+
+`HeadlineSwap` now clears its animated transform, opacity and visibility after the
+media context reverts, so the first static headline remains readable after live
+preference changes. The reduced-motion pause-control selector is scoped to `.ticker`
+so the shared `.button` display rule cannot override it in the production CSS.
+Existing timing, pause reasons, layout and sakura/pine identity are unchanged.
+
 ## Interaction repairs · 2026-10-18
 
 This pass fixes the eight audit findings within the adopted v6 identity. Existing
