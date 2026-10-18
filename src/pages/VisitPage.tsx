@@ -12,11 +12,11 @@ const faq = [
   ['可以使用無障礙路線嗎？', '校園通道、入口與無障礙資料尚未驗證，不能承諾可達性或提供路線。'],
   [
     '離線可以使用嗎？',
-    '在頁尾「應用程式與離線閱讀」成功儲存後，可閱讀本版本的活動、節目、地點清單與來訪資訊。離線內容不代表最新公告；3D 地圖不預先儲存。',
+    '官網需要連線閱讀，不提供離線儲存。集章 App 的安裝與離線使用說明，請前往互動平台查看。',
   ],
   [
     '如何安裝到手機？',
-    '在支援的瀏覽器使用「安裝應用程式」或「加入主畫面」。iOS 可在 Safari 分享選單加入主畫面。',
+    '官網不需要安裝。集章遊戲使用獨立 App，請前往互動平台查看 App 網址與安裝說明。',
   ],
   ['去哪裡詢問主辦單位？', '請透過第二屆松櫻祭的官方社群聯繫。本站不提供推測的帳號或聯絡人。'],
 ] as const;
@@ -88,6 +88,12 @@ export default function VisitPage() {
         <h2 className="display section-title" id="faq-title" data-ink>
           <Ink text={display.sections.faq} />
         </h2>
+        <p>
+          <Link className="text-link" to="/play">
+            集章 App 與安裝說明
+            <ArrowUpRightIcon size={18} aria-hidden="true" />
+          </Link>
+        </p>
         <div className="faq">
           {faq.map(([question, answer]) => (
             <details key={question} className="disclosure">

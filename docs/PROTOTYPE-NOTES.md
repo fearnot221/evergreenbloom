@@ -1,5 +1,39 @@
 # Prototype notes and historical records
 
+## Current pass · eight audit repairs (2026-10-18)
+
+Fixed the eight audit findings: reciprocal map zoom factors, current website/game
+FAQ wording, same-page menu dismissal, main-content focus after navigation,
+live reduced-motion handling for the petal storm, focus/hover/manual headline pause,
+single accessible names for rolling labels, and removal of the unused burst component
+and exclusive CSS. No dependency, product identity or deployment boundary changed.
+Behavior and rationale are recorded in INTERACTIONS.md; build estimates are in
+PERFORMANCE.md.
+
+Verified: `npm run check` (43 Vitest tests, 6 geo tests),
+`VITE_BASE_PATH=/evergreenbloom/ npm run build`, and `git diff --check`.
+Added tests exercise actual OrbitControls camera distance through the map command
+handler, menu selection/dismissal/modified clicks, headline pause reasons, storm
+cleanup/still-frame setup, and corrected FAQ content. UI handler and animation tests
+use lightweight hook/GSAP doubles; they are not a full browser media-preference test.
+
+Production-preview browser checks: selecting the current menu destination closes it
+and focuses main; navigating to another page focuses the new main; Escape restores the
+opener. A focused headline remained available across multiple rotation intervals;
+manual pause persisted after focus left, and pause/resume button names changed with
+the action. Shared footer link names no longer repeat. No browser console errors
+were captured in the checked session. Screenshot review covers the news ticker at
+320, 375, 414, 768 and 1280 CSS pixels in a temporary same-origin iframe; 1920px was
+partially inspected within the outer viewport. The temporary review HTML was removed
+from the build output. Long headlines retain the existing ellipsis treatment and
+remain available in the full announcement list.
+
+Not verified: real phones/touch, Safari/Firefox, screen-reader speech, browser zoom,
+live OS reduced-motion changes, production hosting or game installation. Reduced-motion
+cleanup/still-frame behavior was checked with unit doubles. The existing initial-JS
+budget overrun and Biome/Vite tooling notices remain; this pass does not claim field
+performance compliance or fix those unrelated items.
+
 ## Current pass · website / game repository split (2026-10-17)
 
 The official website now builds independently for GitHub Pages. Game code, device

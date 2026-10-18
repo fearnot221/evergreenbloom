@@ -508,8 +508,8 @@ export function mountCampus(
     command(action) {
       if (action === 'reset') {
         overview();
-      } else if (action === 'in') controls.dollyIn(1.35);
-      else if (action === 'out') controls.dollyOut(1.35);
+      } else if (action === 'in') controls.dollyIn(1 / 1.35);
+      else if (action === 'out') controls.dollyOut(1 / 1.35);
       else controls.rotateLeft(action === 'left' ? 0.3 : -0.3);
       controls.update();
       request();

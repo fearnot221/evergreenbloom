@@ -746,9 +746,9 @@
 /* 最新消息 · 標題切換: a ticker line, one headline at a time. */
 .ticker {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-3);
   padding-block: var(--space-4);
   border-block: 1px solid var(--line-strong);
 }
@@ -761,6 +761,7 @@
 }
 
 .ticker-lines {
+  min-width: 0;
   display: grid;
   overflow: clip;
 }
@@ -779,8 +780,15 @@
   text-decoration: none;
 }
 
+.ticker-toggle {
+  padding-inline: var(--space-3);
+  font-size: var(--step--1);
+  white-space: nowrap;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .ticker-item + .ticker-item {
+  .ticker-item + .ticker-item,
+  .ticker-toggle {
     display: none;
   }
 }

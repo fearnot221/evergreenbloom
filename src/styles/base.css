@@ -248,31 +248,28 @@ button {
   flex: none;
 }
 
-/* Text roll: the label and an attr() copy stacked in a one-line mask. */
+/* Text roll: the label and an accessible-hidden copy in a one-line mask. */
 .roll {
   display: inline-grid;
   overflow: clip;
   line-height: 1.3;
 }
 
-.roll > span,
-.roll::after {
+.roll > span {
   grid-area: 1 / 1;
   transition: transform 520ms var(--ease-out);
 }
 
-.roll::after {
-  content: attr(data-text);
+.roll > .roll-copy {
   transform: translateY(105%);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  :is(a, button):hover .roll > span,
-  :is(a, button):hover .roll::after {
+  :is(a, button):hover .roll > span {
     transform: translateY(-105%);
   }
 
-  :is(a, button):hover .roll::after {
+  :is(a, button):hover .roll > .roll-copy {
     transform: none;
   }
 }

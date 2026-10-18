@@ -530,22 +530,6 @@
   color: var(--accent);
 }
 
-/* Petal burst (PetalBurst.tsx) ------------------------------------------------------ */
-.petal-burst {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.burst-petal {
-  grid-area: 1 / 1;
-  width: clamp(18px, 2.4vw, 32px);
-  visibility: hidden;
-}
-
 /* Petal fall (motion/PetalFall.tsx): behind the content, never over the header. */
 .petal-fall {
   position: fixed;

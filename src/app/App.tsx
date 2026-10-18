@@ -58,6 +58,7 @@ export default function App() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: close transient UI on every navigation.
   useEffect(() => {
+    opener.current = null;
     setMenu(false);
     setEnglish(false);
   }, [location.pathname]);
@@ -70,6 +71,19 @@ export default function App() {
     setMenu(true);
   };
   const previewLabel = primaryNav.find((item) => item.to === preview)?.label ?? '';
+  const navigateFromMenu = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    opener.current = null;
+    setMenu(false);
+  };
 
   return (
     <div className="app" data-route={location.pathname === '/' ? 'home' : 'page'}>
@@ -222,7 +236,9 @@ export default function App() {
         onCancel={() => setMenu(false)}
         onClose={() => {
           setMenu(false);
-          opener.current?.focus();
+          (opener.current ?? document.getElementById('route-content'))?.focus({
+            preventScroll: true,
+          });
         }}
       >
         <div className="menu-inner wrap">
@@ -250,6 +266,7 @@ export default function App() {
                 style={{ '--i': index } as React.CSSProperties}
                 onPointerEnter={() => setPreview(item.to)}
                 onFocus={() => setPreview(item.to)}
+                onClick={navigateFromMenu}
               >
                 <span className="display menu-label">
                   <span>{item.label}</span>
@@ -267,7 +284,7 @@ export default function App() {
           <div className="menu-foot">
             <nav className="menu-secondary" aria-label="其他頁面">
               {secondaryNav.map((item) => (
-                <NavLink key={item.to} to={item.to}>
+                <NavLink key={item.to} to={item.to} onClick={navigateFromMenu}>
                   {item.label}
                 </NavLink>
               ))}

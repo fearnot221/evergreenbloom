@@ -1,5 +1,19 @@
 # Performance
 
+## Audit repairs · 2026-10-18
+
+The eight targeted repairs add no dependencies or assets. The unused burst component
+and its global CSS were removed. The existing storm now removes its drawing callback,
+pointer listener and resize observer when reduced motion becomes active; the headline
+loop pauses during focus, hover and manual pause. Both keep their existing GSAP
+dependency and media-context cleanup; no extra per-frame work was introduced.
+
+Project-base production build estimates (Vite gzip, decimal kB): entry 119.78,
+Home 4.86, News 1.56, shared CSS 8.76, GSAP 52.08, map engine 151.88. Compared with
+the pre-repair audit build: entry +0.07, Home +0.01, News +0.29, shared CSS −0.03.
+These are bundle estimates, not field measurements. The known initial-JS budget
+overrun below remains unresolved. Real-device CPU/GPU, LCP, INP and CLS were not measured.
+
 ## Deployment split · 2026-10-17
 
 The official website is a static GitHub Pages build. Install, offline-save and game

@@ -88,6 +88,12 @@ describe('detail routes', () => {
 });
 
 describe('stamp rally handoff', () => {
+  it('directs visitors to the separate app instead of the removed offline-save panel', () => {
+    const html = render('/visit');
+    expect(text(html)).toContain('官網需要連線閱讀，不提供離線儲存');
+    expect(text(html)).not.toContain('應用程式與離線閱讀');
+    expect(html).toContain('href="/play"');
+  });
   it('explains that installation and progress belong to the separate app', () => {
     const html = text(render('/play?spot=lake&k=lake-26'));
     expect(html).toContain('官網不需要安裝，也不儲存集章紀錄');

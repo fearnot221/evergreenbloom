@@ -1,5 +1,35 @@
 # Interactions
 
+## Interaction repairs · 2026-10-18
+
+This pass fixes the eight audit findings within the adopted v6 identity. Existing
+tokens, timing and page composition remain the reference; no dependency was added.
+
+| Before | After | Why |
+| --- | --- | --- |
+| Map zoom buttons reversed the camera distance | `map/engine.ts` uses reciprocal dolly factors | Plus enlarges the map; minus reduces it |
+| Visit FAQ referred to the removed offline-save panel | `pages/VisitPage.tsx` explains online-only website reading and links to `/play` | Installation belongs to the independent game App |
+| Selecting the current menu destination left the dialog open | `app/App.tsx` closes on ordinary menu-link activation, including secondary links | Modified clicks keep their native new-tab/window behavior |
+| Dialog close always focused its opener | Dismissal restores the opener; navigation focuses main content | Route focus survives both same-page selection and lazy route loading |
+| Storm read reduced motion only once | `motion/PetalStorm.tsx` uses a GSAP media context for both motion preferences | Preference changes remove the ticker, pointer listener and resize observer before drawing a still frame |
+| News rotation continued during keyboard use | `components/HeadlineSwap.tsx` pauses for focus, pointer hover, manual toggle or offscreen state | A focused link stays available; leaving the region only resumes when manual pause is off |
+| Roll's CSS text copy duplicated accessible names | `components/Roll.tsx` uses an explicit `aria-hidden` copy | Shared link labels are announced once |
+| An unused burst component and styles remained | Removed the unreferenced component and exclusive CSS | The existing homepage storm owns the arrival burst |
+
+Emil purpose: preserve reading position and immediate, predictable feedback. Checked
+[Transitions.dev](https://transitions.dev/) modal open/close and text-state-swap
+patterns; these corrections need no new transition. SEED → UNFOLD → BLOSSOM → FESTIVAL
+continues to use the existing v6 presentation. Native dialog, link and button behavior
+handles selection and pause states; CSS keeps the existing label roll.
+
+GSAP remains justified only for the already adopted storm and headline choreography.
+The storm's media context reverts its ScrollTrigger and removes its drawing callback;
+the ticker's delayed swaps belong to its media context for cleanup on preference
+changes or unmount. Reduced motion draws a still storm and shows the first headline
+without a pause control. Mobile uses the same pause button and keyboard/focus rules;
+no gesture-only controls or extra per-frame work were added. Taste/Hallmark review
+keeps the sakura/pine tokens, typography and content-specific layout.
+
 ## Deployment split · 2026-10-17
 
 The official website is a static GitHub Pages build. Install, offline-save and game
